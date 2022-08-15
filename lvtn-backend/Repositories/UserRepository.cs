@@ -14,7 +14,6 @@ namespace lvtn_backend.Repositories
         public void AddUser(User user)
         {
             _emsContext.Users.Add(user);
-            _emsContext.SaveChanges();
         }
 
         public User GetUserById(int id)

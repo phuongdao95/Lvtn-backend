@@ -21,6 +21,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 // Add repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+// Add AutoMapper Configuration
+builder.Services.AddAutoMapper(typeof(Program));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
