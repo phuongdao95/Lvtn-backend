@@ -8,7 +8,9 @@
         public bool Sex { get; set; }
         public int? TeamId { get; set; }
 
-        public Team? Team { get; set; }
-        public Department? Department { get; set; }
+        public Team? TeamManage { get; set; }
+        public Department? DepartmentManage { get; set; }
+
+        public Team? TeamBelong { get; set; }
     }
 }

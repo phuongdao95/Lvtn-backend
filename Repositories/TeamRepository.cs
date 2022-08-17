@@ -1,29 +1,13 @@
-﻿using lvtn_backend.DataContext;
+﻿using lvtn_backend.Repositories.DataContext;
 using lvtn_backend.Models;
+using Repositories;
 
 namespace lvtn_backend.Repositories
 {
-    public class TeamRepository : ITeamRepository
+    public class TeamRepository : GenericRepository<Team>, ITeamRepository
     {
-        private EmsContext _emsContext;
-        public TeamRepository(EmsContext emsContext)
+        public TeamRepository(EmsContext context) : base(context)
         {
-            _emsContext = emsContext;
-        }
-
-        public void AddTeam(Team team)
-        {
-            _emsContext.Teams.Add(team);
-        }
-
-        public Team GetTeamById(int id)
-        {
-            var team = _emsContext.Teams.Find(id);
-            if (team == null)
-            {
-                return new Team();
-            }
-            return team;
         }
     }
 }

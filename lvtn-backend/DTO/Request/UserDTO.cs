@@ -1,4 +1,4 @@
-﻿namespace lvtn_backend.ViewModels
+﻿namespace lvtn_backend.DTO.Request
 {
     public class UserDTO
     {

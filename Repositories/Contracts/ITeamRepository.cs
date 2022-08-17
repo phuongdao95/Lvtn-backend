@@ -1,10 +1,9 @@
 ﻿using lvtn_backend.Models;
+using Repositories.Contracts;
 
 namespace lvtn_backend.Repositories
 {
-    public interface ITeamRepository
+    public interface ITeamRepository : IGenericRepository<Team>
     {
-        void AddTeam(Team team);
-        Team GetTeamById(int id);
     }
 }

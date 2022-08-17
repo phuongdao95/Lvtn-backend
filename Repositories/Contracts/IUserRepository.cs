@@ -1,10 +1,9 @@
 ﻿using lvtn_backend.Models;
+using Repositories.Contracts;
 
 namespace lvtn_backend.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IGenericRepository<User>
     {
-        void AddUser(User user);
-        User GetUserById(int id);
     }
 }

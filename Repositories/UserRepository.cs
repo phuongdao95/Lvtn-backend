@@ -1,29 +1,13 @@
-﻿using lvtn_backend.DataContext;
-using lvtn_backend.Models;
+﻿using lvtn_backend.Models;
+using lvtn_backend.Repositories.DataContext;
+using Repositories;
 
 namespace lvtn_backend.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        private EmsContext _emsContext;
-        public UserRepository(EmsContext emsContext)
+        public UserRepository(EmsContext context) : base(context)
         {
-            _emsContext = emsContext;
-        }
-
-        public void AddUser(User user)
-        {
-            _emsContext.Users.Add(user);
-        }
-
-        public User GetUserById(int id)
-        {
-            var user = _emsContext.Users.Find(id);
-            if (user == null)
-            {
-                return new User();
-            }
-            return user;
         }
     }
 }
