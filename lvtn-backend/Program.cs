@@ -6,8 +6,18 @@ using Services.Contracts;
 using Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var AllowClientOrigins = "_allowClientOrigins";
 
 // Add services to the container.
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowClientOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000");
+                      });
+});
 
 builder.Services.AddControllers();
 
@@ -49,6 +59,8 @@ else
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
+
+app.UseCors(AllowClientOrigins);
 
 app.UseHttpsRedirection();
 
