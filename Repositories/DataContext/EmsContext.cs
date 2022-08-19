@@ -1,4 +1,4 @@
-﻿using lvtn_backend.Models;
+﻿using Models.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace lvtn_backend.Repositories.DataContext
@@ -23,6 +23,20 @@ namespace lvtn_backend.Repositories.DataContext
             modelBuilder.Entity<User>()
                 .HasOne<Team>(u => u.TeamBelong)
                 .WithMany(t => t.Members);
+
+            // Manually configure one-to-one relation User-BankInfo
+            modelBuilder.Entity<User>()
+                .HasOne<BankInfo>(u => u.BankInfo)
+                .WithOne()
+                .HasForeignKey<User>(u => u.BankInfoId);
+
+            // Manually configure one-to-many relation User-Workday
+            modelBuilder.Entity<User>()
+                .HasMany<Workday>(u => u.Workdays)
+                .WithOne();
+            modelBuilder.Entity<Workday>()
+                .HasOne<User>()
+                .WithMany(u => u.Workdays);
 
             // Self-relation department
             modelBuilder.Entity<Department>()

@@ -1,5 +1,5 @@
 ﻿using lvtn_backend.Repositories.DataContext;
-using lvtn_backend.Models;
+using Models.Models;
 using Repositories;
 
 namespace lvtn_backend.Repositories

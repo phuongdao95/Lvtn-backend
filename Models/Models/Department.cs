@@ -1,4 +1,4 @@
-﻿namespace lvtn_backend.Models
+﻿namespace Models.Models
 {
     public class Department
     {
@@ -6,6 +6,7 @@
         public string Name { get; set; }
         public int? ManagerId { get; set; }
         public int? ParentDepartmentId { get; set; }
+        public string? Detail { get; set; }
 
         public User? Manager { get; set; }
         public Department? ParentDepartment { get; set; }

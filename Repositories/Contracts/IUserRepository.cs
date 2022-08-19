@@ -1,4 +1,4 @@
-﻿using lvtn_backend.Models;
+﻿using Models.Models;
 using Repositories.Contracts;
 
 namespace lvtn_backend.Repositories

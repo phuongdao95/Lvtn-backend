@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using lvtn_backend.DTO.Request;
 using lvtn_backend.DTO.Response;
-using lvtn_backend.Models;
+using Models.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;

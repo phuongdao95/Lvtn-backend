@@ -1,4 +1,4 @@
-﻿using lvtn_backend.Models;
+﻿using Models.Models;
 
 namespace Services.Contracts
 {
