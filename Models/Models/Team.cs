@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace lvtn_backend.Models
+namespace Models.Models
 {
     public class Team
     {
@@ -9,6 +9,7 @@ namespace lvtn_backend.Models
         [ForeignKey("Leader")]
         public int? LeaderId { get; set; }
         public int? DepartmentId { get; set; }
+        public string? Detail { get; set; }
 
         public Department? Department { get; set; }
         public User? Leader { get; set; }

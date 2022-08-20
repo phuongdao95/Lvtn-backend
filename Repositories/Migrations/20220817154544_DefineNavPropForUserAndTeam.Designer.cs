@@ -3,17 +3,19 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using lvtn_backend.DataContext;
+using lvtn_backend.Repositories.DataContext;
 
 #nullable disable
 
 namespace lvtn_backend.Migrations
 {
     [DbContext(typeof(EmsContext))]
-    partial class EmsContextModelSnapshot : ModelSnapshot
+    [Migration("20220817154544_DefineNavPropForUserAndTeam")]
+    partial class DefineNavPropForUserAndTeam
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,7 +114,7 @@ namespace lvtn_backend.Migrations
             modelBuilder.Entity("lvtn_backend.Models.Department", b =>
                 {
                     b.HasOne("lvtn_backend.Models.User", "Manager")
-                        .WithOne("Department")
+                        .WithOne("DepartmentManage")
                         .HasForeignKey("lvtn_backend.Models.Department", "ManagerId");
 
                     b.HasOne("lvtn_backend.Models.Department", "ParentDepartment")
@@ -131,7 +133,7 @@ namespace lvtn_backend.Migrations
                         .HasForeignKey("DepartmentId");
 
                     b.HasOne("lvtn_backend.Models.User", "Leader")
-                        .WithOne("Team")
+                        .WithOne("TeamManage")
                         .HasForeignKey("lvtn_backend.Models.Team", "LeaderId");
 
                     b.Navigation("Department");
@@ -141,9 +143,11 @@ namespace lvtn_backend.Migrations
 
             modelBuilder.Entity("lvtn_backend.Models.User", b =>
                 {
-                    b.HasOne("lvtn_backend.Models.Team", null)
+                    b.HasOne("lvtn_backend.Models.Team", "TeamBelong")
                         .WithMany("Members")
                         .HasForeignKey("TeamId");
+
+                    b.Navigation("TeamBelong");
                 });
 
             modelBuilder.Entity("lvtn_backend.Models.Department", b =>
@@ -160,9 +164,9 @@ namespace lvtn_backend.Migrations
 
             modelBuilder.Entity("lvtn_backend.Models.User", b =>
                 {
-                    b.Navigation("Department");
+                    b.Navigation("DepartmentManage");
 
-                    b.Navigation("Team");
+                    b.Navigation("TeamManage");
                 });
 #pragma warning restore 612, 618
         }

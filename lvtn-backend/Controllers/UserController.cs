@@ -1,7 +1,10 @@
-﻿using lvtn_backend.Models;
-using lvtn_backend.Repositories;
+﻿using Models.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Services.Contracts;
+using AutoMapper;
+using lvtn_backend.DTO.Request;
+using lvtn_backend.DTO.Response;
 
 namespace lvtn_backend.Controllers
 {
@@ -9,23 +12,68 @@ namespace lvtn_backend.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private IUserRepository _userRepository;
-        public UserController(IUserRepository userRepository)
+        private IEmployeeService _employeeService;
+        private IMapper _mapper;
+
+        public UserController(IEmployeeService employeeService, IMapper mapper)
         {
-            _userRepository = userRepository;
+            _employeeService = employeeService;
+            _mapper = mapper;
         }
 
-        [HttpPost("/")]
-        public IActionResult AddUser(User user)
+        [HttpPost("")]
+        public IActionResult AddUser(UserDTO userDTO)
         {
-            _userRepository.AddUser(user);
-            return Ok();
+            try
+            {
+                _employeeService.AddUser(_mapper.Map<UserDTO, User>(userDTO));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetUserById(int id)
         {
-            return Ok(_userRepository.GetUserById(id));
+            try
+            {
+                return Ok(_employeeService.GetUserById(id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("")]
+        public IActionResult GetListUsers()
+        {
+            try
+            {
+                var users = _employeeService.GetAllUsers();
+                return Ok(_mapper.Map<IEnumerable<User>, IEnumerable<UserInfoDTO>>(users));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("assign-user-to-team/{userId}/{teamId}")]
+        public IActionResult AssignUserToTeam(int userId, int teamId)
+        {
+            try
+            {
+                _employeeService.AssignUserToTeam(userId, teamId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorDTO() { Error = true, Message = ex.Message });
+            }
         }
     }
 }
