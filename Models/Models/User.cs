@@ -34,5 +34,6 @@ namespace Models.Models
         public BankInfo? BankInfo { get; set; }
         public List<Workday>? Workdays { get; set; }
         public List<DeductionAllowanceBonus>? DeductionAllowanceBonuses { get; set; }
+        public List<Payslip>? Payslips { get; set; }
     }
 }
