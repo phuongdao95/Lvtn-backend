@@ -13,24 +13,24 @@ namespace lvtn_backend.Repositories.DataContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Manually configure one-to-one reletion Team-User (1 Team managed by one User)
+            // 1-1 Team-User (1 Team managed by one User)
             modelBuilder.Entity<User>()
                 .HasOne<Team>(u => u.TeamManage)
                 .WithOne(t => t.Leader)
                 .HasForeignKey<Team>(t => t.LeaderId);
 
-            // Manually configure one-to-many relation Team-User (many Users belong to 1 Team)
+            // 1-M Team-User (many Users belong to 1 Team)
             modelBuilder.Entity<User>()
                 .HasOne<Team>(u => u.TeamBelong)
                 .WithMany(t => t.Members);
 
-            // Manually configure one-to-one relation User-BankInfo
+            // 1-1 User-BankInfo
             modelBuilder.Entity<User>()
                 .HasOne<BankInfo>(u => u.BankInfo)
                 .WithOne()
                 .HasForeignKey<User>(u => u.BankInfoId);
 
-            // Manually configure one-to-many relation User-Workday
+            // 1-M User-Workday
             modelBuilder.Entity<User>()
                 .HasMany<Workday>(u => u.Workdays)
                 .WithOne();
@@ -44,6 +44,33 @@ namespace lvtn_backend.Repositories.DataContext
                 .WithOne(d => d.ParentDepartment)
                 .HasForeignKey(d => d.ParentDepartmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            // M-M User-DeductionAllowanceBonus
+            modelBuilder.Entity<User>()
+                .HasMany<DeductionAllowanceBonus>(u => u.DeductionAllowanceBonuses)
+                .WithMany(d => d.Users);
+
+            // 1-M DeductionAllowanceBonusTemplate-DeductionAllowanceBonus
+            modelBuilder.Entity<DeductionAllowanceBonus>()
+                .HasOne<DeductionAllowanceBonusTemplate>(dab => dab.Template)
+                .WithMany()
+                .HasForeignKey(dab => dab.TemplateId);
+
+            // 1-M Formula-Template
+            modelBuilder.Entity<DeductionAllowanceBonusTemplate>()
+                .HasOne<Formula>(dt => dt.Formula)
+                .WithMany(f => f.Templates)
+                .HasForeignKey(dt => dt.FormulaId);
+
+            // M-M Formula-Constant
+            modelBuilder.Entity<Formula>()
+                .HasMany<Constant>(f => f.Constants)
+                .WithMany(c => c.Formulas);
+
+            // M-M Formula-Input
+            modelBuilder.Entity<Formula>()
+                .HasMany<Input>(f => f.Inputs)
+                .WithMany(c => c.Formulas);
         }
     }
 }

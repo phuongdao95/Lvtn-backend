@@ -33,5 +33,6 @@ namespace Models.Models
         public Team? TeamBelong { get; set; }
         public BankInfo? BankInfo { get; set; }
         public List<Workday>? Workdays { get; set; }
+        public List<DeductionAllowanceBonus>? DeductionAllowanceBonuses { get; set; }
     }
 }
