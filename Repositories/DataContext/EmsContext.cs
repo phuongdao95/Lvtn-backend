@@ -71,6 +71,12 @@ namespace lvtn_backend.Repositories.DataContext
             modelBuilder.Entity<Formula>()
                 .HasMany<Input>(f => f.Inputs)
                 .WithMany(c => c.Formulas);
+
+            // 1-M User-Payslip
+            modelBuilder.Entity<User>()
+                .HasMany<Payslip>(u => u.Payslips)
+                .WithOne(p => p.Employee)
+                .HasForeignKey(p => p.EmployeeId);
         }
     }
 }
