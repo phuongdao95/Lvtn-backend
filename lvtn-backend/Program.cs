@@ -42,6 +42,7 @@ builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 // Add services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IAiService, AiService>();
 
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
