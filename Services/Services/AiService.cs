@@ -5,9 +5,6 @@ using Emgu.CV.Structure;
 using Emgu.CV.Face;
 using Emgu.CV.CvEnum;
 using System.Diagnostics;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Services.Services
 {
@@ -29,7 +26,7 @@ namespace Services.Services
         EigenFaceRecognizer recognizer;
 
         // upload image
-        public void UploadImage(string name, string data, string localPath)
+        public bool UploadImage(string name, string data, string localPath)
         {
             var t = data.Substring(31); // remove data:image/png;base64,
             byte[] bytes = Convert.FromBase64String(t);
@@ -47,7 +44,28 @@ namespace Services.Services
             image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
             DetectFace(name, fileName, localPath);
             TrainImagesFromDir();
-            RecognizeFace();
+            return RecognizeFace();
+        }
+
+        // register image
+        public bool RegisterImage(string name, string data, string localPath)
+        {
+            var t = data.Substring(31); // remove data:image/png;base64,
+            byte[] bytes = Convert.FromBase64String(t);
+            // save image
+            Image image;
+            using (MemoryStream ms = new MemoryStream(bytes))
+            {
+                image = Image.FromStream(ms);
+            }
+            var fileName = name + ".png";
+            // folder for training image
+            Directory.CreateDirectory(localPath + "/Images/" + name);
+            var fullPath = Path.Combine(localPath + "/Images/" + name, fileName);
+            //var fullPath = Path.Combine(Server.MapPath("~/Images/"), fileName);
+            image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
+            DetectFace(name, fileName, localPath);
+            return TrainImagesFromDir();
         }
 
         // detect face in image
@@ -104,7 +122,7 @@ namespace Services.Services
                     string name = file.Split('\\').Last().Split('_')[0];
                     PersonsNames.Add(name);
                     ImagesCount++;
-                    Debug.WriteLine(ImagesCount + ". " + name);
+                    Debug.WriteLine(">>> train " + ImagesCount + ". " + name);
                 }
 
                 if (TrainedFaces.Count() > 0)
@@ -141,9 +159,14 @@ namespace Services.Services
         // recognize face
         private bool RecognizeFace()
         {
+            Debug.WriteLine("recognize");
+            //int ImagesCount = 0;
+            //double Threshold = 2000;
             // get all images files
             string path = Directory.GetCurrentDirectory() + @"\TrainedImages";
             string[] files = Directory.GetFiles(path, "*.png", SearchOption.AllDirectories);
+            // ImagesCount = files.Count();
+            // recognizer = new EigenFaceRecognizer(ImagesCount, Threshold);
 
             Image<Gray, Byte> grayFaceResult = new Image<Gray, byte>(files[3])
                 .Convert<Gray, Byte>().Resize(200, 200, Inter.Cubic);
@@ -151,7 +174,7 @@ namespace Services.Services
             CvInvoke.EqualizeHist(grayFaceResult, grayFaceResult);
             var result = recognizer.Predict(grayFaceResult);
 
-            Debug.WriteLine(result.Label + ". " + result.Distance);
+            Debug.WriteLine("recognize " + result.Label + ". " + result.Distance);
             //Here results found known faces
             if (result.Label != -1 && result.Distance < 2000)
             {

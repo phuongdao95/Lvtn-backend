@@ -20,6 +20,7 @@ namespace lvtn_backend.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        // uploda image
         [HttpPost("")]
         public IActionResult UploadImage(UploadImageDTO img)
         {
@@ -32,9 +33,45 @@ namespace lvtn_backend.Controllers
                 
                 // local path
                 string localPath = _webHostEnvironment.ContentRootPath;
+                bool result = _aiService.UploadImage(img.ImageName, img.ImageData, localPath);
+                if (result)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound("not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // register image
+        [HttpPost("Register")]
+        public IActionResult RegisterImage(UploadImageDTO img)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(img.ImageData))
+                {
+                    return BadRequest("not image data");
+                }
+
+                // local path
+                string localPath = _webHostEnvironment.ContentRootPath;
                 // folder for training image
-                _aiService.UploadImage(img.ImageName, img.ImageData, localPath);
-                return Ok();
+                bool result = _aiService.RegisterImage(img.ImageName, img.ImageData, localPath);
+                if (result)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound("not found");
+                }
             }
             catch (Exception ex)
             {
