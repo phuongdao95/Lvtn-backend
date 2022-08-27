@@ -2,8 +2,9 @@
 {
     public class UserDTO
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string CitizenId { get; set; }
+        public string Name { get; set; }
         public bool Sex { get; set; }
+        public DateTime Birthday { get; set; }
     }
 }

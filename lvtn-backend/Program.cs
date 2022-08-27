@@ -6,17 +6,17 @@ using Services.Contracts;
 using Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-var AllowClientOrigins = "_allowClientOrigins";
 
 // Add services to the container.
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: AllowClientOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:3000");
-                      });
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin();
+        builder.AllowAnyHeader();
+        builder.AllowAnyMethod();
+    });
 });
 
 builder.Services.AddControllers();
@@ -42,6 +42,7 @@ builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 // Add services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<IAiService, AiService>();
 
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
@@ -60,7 +61,7 @@ else
     app.UseMigrationsEndPoint();
 }
 
-app.UseCors(AllowClientOrigins);
+app.UseCors();
 
 app.UseHttpsRedirection();
 
