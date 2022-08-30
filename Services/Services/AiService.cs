@@ -26,100 +26,128 @@ namespace Services.Services
         EigenFaceRecognizer recognizer;
 
         // upload image
-        public bool UploadImage(string name, string data, string localPath)
+        public bool UploadImage(string name, string[] listData, string localPath)
         {
-            var t = data.Substring(31); // remove data:image/png;base64,
-            byte[] bytes = Convert.FromBase64String(t);
-            // save image
-            Image image;
-            using (MemoryStream ms = new MemoryStream(bytes))
+            string[] listFilename = new string[listData.Length];
+            for (var i = 0; i < listData.Length; i++)
             {
-                image = Image.FromStream(ms);
+                var data = listData[i];
+                var t = data.Substring(22); // remove data:image/png;base64,
+                byte[] bytes = Convert.FromBase64String(t);
+                // save image
+                Image image;
+                using (MemoryStream ms = new MemoryStream(bytes))
+                {
+                    image = Image.FromStream(ms);
+                }
+                var fileName = name + i + ".png";
+                listFilename[i] = fileName;
+                // folder for training image
+                Directory.CreateDirectory(localPath + "/Images/" + name);
+                var fullPath = Path.Combine(localPath + "/Images/" + name, fileName);
+                //var fullPath = Path.Combine(Server.MapPath("~/Images/"), fileName);
+                image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
             }
-            var fileName = name + ".png";
-            // folder for training image
-            Directory.CreateDirectory(localPath + "/Images/" + name);
-            var fullPath = Path.Combine(localPath + "/Images/" + name, fileName);
-            //var fullPath = Path.Combine(Server.MapPath("~/Images/"), fileName);
-            image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
-            DetectFace(name, fileName, localPath);
-            TrainImagesFromDir();
-            return RecognizeFace();
+            DetectFace(name, listFilename, localPath);
+            return RecognizeFace(name);
         }
 
         // register image
-        public bool RegisterImage(string name, string data, string localPath)
+        public bool RegisterImage(string name, string[] listData, string localPath)
         {
-            var t = data.Substring(31); // remove data:image/png;base64,
-            byte[] bytes = Convert.FromBase64String(t);
-            // save image
-            Image image;
-            using (MemoryStream ms = new MemoryStream(bytes))
+            string[] listFilename = new string[listData.Length];
+            for (var i = 0; i < listData.Length; i++)
             {
-                image = Image.FromStream(ms);
+                var data = listData[i];
+                var t = data.Substring(22); // remove data:image/png;base64,
+                byte[] bytes = Convert.FromBase64String(t);
+                // save image
+                Image image;
+                using (MemoryStream ms = new MemoryStream(bytes))
+                {
+                    image = Image.FromStream(ms);
+                }
+                var fileName = name + i + ".png";
+                listFilename[i] = fileName;
+                // folder for training image
+                Directory.CreateDirectory(localPath + "/Images/" + name);
+                var fullPath = Path.Combine(localPath + "/Images/" + name, fileName);
+                //var fullPath = Path.Combine(Server.MapPath("~/Images/"), fileName);
+                image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
             }
-            var fileName = name + ".png";
-            // folder for training image
-            Directory.CreateDirectory(localPath + "/Images/" + name);
-            var fullPath = Path.Combine(localPath + "/Images/" + name, fileName);
-            //var fullPath = Path.Combine(Server.MapPath("~/Images/"), fileName);
-            image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
-            DetectFace(name, fileName, localPath);
-            return TrainImagesFromDir();
+            DetectFace(name, listFilename, localPath);
+            Directory.Delete(localPath + "/Images/" + name, true);
+            return TrainImagesFromDir(name);
         }
 
         // detect face in image
-        private void DetectFace(string name, string fileName, string localPath)
+        private void DetectFace(string name, string[] listFileName, string localPath)
         {
-            string pathFileImage = Path.Combine(localPath + "/Images/" + name, fileName);
-            currentFrame = new Image<Bgr, byte>(pathFileImage).Resize(700, 500, Inter.Cubic);
-
-            //Convert from Bgr to Gray Image
-            Mat grayImage = new Mat();
-            CvInvoke.CvtColor(currentFrame, grayImage, ColorConversion.Bgr2Gray);
-            //Enhance the image to get better result
-            CvInvoke.EqualizeHist(grayImage, grayImage);
-            // detect face
-            Rectangle[] faces = faceCasacdeClassifier.DetectMultiScale(grayImage, 1.1, 3, Size.Empty, Size.Empty);
-
-            Image<Bgr, Byte> resultImage = currentFrame.Convert<Bgr, Byte>();
-            if (faces.Length > 0)
+            for (var i = 0; i < listFileName.Length; i++)
             {
-                foreach (var face in faces)
+                var fileName = listFileName[i];
+                string pathFileImage = Path.Combine(localPath + "/Images/" + name, fileName);
+                currentFrame = new Image<Bgr, byte>(pathFileImage).Resize(700, 500, Inter.Cubic);
+
+                //Convert from Bgr to Gray Image
+                Mat grayImage = new Mat();
+                CvInvoke.CvtColor(currentFrame, grayImage, ColorConversion.Bgr2Gray);
+                //Enhance the image to get better result
+                CvInvoke.EqualizeHist(grayImage, grayImage);
+                // detect face
+                Rectangle[] faces = faceCasacdeClassifier.DetectMultiScale(grayImage, 1.1, 
+                                        3, Size.Empty, Size.Empty);
+
+                Image<Bgr, Byte> resultImage = currentFrame.Convert<Bgr, Byte>();
+                if (faces.Length > 0)
                 {
-                    //We will create a directory if does not exists!
-                    string path = Directory.GetCurrentDirectory() + @"\TrainedImages";
-                    if (!Directory.Exists(path))
-                        Directory.CreateDirectory(path);
-                    resultImage.ROI = face;
-                    //resize the image then saving it
-                    resultImage.Resize(200, 200, Inter.Cubic).Save(path + @"\" + name
-                            + "_" + DateTime.Now.ToString("dd-mm-yyyy-hh-mm-ss") + ".png");
+                    foreach (var face in faces)
+                    {
+                        //We will create a directory if does not exists!
+                        string path = Directory.GetCurrentDirectory() + @"\TrainedImages\" + name;
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+                        resultImage.ROI = face;
+                        //resize the image then saving it
+                        resultImage.Resize(200, 200, Inter.Cubic).Save(path + @"\" + name + i
+                                + "_" + DateTime.Now.ToString("dd-mm-yyyy-hh-mm-ss") + ".png");
+                    }
                 }
             }
         }
 
         // train Images .. we will use the saved images from the previous example 
-        private bool TrainImagesFromDir()
+        private bool TrainImagesFromDir(string name)
         {
             int ImagesCount = 0;
             double Threshold = 2000;
             TrainedFaces.Clear();
             PersonsLabes.Clear();
             PersonsNames.Clear();
+            // load recognizer from file if has file
+            string recognizerFilePath = Directory.GetCurrentDirectory() + @"\recognizer";
+            if (Directory.Exists(recognizerFilePath))
+            {
+                recognizer = new EigenFaceRecognizer();
+                recognizer.Read(recognizerFilePath);
+            }
+            else
+            {
+                recognizer = new EigenFaceRecognizer(ImagesCount, Threshold);
+            }
             try
             {
                 // get all images files
-                string path = Directory.GetCurrentDirectory() + @"\TrainedImages";
+                string path = Directory.GetCurrentDirectory() + @"\TrainedImages\" + name;
                 string[] files = Directory.GetFiles(path, "*.png", SearchOption.AllDirectories);
 
                 foreach (var file in files)
                 {
-                    Image<Gray, byte> trainedImage = new Image<Gray, byte>(file).Resize(200, 200, Inter.Cubic);
+                    Image<Gray, byte> trainedImage = new Image<Gray, byte>(file)
+                        .Resize(200, 200, Inter.Cubic);
                     CvInvoke.EqualizeHist(trainedImage, trainedImage);
                     TrainedFaces.Add(trainedImage);
                     PersonsLabes.Add(ImagesCount);
-                    string name = file.Split('\\').Last().Split('_')[0];
                     PersonsNames.Add(name);
                     ImagesCount++;
                     Debug.WriteLine(">>> train " + ImagesCount + ". " + name);
@@ -127,8 +155,6 @@ namespace Services.Services
 
                 if (TrainedFaces.Count() > 0)
                 {
-                    recognizer = new EigenFaceRecognizer(ImagesCount, Threshold);
-
                     Image<Gray, byte>[] trainedImage = TrainedFaces.ToArray();
                     int[] personLabes = PersonsLabes.ToArray();
                     List<Mat> mats = new List<Mat>();
@@ -139,8 +165,9 @@ namespace Services.Services
                     mats.ToArray();
 
                     recognizer.Train(mats.ToArray(), personLabes);
-                    //Debug.WriteLine(ImagesCount);
-                    //Debug.WriteLine(isTrained);
+                    // write recognizer to file
+                    recognizer.Write(recognizerFilePath);
+                    Directory.Delete(path, true);
                     return true;
                 }
                 else
@@ -157,24 +184,25 @@ namespace Services.Services
         }
 
         // recognize face
-        private bool RecognizeFace()
+        private bool RecognizeFace(string name)
         {
             Debug.WriteLine("recognize");
-            //int ImagesCount = 0;
-            //double Threshold = 2000;
             // get all images files
-            string path = Directory.GetCurrentDirectory() + @"\TrainedImages";
+            string path = Directory.GetCurrentDirectory() + @"\TrainedImages\" + name;
             string[] files = Directory.GetFiles(path, "*.png", SearchOption.AllDirectories);
-            // ImagesCount = files.Count();
-            // recognizer = new EigenFaceRecognizer(ImagesCount, Threshold);
-
-            Image<Gray, Byte> grayFaceResult = new Image<Gray, byte>(files[3])
+            
+            Image<Gray, Byte> grayFaceResult = new Image<Gray, byte>(files.Last())
                 .Convert<Gray, Byte>().Resize(200, 200, Inter.Cubic);
 
             CvInvoke.EqualizeHist(grayFaceResult, grayFaceResult);
+
+            EigenFaceRecognizer recognizer = new EigenFaceRecognizer();
+            string recognizerFilePath = Directory.GetCurrentDirectory() + @"\recognizer";
+            recognizer.Read(recognizerFilePath);
             var result = recognizer.Predict(grayFaceResult);
 
             Debug.WriteLine("recognize " + result.Label + ". " + result.Distance);
+            Directory.Delete(path, true);
             //Here results found known faces
             if (result.Label != -1 && result.Distance < 2000)
             {
@@ -186,7 +214,6 @@ namespace Services.Services
             {
                 Debug.WriteLine("not found face");
                 return false;
-
             }
         }
     }
