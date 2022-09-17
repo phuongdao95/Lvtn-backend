@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using lvtn_backend.Repositories.DataContext;
+using Models.Repositories.DataContext;
 
 #nullable disable
 
-namespace lvtn_backend.Migrations
+namespace Models.Migrations
 {
     [DbContext(typeof(EmsContext))]
     partial class EmsContextModelSnapshot : ModelSnapshot

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace lvtn_backend.Migrations
+namespace Models.Migrations
 {
     public partial class Add_BankInfo_And_Workday_Tables : Migration
     {

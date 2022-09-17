@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using AutoMapper;
-using lvtn_backend.DTO.Request;
-using lvtn_backend.DTO.Response;
+using Models.DTO.Request;
+using Models.DTO.Response;
 
-namespace lvtn_backend.Controllers
+namespace Models.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

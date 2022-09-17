@@ -1,5 +1,5 @@
-using lvtn_backend.Repositories;
-using lvtn_backend.Repositories.DataContext;
+using Models.Repositories;
+using Models.Repositories.DataContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;

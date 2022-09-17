@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace lvtn_backend.Migrations
+namespace Models.Migrations
 {
     public partial class DefineNavPropForUserAndTeam : Migration
     {

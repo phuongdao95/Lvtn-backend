@@ -1,8 +1,8 @@
-﻿using lvtn_backend.Repositories.DataContext;
+﻿using Models.Repositories.DataContext;
 using Models.Models;
 using Repositories;
 
-namespace lvtn_backend.Repositories
+namespace Models.Repositories
 {
     public class TeamRepository : GenericRepository<Team>, ITeamRepository
     {

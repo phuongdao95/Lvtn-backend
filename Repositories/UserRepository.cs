@@ -1,8 +1,8 @@
 ﻿using Models.Models;
-using lvtn_backend.Repositories.DataContext;
+using Models.Repositories.DataContext;
 using Repositories;
 
-namespace lvtn_backend.Repositories
+namespace Models.Repositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
