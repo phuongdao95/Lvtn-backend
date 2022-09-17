@@ -1,15 +1,16 @@
 ﻿using Models.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using AutoMapper;
 using Models.DTO.Request;
 using Models.DTO.Response;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Models.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private IEmployeeService _employeeService;
@@ -21,7 +22,8 @@ namespace Models.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("")]
+        [Authorize(Policy = "user.create")]
+        [HttpPost]
         public IActionResult AddUser(UserDTO userDTO)
         {
             try
@@ -35,6 +37,7 @@ namespace Models.Controllers
             }
         }
 
+        [Authorize(Policy = "user.retrieve")]
         [HttpGet("{id}")]
         public IActionResult GetUserById(int id)
         {
@@ -48,8 +51,9 @@ namespace Models.Controllers
             }
         }
 
-        [HttpGet("")]
-        public IActionResult GetListUsers()
+        [Authorize(Policy = "user.retrieve")]
+        [HttpGet]
+        public IActionResult GetUserList()
         {
             try
             {
@@ -62,7 +66,8 @@ namespace Models.Controllers
             }
         }
 
-        [HttpPost("assign-user-to-team/{userId}/{teamId}")]
+        [Authorize(Policy = "user.assign_to_team")]
+        [HttpPost("team")]
         public IActionResult AssignUserToTeam(int userId, int teamId)
         {
             try
