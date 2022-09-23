@@ -1,7 +1,7 @@
 ﻿using Models.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace lvtn_backend.Repositories.DataContext
+namespace Models.Repositories.DataContext
 {
     public class EmsContext : DbContext
     {

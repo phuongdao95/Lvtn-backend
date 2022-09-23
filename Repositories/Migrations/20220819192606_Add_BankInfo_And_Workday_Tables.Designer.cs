@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using lvtn_backend.Repositories.DataContext;
+using Models.Repositories.DataContext;
 
 #nullable disable
 
-namespace lvtn_backend.Migrations
+namespace Models.Migrations
 {
     [DbContext(typeof(EmsContext))]
     [Migration("20220819192606_Add_BankInfo_And_Workday_Tables")]

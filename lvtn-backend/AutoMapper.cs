@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Models.Models;
-using lvtn_backend.DTO.Request;
-using lvtn_backend.DTO.Response;
+using Models.DTO.Request;
+using Models.DTO.Response;
 
-namespace lvtn_backend
+namespace Models
 {
     public class AutoMapper : Profile
     {

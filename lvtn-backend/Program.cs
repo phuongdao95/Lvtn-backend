@@ -1,9 +1,14 @@
-using lvtn_backend.Repositories;
-using lvtn_backend.Repositories.DataContext;
+using Models.Repositories;
+using Models.Repositories.DataContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Models.Helpers;
+using lvtn_backend.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +40,33 @@ builder.Services.AddDbContext<EmsContext>(options =>
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Authentication and Authorization
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+
+builder.Services.AddAuthorization((options) =>
+{
+    var claimNames = ClaimGenerator.GenerateClaims();
+
+    claimNames.ForEach((name) =>
+    {
+        options.AddPolicy(name, policy => policy.RequireClaim(name));
+    });
+});
+
 // Add repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
@@ -52,8 +84,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-  app.UseSwagger();
-  app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
@@ -65,6 +97,8 @@ app.UseCors();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseMiddleware<ClaimMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

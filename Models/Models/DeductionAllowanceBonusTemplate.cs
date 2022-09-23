@@ -9,7 +9,6 @@ namespace Models.Models
         public AllowanceTemplateType Type { get; set; }
         public string? Description { get; set; }
         public ApplyType ApplyType { get; set; }
-
         public Formula? Formula { get; set; }
     }
 }

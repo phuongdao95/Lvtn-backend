@@ -1,4 +1,4 @@
-﻿using lvtn_backend.Repositories.DataContext;
+﻿using Models.Repositories.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Contracts;
 using System.Linq.Expressions;

@@ -1,7 +1,7 @@
 ﻿using Models.Models;
 using Repositories.Contracts;
 
-namespace lvtn_backend.Repositories
+namespace Models.Repositories
 {
     public interface IUserRepository : IGenericRepository<User>
     {

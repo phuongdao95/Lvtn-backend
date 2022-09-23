@@ -1,4 +1,4 @@
-﻿namespace lvtn_backend.DTO.Response
+﻿namespace Models.DTO.Response
 {
     public class ErrorDTO
     {

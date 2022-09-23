@@ -1,4 +1,4 @@
-﻿namespace lvtn_backend.DTO.Request
+﻿namespace Models.DTO.Request
 {
     public class UploadImageDTO
     {
