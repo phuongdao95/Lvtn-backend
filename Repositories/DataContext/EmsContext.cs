@@ -1,5 +1,6 @@
 ﻿using Models.Models;
 using Microsoft.EntityFrameworkCore;
+using Repositories.DataContext.DataSeeder;
 
 namespace Models.Repositories.DataContext
 {
@@ -8,7 +9,8 @@ namespace Models.Repositories.DataContext
         public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Department> Departments { get; set; }
-
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
         public EmsContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,7 +24,8 @@ namespace Models.Repositories.DataContext
             // 1-M Team-User (many Users belong to 1 Team)
             modelBuilder.Entity<User>()
                 .HasOne<Team>(u => u.TeamBelong)
-                .WithMany(t => t.Members);
+                .WithMany(t => t.Members)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             // 1-1 User-BankInfo
             modelBuilder.Entity<User>()
@@ -77,6 +80,26 @@ namespace Models.Repositories.DataContext
                 .HasMany<Payslip>(u => u.Payslips)
                 .WithOne(p => p.Employee)
                 .HasForeignKey(p => p.EmployeeId);
+
+
+            // 1-M User-Role
+            modelBuilder.Entity<User>()
+                .HasOne<Role>(p => p.Role)
+                .WithMany(p => p.Users)
+                .HasForeignKey(p => p.RoleId);
+
+            // M-N Role Permission
+            modelBuilder.Entity<Role>()
+                .HasMany(p => p.Permissions)
+                .WithMany(p => p.Roles)
+                .UsingEntity<Dictionary<string, object>>(
+                    "RolePermission",
+                    right => right.HasOne<Permission>().WithMany().HasForeignKey("PermissionId"),
+                    left => left.HasOne<Role>().WithMany().HasForeignKey("RoleId"),
+                    je => je.HasKey("PermissionId", "RoleId")
+                );
+
+            new AdministrationDataSeeder(modelBuilder).SeedData();
         }
     }
 }

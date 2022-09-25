@@ -13,6 +13,7 @@
 
             "dab",
             "formula",
+            "payslip"
         };
 
 
