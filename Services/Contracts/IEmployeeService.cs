@@ -1,15 +1,16 @@
-﻿using Models.Models;
+﻿using Models.DTO.Request;
+using Models.Models;
 
 namespace Services.Contracts
 {
     public interface IEmployeeService
     {
-        void AddUser(User user);
+        void AddUser(UserDTO user);
+        void UpdateUser(int id, UserDTO user);
+        void DeleteUserById(int id);
 
         User GetUserById(int id);
-
-        void AssignUserToTeam(int userId, int teamId);
-
-        IEnumerable<User> GetAllUsers();
+        List<User> GetUserList(int offset, int limit, string query, string queryType);
+        int GetUserCount();
     }
 }

@@ -28,7 +28,7 @@ namespace Models.Controllers
         {
             try
             {
-                _employeeService.AddUser(_mapper.Map<UserDTO, User>(userDTO));
+                _employeeService.AddUser(userDTO);
                 return Ok();
             }
             catch (Exception ex)
@@ -51,34 +51,6 @@ namespace Models.Controllers
             }
         }
 
-        [Authorize(Policy = "user.retrieve")]
-        [HttpGet]
-        public IActionResult GetUserList()
-        {
-            try
-            {
-                var users = _employeeService.GetAllUsers();
-                return Ok(_mapper.Map<IEnumerable<User>, IEnumerable<UserInfoDTO>>(users));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
 
-        [Authorize(Policy = "user.assign_to_team")]
-        [HttpPost("team")]
-        public IActionResult AssignUserToTeam(int userId, int teamId)
-        {
-            try
-            {
-                _employeeService.AssignUserToTeam(userId, teamId);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ErrorDTO() { Error = true, Message = ex.Message });
-            }
-        }
     }
 }

@@ -14,11 +14,19 @@ namespace Models
 
             CreateMap<TeamDTO, Team>();
 
+            CreateMap<RoleDTO, Role>();
+
+            CreateMap<DepartmentDTO, Department>();
             //Map from internal entities to responses
             CreateMap<User, UserInfoDTO>()
                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(des => des.Sex, opt => opt.MapFrom(src => src.Sex == true ? "Male" : "Female"))
+                .ForMember(des => des.Sex, opt => opt.MapFrom(src => src.Sex == true ? "Nam" : "Nữ"))
                 .ForMember(des => des.TeamName, opt => opt.MapFrom(src => src.TeamBelong != null ? src.TeamBelong.Name : ""));
+
+            CreateMap<Role, RoleInfoDTO>();
+
+            CreateMap<Department, DepartmentInfoDTO>();
+
         }
     }
 }

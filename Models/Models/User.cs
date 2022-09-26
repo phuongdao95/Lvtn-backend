@@ -6,8 +6,10 @@ namespace Models.Models
     {
         public int Id { get; set; }
 
+        [Required]
         public string? Username { get; set; }
 
+        [Required]
         public string? Password { get; set; }
 
         public string? UrlImage { get; set; }
@@ -26,7 +28,7 @@ namespace Models.Models
         public string? FaceId { get; set; }
         public string? TokenSlack { get; set; }
         public string? TokenTrello { get; set; }
-        //public int? RoleId { get; set; }
+        public int? RoleId { get; set; }
         public string? SocialInsuranceId { get; set; }
         //public int? TaxPercentId { get; set; }
         //public int? ContractId { get; set; }
@@ -35,6 +37,7 @@ namespace Models.Models
         public string? InsuranceCode { get; set; }
 
         // Navigation properties
+        public Role? Role { get; set; }
         public Team? TeamManage { get; set; }
         public Department? DepartmentManage { get; set; }
         public Team? TeamBelong { get; set; }
