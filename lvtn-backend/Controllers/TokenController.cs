@@ -44,6 +44,8 @@ namespace lvtn_backend.Controllers
                         new Claim("username", user.Username),
                     };
 
+
+
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                     var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                     var token = new JwtSecurityToken(
@@ -66,7 +68,7 @@ namespace lvtn_backend.Controllers
             }
         }
 
-        private User getUserByUsernameAndPassword(
+        private User? getUserByUsernameAndPassword(
             string username,
             string password)
         {

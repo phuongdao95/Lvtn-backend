@@ -1,27 +1,33 @@
-﻿using Models.Models;
+﻿
+using Models.Models;
 using Models.Repositories;
 using Models.Repositories.DataContext;
-using Models.Exceptions;
 using Services.Contracts;
+using Models.DTO.Request;
+using AutoMapper;
 
 namespace Services.Services
 {
     public class EmployeeService : IEmployeeService
     {
         private readonly IUserRepository _userRepository;
-        private readonly ITeamRepository _teamRepository;
-        private readonly EmsContext context;
-        public EmployeeService(IUserRepository userRepository, EmsContext _emsContext, ITeamRepository teamRepository)
+        private readonly EmsContext _context;
+        private readonly IMapper _mapper;
+        public EmployeeService(
+            IUserRepository userRepository, 
+            EmsContext _emsContext, 
+            IMapper mapper)
         {
+            _context = _emsContext;
+            _mapper = mapper;
             _userRepository = userRepository;
-            context = _emsContext;
-            _teamRepository = teamRepository;
         }
 
-        public void AddUser(User user)
+        public void AddUser(UserDTO userDTO)
         {
-            _userRepository.Insert(user);
-            context.SaveChanges();
+            var user = _mapper.Map<User>(userDTO);
+            _context.Users.Add(user);
+            _context.SaveChanges();
         }
 
         public User GetUserById(int id)
@@ -29,35 +35,45 @@ namespace Services.Services
             return _userRepository.GetByID(id);
         }
 
-        public void AssignUserToTeam(int userId, int teamId)
+        public void UpdateUser(int id, UserDTO userDTO)
         {
-            var user = _userRepository.GetByID(userId);
-            var team = _teamRepository.GetByID(teamId);
+            var user = _mapper.Map<User>(userDTO);
 
-            if (user == null)
-            {
-                throw new ObjectNotExist("User");
-            }
-            if (team == null)
-            {
-                throw new ObjectNotExist("Team");
-            }
+            user.Id = id;
+            
+            _context.Users.Update(user);
+            _context.SaveChanges();
+        }
 
-            if (team.Members == null)
+        public void DeleteUserById(int id)
+        {
+            var user = _context.Users.Find(id);
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+        }
+
+        public List<User> GetUserList(int offset, int limit, string query, string queryType)
+        {
+
+            if (queryType == "username")
             {
-                team.Members = new List<User>() { user };
+                return _context.Users.Where((user) => query.Contains(user.Username) || user.Username.Contains(query))
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToList();
             }
             else
             {
-                team.Members.Add(user);
+                return _context.Users.Where((user) => query.Contains(user.Name) || user.Name.Contains(query))
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToList();
             }
-
-            context.SaveChanges();
         }
 
-        public IEnumerable<User> GetAllUsers()
+        public int GetUserCount()
         {
-            return _userRepository.Get(includeProperties: "TeamBelong");
+            return _context.Users.Count();
         }
     }
 }

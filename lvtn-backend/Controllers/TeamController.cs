@@ -5,6 +5,7 @@ using Models.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Models.Controllers
 {
@@ -22,12 +23,13 @@ namespace Models.Controllers
         }
 
 
-        [HttpPost("")]
+        [Authorize(Policy = "team.create")]
+        [HttpPost]
         public IActionResult AddTeam(TeamDTO teamDTO)
         {
             try
             {
-                _teamService.AddTeam(_mapper.Map<TeamDTO, Team>(teamDTO));
+                _teamService.AddTeam(teamDTO);
                 return Ok();
             }
             catch (Exception ex)

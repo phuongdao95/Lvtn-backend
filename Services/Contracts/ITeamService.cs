@@ -1,16 +1,16 @@
-﻿using Models.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Models.DTO.Request;
+using Models.Models;
 
 namespace Services.Contracts
 {
     public interface ITeamService
     {
-        void AddTeam(Team team);
-
+        void AddTeam(TeamDTO team);
+        void UpdateTeam(int id, TeamDTO teamDTO);
+        void DeleteTeamById(int id);
+        List<Team> GetTeamList(int offset, int limit, string query, string queryType);
+        List<User> GetUserListOfTeam(int teamId);
+        int GetTeamCount();
         Team GetTeamById(int id);
     }
 }
