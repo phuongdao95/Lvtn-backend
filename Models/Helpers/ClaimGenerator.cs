@@ -5,6 +5,7 @@
 
         public static readonly List<string> moduleNames = new List<string>
         {
+            "user",
             "role",
             "permission",
             "team",

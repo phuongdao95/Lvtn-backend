@@ -5,7 +5,7 @@ namespace Models.Models
     public class Team
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [ForeignKey("Leader")]
         public int? LeaderId { get; set; }
         public int? DepartmentId { get; set; }

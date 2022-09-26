@@ -44,8 +44,6 @@ namespace lvtn_backend.Controllers
                         new Claim("username", user.Username),
                     };
 
-
-
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                     var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                     var token = new JwtSecurityToken(
@@ -55,7 +53,23 @@ namespace lvtn_backend.Controllers
                         expires: DateTime.UtcNow.AddMinutes(60 * 4),
                         signingCredentials: signIn);
 
-                    return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+                    return Ok(new Dictionary<string, object>
+                    {
+                        {
+                            "jwt_token",
+                            new JwtSecurityTokenHandler().WriteToken(token)
+                        },
+                        {
+                            "user_id", user.Id
+                        },
+                        {
+                            "name", user.Name
+                        },
+                        {
+                            "user_name", user.Username
+                        }
+                    });
+
                 }
                 else
                 {

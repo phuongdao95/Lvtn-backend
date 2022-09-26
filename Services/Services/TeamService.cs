@@ -32,6 +32,11 @@ namespace Services.Services
         public void DeleteTeamById(int id)
         {
             var team = _context.Teams.Find(id);
+
+            _context.Entry(team)
+                .Collection(team => team.Members)
+                .Load();
+           
             _context.Teams.Remove(team);
             _context.SaveChanges();
         }

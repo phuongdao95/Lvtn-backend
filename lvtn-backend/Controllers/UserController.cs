@@ -22,7 +22,6 @@ namespace Models.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Policy = "user.create")]
         [HttpPost]
         public IActionResult AddUser(UserDTO userDTO)
         {
@@ -37,7 +36,6 @@ namespace Models.Controllers
             }
         }
 
-        [Authorize(Policy = "user.retrieve")]
         [HttpGet("{id}")]
         public IActionResult GetUserById(int id)
         {
@@ -51,6 +49,38 @@ namespace Models.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult GetUserList(
+            [FromQuery] int offset = 0,
+            [FromQuery] int limit = 8,
+            [FromQuery] string? query = "",
+            [FromQuery] string? queryType = "name")
+        {
+            try
+            {
+                var user = _employeeService.GetUserList(offset, limit, query, queryType);
 
+                var userInfo = _mapper.Map<IEnumerable<UserInfoDTO>>(user);
+
+                var userCount = _employeeService.GetUserCount();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    {
+                        "data", userInfo
+                    },
+                    {
+                        "count", userInfo.Count()
+                    },
+                    {
+                        "total", userCount
+                    }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
     }
 }
