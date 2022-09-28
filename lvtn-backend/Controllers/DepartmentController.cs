@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Emgu.CV.ML;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
@@ -8,7 +8,6 @@ using System.ComponentModel;
 
 namespace lvtn_backend.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentController : ControllerBase

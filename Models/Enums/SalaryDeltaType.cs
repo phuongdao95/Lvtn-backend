@@ -1,6 +1,6 @@
 ﻿namespace Models.Enums
 {
-    public enum AllowanceBonusType
+    public enum SalaryDeltaType
     {
         Deduction,
         Allowance,
