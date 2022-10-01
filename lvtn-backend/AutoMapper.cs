@@ -16,7 +16,20 @@ namespace Models
 
             CreateMap<RoleDTO, Role>();
 
+            CreateMap<GroupDTO, Group>();
+
             CreateMap<DepartmentDTO, Department>();
+
+            CreateMap<SalaryDeltaDTO, SalaryDelta>();
+
+            CreateMap<SalaryFormulaDTO, SalaryFormula>();
+
+            CreateMap<SalaryVariableDTO, SalaryVariable>();
+
+            CreateMap<PayrollDTO, Payroll>();
+
+            CreateMap<GroupDTO, Group>();
+
             //Map from internal entities to responses
             CreateMap<User, UserInfoDTO>()
                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Name))
@@ -32,8 +45,24 @@ namespace Models
 
             CreateMap<Role, RoleInfoDTO>();
 
+            CreateMap<GroupInfoDTO, Group>();
+
             CreateMap<Department, DepartmentInfoDTO>();
 
+            CreateMap<SalaryDelta, SalaryDeltaInfoDTO>();
+
+            CreateMap<SalaryFormula, SalaryFormulaInfoDTO>();
+
+            CreateMap<SalaryVariable, SalaryVariableInfoDTO>();
+
+            CreateMap<Payroll, PayrollInfoDTO>();
+
+            CreateMap<Payslip, PayslipInfoDTO>()
+                .ForMember(m => m.EmployeeName, opt => opt.MapFrom(src => src.Employee.Name))
+                .ForMember(m => m.PayrollName, opt => opt.MapFrom(src => src.Payroll.Name))
+                ;
+
+            CreateMap<Group, GroupInfoDTO>();
         }
     }
 }

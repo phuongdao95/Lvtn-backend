@@ -12,13 +12,16 @@ namespace Models.Repositories.DataContext
         public DbSet<Department> Departments { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
         /** Salary Management */
-        public DbSet<Payroll> Payrolls { get; set; } 
-        public DbSet<SalaryDelta> SalaryDeltas{ get; set; } 
-        public DbSet<SalaryDeltaFormula> SDFormulas { get; set; }
-        public DbSet<SalaryDeltaVariable> SDFormulaConstants { get; set; }
+        public DbSet<Payroll> Payrolls { get; set; }
+        public DbSet<SalaryDelta> SalaryDeltas { get; set; }
+        public DbSet<SalaryFormula> SalaryFormulas { get; set; }
+        public DbSet<SalaryVariable> SalaryVariables { get; set; }
+        public DbSet<Payslip> Payslips { get; set; }
 
+        /***/
         public EmsContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -61,32 +64,25 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey(d => d.ParentDepartmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            // M-M User-DeductionAllowanceBonus
+            // M-M User-SalaryDelta
             modelBuilder.Entity<User>()
                 .HasMany(u => u.SalaryDeltaList)
-                .WithMany(d => d.Users);
-
-            // 1-M SalaryDelta-Formula
-            modelBuilder.Entity<SalaryDelta>()
-                .HasOne(p => p.Formula)
-                .WithMany(p => p.SalaryDeltaList)
-                .HasForeignKey(p => p.FormulaId)
-                ;
-
-            // M-M SalaryDeltaFormula-SalaryDeltaFormulaConstant
-            modelBuilder.Entity<SalaryDeltaFormula>()
-                .HasMany(f => f.Variables)
-                .WithMany(c => c.Formulas)
+                .WithMany(d => d.Users)
                 .UsingEntity<Dictionary<string, object>>(
-                    "SalaryDeltaFormula_SalaryDeltaVariable",
-                    right => right.HasOne<SalaryDeltaVariable>()
-                        .WithMany()
-                        .HasForeignKey("SalaryDeltaFormulaId"),
-                    left => left.HasOne<SalaryDeltaFormula>()
-                        .WithMany()
-                        .HasForeignKey("SalaryDeltaVariableId"),
-                    je => je.HasKey("SalaryDeltaFormulaId", "SalaryDeltaVariableId")
+                    "UserSalaryDelta",
+                    right => right.HasOne<SalaryDelta>().WithMany().HasForeignKey("SalaryDeltaId"),
+                    left => left.HasOne<User>().WithMany().HasForeignKey("UserId"),
+                    je => je.HasKey("UserId", "SalaryDeltaId")
                 );
+
+            // M-M 
+            modelBuilder.Entity<SalaryFormula>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<SalaryVariable>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
 
             // 1-M User-Payslip
             modelBuilder.Entity<User>()
@@ -98,13 +94,15 @@ namespace Models.Repositories.DataContext
             modelBuilder.Entity<Payroll>()
                 .HasMany(p => p.PayslipList)
                 .WithOne(p => p.Payroll)
-                .HasForeignKey(p => p.PayrollId);
+                .HasForeignKey(p => p.PayrollId)
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             // 1-M User-Role
             modelBuilder.Entity<User>()
                 .HasOne(p => p.Role)
                 .WithMany(p => p.Users)
-                .HasForeignKey(p => p.RoleId);
+                .HasForeignKey(p => p.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             // M-N Role Permission
             modelBuilder.Entity<Role>()
@@ -117,8 +115,14 @@ namespace Models.Repositories.DataContext
                     je => je.HasKey("PermissionId", "RoleId")
                 );
 
+            modelBuilder.Entity<Group>()
+                .HasMany(p => p.Users)
+                .WithOne(p => p.Group)
+                .HasForeignKey(p => p.GroupId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             new AdministrationDataSeeder(modelBuilder).SeedData();
+            new SalaryManagementDataSeeder(modelBuilder).SeedData();
         }
     }
 }

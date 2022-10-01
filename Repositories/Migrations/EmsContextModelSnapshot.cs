@@ -163,6 +163,53 @@ namespace Repositories.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Models.Models.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FormulaName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Group A",
+                            FormulaName = "formula_1",
+                            Name = "Group A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Group B",
+                            FormulaName = "formula_2",
+                            Name = "Group B"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Group C",
+                            FormulaName = "formula_3",
+                            Name = "Group C"
+                        });
+                });
+
             modelBuilder.Entity("Models.Models.Payroll", b =>
                 {
                     b.Property<int>("Id")
@@ -189,6 +236,35 @@ namespace Repositories.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Payrolls");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Generated payroll 1",
+                            FromDate = new DateTime(2022, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Generated Payroll 1",
+                            Status = 0,
+                            ToDate = new DateTime(2022, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Generated payroll 2",
+                            FromDate = new DateTime(2022, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Generated Payroll 2",
+                            Status = 0,
+                            ToDate = new DateTime(2022, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Generated payroll 2",
+                            FromDate = new DateTime(2022, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Generated Payroll 2",
+                            Status = 0,
+                            ToDate = new DateTime(2022, 8, 30, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Models.Models.Payslip", b =>
@@ -217,7 +293,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("PayrollId");
 
-                    b.ToTable("Payslip");
+                    b.ToTable("Payslips");
                 });
 
             modelBuilder.Entity("Models.Models.Permission", b =>
@@ -523,15 +599,21 @@ namespace Repositories.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FormulaId")
-                        .HasColumnType("int");
+                    b.Property<string>("Formula")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("FromDate")
+                    b.Property<DateTime>("FromMonth")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ToDate")
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ToMonth")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Type")
@@ -539,12 +621,42 @@ namespace Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FormulaId");
-
                     b.ToTable("SalaryDeltas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Salary Delta 2",
+                            Formula = "variable_1",
+                            FromMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Salary Delta 1",
+                            ToMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Type = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Salary Delta 2",
+                            Formula = "variable_2",
+                            FromMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Salary Delta 2",
+                            ToMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Type = 0
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Salary Delta 3",
+                            Formula = "variable_3",
+                            FromMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Salary Delta 3",
+                            ToMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Type = 0
+                        });
                 });
 
-            modelBuilder.Entity("Models.Models.SalaryDeltaFormula", b =>
+            modelBuilder.Entity("Models.Models.SalaryFormula", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -559,16 +671,56 @@ namespace Repositories.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("SDFormulas");
+                    b.HasIndex("Name");
+
+                    b.ToTable("SalaryFormulas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Define = "200000",
+                            Description = "formula_1",
+                            DisplayName = "Formula One",
+                            Name = "formula_1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Define = "200000 + variable_1",
+                            Description = "formula_2",
+                            DisplayName = "Formula Two",
+                            Name = "formula_2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Define = "variable_1 + variable_2",
+                            Description = "formula_3",
+                            DisplayName = "Formula Three",
+                            Name = "formula_3"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Define = "IF(variable_4, 400000, 200000)",
+                            Description = "formula_4",
+                            DisplayName = "Formula Three",
+                            Name = "formula_4"
+                        });
                 });
 
-            modelBuilder.Entity("Models.Models.SalaryDeltaVariable", b =>
+            modelBuilder.Entity("Models.Models.SalaryVariable", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -582,15 +734,68 @@ namespace Repositories.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SDFormulaConstants");
+                    b.HasIndex("Name");
+
+                    b.ToTable("SalaryVariables");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DataType = 1,
+                            Description = "variable 1",
+                            DisplayName = "Variable One",
+                            Name = "variable_1",
+                            Value = "200000"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DataType = 1,
+                            Description = "variable 2",
+                            DisplayName = "Variable Two",
+                            Name = "variable_2",
+                            Value = "170000"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DataType = 1,
+                            Description = "variable 3",
+                            DisplayName = "Variable Three",
+                            Name = "variable_3",
+                            Value = "170000"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DataType = 2,
+                            DisplayName = "Variable Four",
+                            Name = "variable_4",
+                            Value = "TRUE"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DataType = 2,
+                            DisplayName = "Variable Five",
+                            Name = "variable_5",
+                            Value = "FALSE"
+                        });
                 });
 
             modelBuilder.Entity("Models.Models.Team", b =>
@@ -749,6 +954,9 @@ namespace Repositories.Migrations
                     b.Property<string>("FaceId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
                     b.Property<string>("InsuranceCode")
                         .HasColumnType("nvarchar(max)");
 
@@ -796,6 +1004,8 @@ namespace Repositories.Migrations
                     b.HasIndex("BankInfoId")
                         .IsUnique()
                         .HasFilter("[BankInfoId] IS NOT NULL");
+
+                    b.HasIndex("GroupId");
 
                     b.HasIndex("RoleId");
 
@@ -4869,34 +5079,19 @@ namespace Repositories.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SalaryDeltaFormula_SalaryDeltaVariable", b =>
+            modelBuilder.Entity("UserSalaryDelta", b =>
                 {
-                    b.Property<int>("SalaryDeltaFormulaId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SalaryDeltaVariableId")
+                    b.Property<int>("SalaryDeltaId")
                         .HasColumnType("int");
 
-                    b.HasKey("SalaryDeltaFormulaId", "SalaryDeltaVariableId");
+                    b.HasKey("UserId", "SalaryDeltaId");
 
-                    b.HasIndex("SalaryDeltaVariableId");
+                    b.HasIndex("SalaryDeltaId");
 
-                    b.ToTable("SalaryDeltaFormula_SalaryDeltaVariable");
-                });
-
-            modelBuilder.Entity("SalaryDeltaUser", b =>
-                {
-                    b.Property<int>("SalaryDeltaListId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SalaryDeltaListId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("SalaryDeltaUser");
+                    b.ToTable("UserSalaryDelta");
                 });
 
             modelBuilder.Entity("Models.Models.Department", b =>
@@ -4922,22 +5117,12 @@ namespace Repositories.Migrations
 
                     b.HasOne("Models.Models.Payroll", "Payroll")
                         .WithMany("PayslipList")
-                        .HasForeignKey("PayrollId");
+                        .HasForeignKey("PayrollId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Employee");
 
                     b.Navigation("Payroll");
-                });
-
-            modelBuilder.Entity("Models.Models.SalaryDelta", b =>
-                {
-                    b.HasOne("Models.Models.SalaryDeltaFormula", "Formula")
-                        .WithMany("SalaryDeltaList")
-                        .HasForeignKey("FormulaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Formula");
                 });
 
             modelBuilder.Entity("Models.Models.Team", b =>
@@ -4961,6 +5146,11 @@ namespace Repositories.Migrations
                         .WithOne()
                         .HasForeignKey("Models.Models.User", "BankInfoId");
 
+                    b.HasOne("Models.Models.Group", "Group")
+                        .WithMany("Users")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Models.Models.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId");
@@ -4970,6 +5160,8 @@ namespace Repositories.Migrations
                         .HasForeignKey("TeamId");
 
                     b.Navigation("BankInfo");
+
+                    b.Navigation("Group");
 
                     b.Navigation("Role");
 
@@ -5010,32 +5202,17 @@ namespace Repositories.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SalaryDeltaFormula_SalaryDeltaVariable", b =>
-                {
-                    b.HasOne("Models.Models.SalaryDeltaVariable", null)
-                        .WithMany()
-                        .HasForeignKey("SalaryDeltaFormulaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Models.SalaryDeltaFormula", null)
-                        .WithMany()
-                        .HasForeignKey("SalaryDeltaVariableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SalaryDeltaUser", b =>
+            modelBuilder.Entity("UserSalaryDelta", b =>
                 {
                     b.HasOne("Models.Models.SalaryDelta", null)
                         .WithMany()
-                        .HasForeignKey("SalaryDeltaListId")
+                        .HasForeignKey("SalaryDeltaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Models.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -5047,6 +5224,11 @@ namespace Repositories.Migrations
                     b.Navigation("Teams");
                 });
 
+            modelBuilder.Entity("Models.Models.Group", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Models.Models.Payroll", b =>
                 {
                     b.Navigation("PayslipList");
@@ -5055,11 +5237,6 @@ namespace Repositories.Migrations
             modelBuilder.Entity("Models.Models.Role", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Models.Models.SalaryDeltaFormula", b =>
-                {
-                    b.Navigation("SalaryDeltaList");
                 });
 
             modelBuilder.Entity("Models.Models.Team", b =>

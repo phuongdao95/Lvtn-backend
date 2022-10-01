@@ -8,8 +8,8 @@ using System.ComponentModel;
 
 namespace lvtn_backend.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class DepartmentController : ControllerBase
     {
         private readonly IDepartmentService _departmentService;

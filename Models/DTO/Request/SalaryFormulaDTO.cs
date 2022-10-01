@@ -1,13 +1,11 @@
-﻿using Models.Enums;
-
-namespace Models.DTO.Request
+﻿namespace Models.DTO.Request
 {
-    public class FormulaConstantDTO
+    public class SalaryFormulaDTO
     {
         public int Id { get; set; }
         public string? Name { get; set; }
+        public string? DisplayName { get; set; }
         public string? Define { get; set; }
         public string? Description { get; set; }
-        public FormulaDataType DataType { get; set; }
     }
 }

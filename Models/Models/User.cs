@@ -26,6 +26,7 @@ namespace Models.Models
         public string? CitizenId { get; set; }
         public string? Email { get; set; }
         public int? TeamId { get; set; }
+        public int? GroupId { get; set; }
         public string? FaceId { get; set; }
         public string? TokenSlack { get; set; }
         public string? TokenTrello { get; set; }
@@ -38,6 +39,7 @@ namespace Models.Models
         public string? InsuranceCode { get; set; }
 
         // Navigation properties
+        public Group? Group { get; set; }
         public Role? Role { get; set; }
         public Team? TeamManage { get; set; }
         public Department? DepartmentManage { get; set; }

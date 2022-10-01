@@ -1,31 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.Helpers;
 using Models.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.DataContext.DataSeeder
 {
     public class AdministrationDataSeeder : DataSeeder
     {
-        private static readonly string ADMIN_ROLE = "ADMIN_USER";
-        private static readonly string MANAGER_ROLE = "MANAGER_USER";
-        private static readonly string EMPLOYEE_ROLE = "EMPLOYEE_ROLE";
+        public static readonly string ADMIN_ROLE = "ADMIN_USER";
+        public static readonly string MANAGER_ROLE = "MANAGER_USER";
+        public static readonly string EMPLOYEE_ROLE = "EMPLOYEE_ROLE";
 
-        private static readonly string ADMIN_USER = "ADMIN_USER";
-        private static readonly string MANAGER_USER = "MANAGER_USER";
+        public static readonly string ADMIN_USER = "ADMIN_USER";
+        public static readonly string MANAGER_USER = "MANAGER_USER";
 
-        private static readonly string HEAD_DEPARTMENT = "HEAD_DEPARTMENT";
+        public static readonly string HEAD_DEPARTMENT = "HEAD_DEPARTMENT";
 
-        private static readonly string A_TEAM = "A_TEAM";
-        private static readonly string B_TEAM = "B_TEAM";
-        private static readonly string C_TEAM = "C_TEAM";
+        public static readonly string A_TEAM = "A_TEAM";
+        public static readonly string B_TEAM = "B_TEAM";
+        public static readonly string C_TEAM = "C_TEAM";
 
-        private static readonly Dictionary<string, Role> _defaultRoleMap = new Dictionary<string, Role>
+        public static readonly string GROUP_A = "GROUP_A";
+        public static readonly string GROUP_B = "GROUP_B";
+        public static readonly string GROUP_C = "GROUP_C";
+
+        public static readonly Dictionary<string, Role> DefaultRoleMap = new Dictionary<string, Role>
         {
             {
                 ADMIN_ROLE,
@@ -55,7 +55,7 @@ namespace Repositories.DataContext.DataSeeder
             }
         };
 
-        private static readonly Dictionary<string, User> _defaultUserMap = new Dictionary<string, User>
+        public static readonly Dictionary<string, User> DefaultUserMap = new Dictionary<string, User>
         {
             {
                 ADMIN_USER,
@@ -65,7 +65,7 @@ namespace Repositories.DataContext.DataSeeder
                     Name = "Admin User",
                     Username = "admin",
                     Password = "admin",
-                    RoleId = _defaultRoleMap[ADMIN_ROLE].Id,
+                    RoleId = DefaultRoleMap[ADMIN_ROLE].Id,
                     CitizenId = "000001"
                 }
             },
@@ -77,19 +77,19 @@ namespace Repositories.DataContext.DataSeeder
                     Name = "Manager User",
                     Username = "manager",
                     Password = "manager",
-                    RoleId = _defaultRoleMap[MANAGER_ROLE].Id,
+                    RoleId = DefaultRoleMap[MANAGER_ROLE].Id,
                     CitizenId = "000002"
                 }
             },
         };
 
-        private static readonly Dictionary<string, Department> _defaultDepartmentMap = new Dictionary<string, Department>
+        public static readonly Dictionary<string, Department> DefaultDepartmentMap = new Dictionary<string, Department>
         {
             {
                 HEAD_DEPARTMENT, new Department()
                 {
                     Id = 1,
-                    ManagerId = _defaultUserMap[MANAGER_USER].Id,
+                    ManagerId = DefaultUserMap[MANAGER_USER].Id,
                     ParentDepartmentId = null,
                     Name = "Head Department",
                     Detail = "Detail for Head Department",
@@ -97,17 +97,17 @@ namespace Repositories.DataContext.DataSeeder
             }
         };
 
-        private static readonly Dictionary<string, Team> _defaultTeamMap = new Dictionary<string, Team>
+        public static readonly Dictionary<string, Team> DefaultTeamMap = new Dictionary<string, Team>
         {
             {
                 A_TEAM,
                 new Team()
                 {
                     Id = 1,
-                    DepartmentId = _defaultDepartmentMap[HEAD_DEPARTMENT].Id,
+                    DepartmentId = DefaultDepartmentMap[HEAD_DEPARTMENT].Id,
                     Name = "The A Team",
                     Detail = "The A Team",
-                    LeaderId = _defaultUserMap[ADMIN_USER].Id,
+                    LeaderId = DefaultUserMap[ADMIN_USER].Id,
                 }
             },
             {
@@ -115,10 +115,10 @@ namespace Repositories.DataContext.DataSeeder
                 new Team()
                 {
                     Id = 2,
-                    DepartmentId = _defaultDepartmentMap[HEAD_DEPARTMENT].Id,
+                    DepartmentId = DefaultDepartmentMap[HEAD_DEPARTMENT].Id,
                     Name = "The B Team",
                     Detail = "The B Team",
-                    LeaderId = _defaultUserMap[MANAGER_USER].Id,
+                    LeaderId = DefaultUserMap[MANAGER_USER].Id,
 
                 }
             },
@@ -127,7 +127,7 @@ namespace Repositories.DataContext.DataSeeder
                 new Team()
                 {
                     Id = 3,
-                    DepartmentId = _defaultDepartmentMap[HEAD_DEPARTMENT].Id,
+                    DepartmentId = DefaultDepartmentMap[HEAD_DEPARTMENT].Id,
                     Name = "The C Team",
                     Detail = "The C Team",
                     LeaderId = null,
@@ -135,7 +135,39 @@ namespace Repositories.DataContext.DataSeeder
             }
         };
 
-
+        public static readonly Dictionary<string, Group> DefaultGroupMap = new Dictionary<string, Group>
+        {
+            {
+                GROUP_A,
+                new Group
+                {
+                    Id = 1,
+                    Name = "Group A",
+                    Description = "Group A",
+                    FormulaName = "formula_1",
+                }
+            },
+            {
+                GROUP_B,
+                new Group
+                {
+                    Id = 2,
+                    Name = "Group B",
+                    Description  = "Group B",
+                    FormulaName = "formula_2",
+                }
+            },
+            {
+                GROUP_C,
+                new Group
+                {
+                    Id = 3,
+                    Name = "Group C",
+                    Description = "Group C",
+                    FormulaName = "formula_3"
+                }
+            }
+        };
 
         private List<Permission> _permissions { get; set; }
         private List<Role> _roles { get; set; }
@@ -143,6 +175,7 @@ namespace Repositories.DataContext.DataSeeder
         private List<Department> _departments { get; set; }
         private List<Team> _teams { get; set; }
         private List<User> _users { get; set; }
+        private List<Group> _groups { get; set; }
 
         private readonly ModelBuilder _modelBuilder;
 
@@ -155,6 +188,7 @@ namespace Repositories.DataContext.DataSeeder
             _departments = initializeDepartments();
             _teams = initializeTeams();
             _users = initializeUsers();
+            _groups = initializeGroups();
         }
 
         private List<Permission> initializePermissions()
@@ -174,10 +208,10 @@ namespace Repositories.DataContext.DataSeeder
 
         private List<Role> initializeRoles()
         {
-            var startIndex = _defaultRoleMap.Count() + 1;
+            var startIndex = DefaultRoleMap.Count() + 1;
             var result = new List<Role>() { };
 
-            result.AddRange(_defaultRoleMap.Values.ToList());
+            result.AddRange(DefaultRoleMap.Values.ToList());
 
             result.AddRange(
                 Enumerable.Range(startIndex + 1, result.Count()).Select((id) => new Role()
@@ -211,15 +245,15 @@ namespace Repositories.DataContext.DataSeeder
         private List<Department> initializeDepartments()
         {
             var result = new List<Department>();
-            var startIndex = _defaultDepartmentMap.Values.Count() + 1;
+            var startIndex = DefaultDepartmentMap.Values.Count() + 1;
 
-            result.AddRange(_defaultDepartmentMap.Values);
+            result.AddRange(DefaultDepartmentMap.Values);
 
             result.AddRange(Enumerable.Range(startIndex, 10).Select((index) => new Department()
             {
                 Id = index,
                 Name = $"Department {index}",
-                ParentDepartmentId = _defaultDepartmentMap[HEAD_DEPARTMENT].Id,
+                ParentDepartmentId = DefaultDepartmentMap[HEAD_DEPARTMENT].Id,
                 Detail = $"Detail for department Department {index}"
             }));
 
@@ -229,16 +263,16 @@ namespace Repositories.DataContext.DataSeeder
         private List<Team> initializeTeams()
         {
             var result = new List<Team>();
-            var startIndex = _defaultTeamMap.Values.Count() + 1;
+            var startIndex = DefaultTeamMap.Values.Count() + 1;
 
-            result.AddRange(_defaultTeamMap.Values);
+            result.AddRange(DefaultTeamMap.Values);
 
             result.AddRange(Enumerable.Range(startIndex + 1, 10).Select((index) => new Team()
             {
                 Id = index,
                 Name = $"Team {index}",
                 Detail = $"Detail for department Team {index}",
-                DepartmentId = _defaultDepartmentMap[HEAD_DEPARTMENT].Id,
+                DepartmentId = DefaultDepartmentMap[HEAD_DEPARTMENT].Id,
             }));
 
             return result;
@@ -247,9 +281,9 @@ namespace Repositories.DataContext.DataSeeder
         private List<User> initializeUsers()
         {
             var result = new List<User>();
-            var startIndex = _defaultUserMap.Values.Count() + 1;
+            var startIndex = DefaultUserMap.Values.Count() + 1;
 
-            result.AddRange(_defaultUserMap.Values);
+            result.AddRange(DefaultUserMap.Values);
 
             result.AddRange(Enumerable.Range(startIndex + 1, 240).Select((index) => new User()
             {
@@ -258,8 +292,18 @@ namespace Repositories.DataContext.DataSeeder
                 Username = $"user{index}",
                 Password = $"password{index}",
                 CitizenId = $"000000{index}",
-                TeamId = index % 2 == 0 ? _defaultTeamMap[A_TEAM].Id : _defaultTeamMap[B_TEAM].Id
+                TeamId = index % 2 == 0 ? DefaultTeamMap[A_TEAM].Id : DefaultTeamMap[B_TEAM].Id
             }));
+
+            return result;
+        }
+
+        private List<Group> initializeGroups()
+        {
+            var result = new List<Group>();
+            var startIndex = DefaultGroupMap.Values.Count() + 1;
+
+            result.AddRange(DefaultGroupMap.Values);
 
             return result;
         }
@@ -283,6 +327,9 @@ namespace Repositories.DataContext.DataSeeder
 
             _modelBuilder.Entity<User>()
                 .HasData(_users);
+
+            _modelBuilder.Entity<Group>()
+                .HasData(_groups);
         }
     }
 }

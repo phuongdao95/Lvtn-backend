@@ -1,16 +1,33 @@
 ﻿using Models.Enums;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
     public class SalaryDelta
     {
+        [Key]
         public int Id { get; set; }
-        public SalaryDeltaType Type { get; set; }
+
+        [Required]
+        public string? Name { get; set; }
+
+        [Required]
         public string? Description { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
-        public SalaryDeltaFormula? Formula { get; set; }
-        public int FormulaId { get; set; }
+
+        [Required]
+        [DefaultValue("0")]
+        public string? Formula { get; set; }
+
+        [Required]
+        public SalaryDeltaType Type { get; set; }
+
+        [Required]
+        public DateTime FromMonth { get; set; }
+
+        [Required]
+        public DateTime ToMonth { get; set; }
+
         public List<User>? Users { get; set; }
     }
 }
