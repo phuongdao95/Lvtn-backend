@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Models.DTO.Request;
 using Models.DTO.Response;
-using Models.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +21,35 @@ namespace Models.Controllers
         }
 
 
+        [Authorize(Policy = "team.retrieve")]
+        [HttpGet]
+        public IActionResult GetTeamList(
+            [FromQuery] int offset = 0,
+            [FromQuery] int limit = 8,
+            [FromQuery] string? query = "",
+            [FromQuery] string? queryType = "name"
+            )
+        {
+            try
+            {
+                var teamList = _teamService
+                    .GetTeamList(offset, limit, query, queryType);
+
+                var teamInfoList = _mapper.Map<IEnumerable<TeamInfoDTO>>(teamList);
+                var teamCount = _teamService.GetTeamCount();
+                return Ok(new Dictionary<string, object>
+                {
+                { "data", teamInfoList },
+                    { "count", teamInfoList.Count() },
+                    { "total", teamCount }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
         [Authorize(Policy = "team.create")]
         [HttpPost]
         public IActionResult AddTeam(TeamDTO teamDTO)
@@ -38,12 +65,47 @@ namespace Models.Controllers
             }
         }
 
+        [Authorize(Policy = "team.update")]
+        [HttpPut("{id}")]
+        public IActionResult UpdateTeam(int id, TeamDTO teamDTO)
+        {
+            try
+            {
+                _teamService.UpdateTeam(id, teamDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Policy = "team.delete")]
+        [HttpDelete("{id}")]
+        public IActionResult DeleteTeam(int id)
+        {
+            try
+            {
+                _teamService.DeleteTeamById(id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [Authorize(Policy = "team.retrieve")]
         [HttpGet("{id}")]
         public IActionResult GetTeamById(int id)
         {
             try
             {
-                return Ok(_teamService.GetTeamById(id));
+                var team = _teamService.GetTeamById(id);
+                var teamInfo = _mapper.Map<TeamInfoDTO>(team);
+
+                return Ok(teamInfo);
             }
             catch (Exception ex)
             {

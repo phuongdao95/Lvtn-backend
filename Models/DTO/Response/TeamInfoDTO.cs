@@ -10,11 +10,11 @@ namespace Models.DTO.Response
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public string? Descriptionn { get; set; }
+        public string? Description { get; set; }
 
         public int? LeaderId { get; set; }
-        public int? LeaderName { get; set; }
+        public string? LeaderName { get; set; }
         public int? DepartmentId { get; set; }
-        public int? DepartmentName { get; set; }
+        public string? DepartmentName { get; set; }
     }
 }

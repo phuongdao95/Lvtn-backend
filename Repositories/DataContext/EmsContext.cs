@@ -6,11 +6,22 @@ namespace Models.Repositories.DataContext
 {
     public class EmsContext : DbContext
     {
+        /** Administration Module */
         public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Group> Groups { get; set; }
+
+        /** Salary Management */
+        public DbSet<Payroll> Payrolls { get; set; }
+        public DbSet<SalaryDelta> SalaryDeltas { get; set; }
+        public DbSet<SalaryFormula> SalaryFormulas { get; set; }
+        public DbSet<SalaryVariable> SalaryVariables { get; set; }
+        public DbSet<Payslip> Payslips { get; set; }
+
+        /***/
         public EmsContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,11 +46,16 @@ namespace Models.Repositories.DataContext
 
             // 1-M User-Workday
             modelBuilder.Entity<User>()
-                .HasMany<Workday>(u => u.Workdays)
-                .WithOne();
-            modelBuilder.Entity<Workday>()
-                .HasOne<User>()
-                .WithMany(u => u.Workdays);
+                .HasMany<WorkingShift>(u => u.WorkingShifts)
+                .WithOne()
+                .HasForeignKey(p => p.EmployeeId)
+                ;
+
+            modelBuilder.Entity<WorkingShift>()
+                .HasOne<WorkingShiftType>()
+                .WithMany(p => p.WorkingShifts)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                ;
 
             // Self-relation department
             modelBuilder.Entity<Department>()
@@ -48,45 +64,45 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey(d => d.ParentDepartmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            // M-M User-DeductionAllowanceBonus
+            // M-M User-SalaryDelta
             modelBuilder.Entity<User>()
-                .HasMany<DeductionAllowanceBonus>(u => u.DeductionAllowanceBonuses)
-                .WithMany(d => d.Users);
+                .HasMany(u => u.SalaryDeltaList)
+                .WithMany(d => d.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "UserSalaryDelta",
+                    right => right.HasOne<SalaryDelta>().WithMany().HasForeignKey("SalaryDeltaId"),
+                    left => left.HasOne<User>().WithMany().HasForeignKey("UserId"),
+                    je => je.HasKey("UserId", "SalaryDeltaId")
+                );
 
-            // 1-M DeductionAllowanceBonusTemplate-DeductionAllowanceBonus
-            modelBuilder.Entity<DeductionAllowanceBonus>()
-                .HasOne<DeductionAllowanceBonusTemplate>(dab => dab.Template)
-                .WithMany()
-                .HasForeignKey(dab => dab.TemplateId);
+            // M-M 
+            modelBuilder.Entity<SalaryFormula>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
 
-            // 1-M Formula-Template
-            modelBuilder.Entity<DeductionAllowanceBonusTemplate>()
-                .HasOne<Formula>(dt => dt.Formula)
-                .WithMany(f => f.Templates)
-                .HasForeignKey(dt => dt.FormulaId);
-
-            // M-M Formula-Constant
-            modelBuilder.Entity<Formula>()
-                .HasMany<Constant>(f => f.Constants)
-                .WithMany(c => c.Formulas);
-
-            // M-M Formula-Input
-            modelBuilder.Entity<Formula>()
-                .HasMany<Input>(f => f.Inputs)
-                .WithMany(c => c.Formulas);
+            modelBuilder.Entity<SalaryVariable>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
 
             // 1-M User-Payslip
             modelBuilder.Entity<User>()
-                .HasMany<Payslip>(u => u.Payslips)
+                .HasMany(p => p.Payslips)
                 .WithOne(p => p.Employee)
                 .HasForeignKey(p => p.EmployeeId);
 
+            // 1-M Payroll-Payslip
+            modelBuilder.Entity<Payroll>()
+                .HasMany(p => p.PayslipList)
+                .WithOne(p => p.Payroll)
+                .HasForeignKey(p => p.PayrollId)
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             // 1-M User-Role
             modelBuilder.Entity<User>()
-                .HasOne<Role>(p => p.Role)
+                .HasOne(p => p.Role)
                 .WithMany(p => p.Users)
-                .HasForeignKey(p => p.RoleId);
+                .HasForeignKey(p => p.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             // M-N Role Permission
             modelBuilder.Entity<Role>()
@@ -99,7 +115,14 @@ namespace Models.Repositories.DataContext
                     je => je.HasKey("PermissionId", "RoleId")
                 );
 
+            modelBuilder.Entity<Group>()
+                .HasMany(p => p.Users)
+                .WithOne(p => p.Group)
+                .HasForeignKey(p => p.GroupId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             new AdministrationDataSeeder(modelBuilder).SeedData();
+            new SalaryManagementDataSeeder(modelBuilder).SeedData();
         }
     }
 }

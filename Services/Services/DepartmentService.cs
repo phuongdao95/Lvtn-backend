@@ -21,11 +21,9 @@ namespace Services.Services
             var teams = _context.Teams.Where(
                 (team) => departmentDTO.TeamIds.Contains(team.Id)).ToList();
 
-            var manager = _context.Users.FirstOrDefault((user) => user.Id ==
-                departmentDTO.ManagerId, null);
+            var manager = _context.Users.Find(departmentDTO.ManagerId);
 
-            var parentDepartment = _context.Departments
-                .FirstOrDefault((department) => department.Id == departmentDTO.ParentDepartmentId, null);
+            var parentDepartment = _context.Departments.Find(departmentDTO.ParentDepartmentId);
 
             var department = _mapper.Map<Department>(departmentDTO);
 
@@ -40,6 +38,14 @@ namespace Services.Services
         public void DeleteDepartmentById(int id)
         {
             var department = _context.Departments.Find(id);
+            _context.Entry(department)
+                .Collection(d => d.Teams)
+                .Load();
+
+            _context.Entry(department)
+                .Collection(d => d.Departments)
+                .Load();
+            
             _context.Departments.Remove(department);
             _context.SaveChanges();
         }

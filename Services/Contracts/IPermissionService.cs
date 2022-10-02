@@ -10,7 +10,7 @@ namespace Services.Contracts
         List<Permission> GetAllPermissions();
         int GetAllPermissionCount();
 
-        List<Permission> GetPermissionsOfRole(int roleId);
+        List<Permission> GetPermissionsOfRole(int? roleId);
         int GetPermissionsOfRoleCount(int roleId);
 
         List<Permission> GetPermissionsOfUser(int userId);

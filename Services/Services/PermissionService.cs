@@ -37,7 +37,7 @@ namespace Services.Services
             return permission;
         }
 
-        public List<Permission> GetPermissionsOfRole(int roleId)
+        public List<Permission> GetPermissionsOfRole(int? roleId)
         {
             var role = _context.Roles.Find(roleId);
             if (role == null)
@@ -75,7 +75,7 @@ namespace Services.Services
                 throw new Exception("User not found");
             }
 
-            return GetPermissionsOfRole(user.Role.Id);
+            return GetPermissionsOfRole(user.RoleId);
         }
 
         public int GetPermissionsOfUserCount(int userId)

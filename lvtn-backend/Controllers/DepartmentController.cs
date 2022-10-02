@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Emgu.CV.ML;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
@@ -8,9 +8,8 @@ using System.ComponentModel;
 
 namespace lvtn_backend.Controllers
 {
-
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class DepartmentController : ControllerBase
     {
         private readonly IDepartmentService _departmentService;
@@ -38,10 +37,10 @@ namespace lvtn_backend.Controllers
 
         [HttpGet]
         public IActionResult GetDepartmentList(
-            [FromBody] int offset = 0,
-            [FromBody] int limit = 20,
-            [FromBody] string? query = "",
-            [FromBody] string? queryType = "name")
+            [FromQuery] int offset = 0,
+            [FromQuery] int limit = 20,
+            [FromQuery] string? query = "",
+            [FromQuery] string? queryType = "name")
         {
             try
             {
@@ -56,7 +55,7 @@ namespace lvtn_backend.Controllers
 
                 return Ok(new Dictionary<string, object>
                 {
-                    {"result", departmentInfo },
+                    {"data", departmentInfo },
                     {"count", departmentInfo.Count() },
                     {"total", _departmentService.GetDepartmentCount()}
                 });
@@ -68,7 +67,7 @@ namespace lvtn_backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult sAddDepartment(DepartmentDTO departmentDTO)
+        public IActionResult AddDepartment(DepartmentDTO departmentDTO)
         {
             try
             {

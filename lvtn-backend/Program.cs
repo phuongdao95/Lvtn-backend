@@ -1,6 +1,5 @@
 using Models.Repositories;
 using Models.Repositories.DataContext;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Services;
@@ -76,7 +75,12 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IAiService, AiService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
-
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<ISalaryDeltaService, SalaryDeltaService>();
+builder.Services.AddScoped<ISalaryFormulaService, SalaryFormulaService>();
+builder.Services.AddScoped<IPayrollService, PayrollService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
 
