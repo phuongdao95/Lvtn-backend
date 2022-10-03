@@ -10,7 +10,7 @@
         public string? PhoneNumber { get; set; }
         public string? CitizenId { get; set; }
         public string? Email { get; set; }
-        public string Sex { get; set; }
+        public string? Gender { get; set; }
         public DateTime? Birthday { get; set; }
 
         // Salary Info

@@ -20,7 +20,7 @@ namespace Models.Models
         public string? Address { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
 
         [Required]
         public string? CitizenId { get; set; }

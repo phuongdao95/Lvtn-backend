@@ -38,6 +38,8 @@ namespace Models
                 .ForMember(des => des.RoleName, opt => opt.MapFrom(src => src.Role != null ? src.Role.Name : "None"));
 
             CreateMap<Team, TeamInfoDTO>()
+                .ForMember(des => des.MemberIds, opt => opt.MapFrom(src => src.Members.Select(member => member.Id)))
+                .ForMember(des => des.MemberNames, opt => opt.MapFrom(src => src.Members.Select(member => member.Name)))
                 .ForMember(des => des.Description, opt => opt.MapFrom(src => src.Detail))
                 .ForMember(des => des.LeaderName, opt => opt.MapFrom(src => src.Leader != null ?
                     src.Leader.Name : "None"))

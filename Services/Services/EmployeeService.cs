@@ -52,9 +52,19 @@ namespace Services.Services
                 throw new Exception("User is null");
             }
 
-            user.Id = id;
-            user.RoleId = userDTO.RoleId;
-            
+            if (userDTO.TeamId > 0)
+            {
+                user.TeamId = userDTO.TeamId;
+            }
+
+            if (userDTO.RoleId > 0)
+            {
+                user.RoleId = userDTO.RoleId;
+            }
+
+            user.Address = userDTO.Address;
+            user.Birthday = userDTO.Birthday;
+
             _context.Users.Update(user);
             _context.SaveChanges();
         }

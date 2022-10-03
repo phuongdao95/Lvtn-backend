@@ -64,8 +64,7 @@ namespace lvtn_backend.Controllers
             try
             {
                 var group = _groupService.GetGroupById(id);
-                return Ok(
-                 _mapper.Map<GroupInfoDTO>(group));
+                return Ok(_mapper.Map<GroupInfoDTO>(group));
             }
             catch (Exception)
             {
