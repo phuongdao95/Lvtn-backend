@@ -1,13 +1,21 @@
-﻿namespace Models.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Models.Models
 {
-    public class WorkingShift
+    public class WorkingShiftTimekeeping
     {
+        [Key]
         public int Id { get; set; }
-        public int EmployeeId { get; set; }
-        public bool IsCheckIn { get; set; }
-        public DateTime Date { get; set; }
-        public int? WorkingShiftTypeId { get; set; }
+        [Required]
+        public bool DidCheckIn { get; set; }
+        public DateTime? CheckinTime { get; set; }
+        [Required]
+        public bool DidCheckout { get; set; }
+        public int? WorkingShiftEventId { get; set; }
+        public DateTime? CheckoutTime { get; set; }
+        [Required]
+        public int? EmployeeId { get; set; }
         public User? Employee { get; set; }
-        WorkingShiftType? WorkingShiftType { get; set; }
+        public WorkingShiftEvent? WorkingShiftEvent { get; set; }
     }
 }

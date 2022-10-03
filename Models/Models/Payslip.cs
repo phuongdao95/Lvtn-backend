@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Models.DTO.Response;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
@@ -6,10 +7,13 @@ namespace Models.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public decimal BaseSalary { get; set; }
         public string? Description { get; set; }
         public int? EmployeeId { get; set; }
         public int? PayrollId { get; set; }
+        public List<PayslipSalaryDelta>? SalaryDeltas { get; set; }
+        public List<PayslipWorkingShiftTimekeeping>? Timekeepings { get; set; }
         public User? Employee { get; set; }
         public Payroll? Payroll { get; set; }
     }

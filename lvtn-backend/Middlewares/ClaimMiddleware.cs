@@ -1,4 +1,5 @@
 ﻿using Services.Contracts;
+using Services.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -13,7 +14,8 @@ namespace lvtn_backend.Middleware
             _next = next;
         }
 
-        public Task Invoke(HttpContext httpContext, IPermissionService permissionService)
+        public Task Invoke(HttpContext httpContext, IPermissionService permissionService, 
+            IdentityService identityService)
         {
             try
             {
@@ -26,12 +28,18 @@ namespace lvtn_backend.Middleware
                     .ReadJwtToken(serializedToken);
 
                 var userIdClaim = jwtToken.Claims.First(claim => claim.Type == "user_id");
+                var userUsernameClaim = jwtToken.Claims.First(claim => claim.Type == "username");
+                var userNameClaim = jwtToken.Claims.First(claim => claim.Type == "user_name");
                 var userId = int.Parse(userIdClaim.Value);
                 var permissions = permissionService.GetPermissionsOfUser(userId);
 
                 var permissionClaims = permissions.Select((permission) =>
                     new Claim(permission.Name, permission.Name))
                         .ToList();
+
+                identityService.Id = userId;
+                identityService.Username = userUsernameClaim.Value;
+                identityService.Name = userNameClaim.Value;
 
                 httpContext.User.AddIdentity(new ClaimsIdentity(permissionClaims));
             }

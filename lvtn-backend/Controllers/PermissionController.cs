@@ -5,6 +5,8 @@ using Services.Contracts;
 
 namespace lvtn_backend.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class PermissionController : ControllerBase
     {
         private readonly IPermissionService _permissionService;

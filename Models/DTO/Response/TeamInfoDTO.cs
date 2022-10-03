@@ -16,5 +16,7 @@ namespace Models.DTO.Response
         public string? LeaderName { get; set; }
         public int? DepartmentId { get; set; }
         public string? DepartmentName { get; set; }
+        public List<int>? MemberIds { get; set; }
+        public List<string>? MemberNames { get; set; }
     }
 }

@@ -45,6 +45,10 @@ namespace Services.Services
             _context.Entry(department)
                 .Collection(d => d.Departments)
                 .Load();
+
+            _context.Entry(department)
+                .Reference(d => d.Manager)
+                .Load();
             
             _context.Departments.Remove(department);
             _context.SaveChanges();

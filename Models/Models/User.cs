@@ -15,12 +15,12 @@ namespace Models.Models
         [Required]
         public string? Password { get; set; }
         public string? UrlImage { get; set; }
+        [Required]
         public decimal BaseSalary { get; set; }
-
         public string? Address { get; set; }
         public string? PhoneNumber { get; set; }
-        public bool Sex { get; set; }
-        public DateTime Birthday { get; set; }
+        public string? Gender { get; set; }
+        public DateTime? Birthday { get; set; }
 
         [Required]
         public string? CitizenId { get; set; }
@@ -39,13 +39,14 @@ namespace Models.Models
         public string? InsuranceCode { get; set; }
 
         // Navigation properties
-        public Group? Group { get; set; }
+        public SalaryGroup? Group { get; set; }
         public Role? Role { get; set; }
         public Team? TeamManage { get; set; }
         public Department? DepartmentManage { get; set; }
-        public Team? TeamBelong { get; set; }
+        public Team? Team { get; set; }
         public BankInfo? BankInfo { get; set; }
-        public List<WorkingShift>? WorkingShifts { get; set; }
+        public List<WorkingShiftTimekeeping>? Timekeepings { get; set; }
+        public List<WorkingShiftEvent>? WorkingShiftEvents { get; set; }
         public List<SalaryDelta>? SalaryDeltaList { get; set; }
         public List<Payslip>? Payslips { get; set; }
     }

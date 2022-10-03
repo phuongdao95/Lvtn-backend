@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
-    public class Group
+    public class SalaryGroup
     {
         [Key]
         public int Id { get; set; }

@@ -8,11 +8,11 @@ namespace lvtn_backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GroupController : Controller
+    public class SalaryGroupController : Controller
     {
         private readonly IMapper _mapper;
         private readonly IGroupService _groupService;
-        public GroupController(IMapper mapper, IGroupService groupService)
+        public SalaryGroupController(IMapper mapper, IGroupService groupService)
         {
             _mapper = mapper;
             _groupService = groupService;
@@ -64,8 +64,7 @@ namespace lvtn_backend.Controllers
             try
             {
                 var group = _groupService.GetGroupById(id);
-                return Ok(
-                 _mapper.Map<GroupInfoDTO>(group));
+                return Ok(_mapper.Map<GroupInfoDTO>(group));
             }
             catch (Exception)
             {

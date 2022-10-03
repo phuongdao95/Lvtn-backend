@@ -2,6 +2,7 @@
 using Models.Models;
 using Models.DTO.Request;
 using Models.DTO.Response;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -16,7 +17,7 @@ namespace Models
 
             CreateMap<RoleDTO, Role>();
 
-            CreateMap<GroupDTO, Group>();
+            CreateMap<GroupDTO, SalaryGroup>();
 
             CreateMap<DepartmentDTO, Department>();
 
@@ -28,15 +29,17 @@ namespace Models
 
             CreateMap<PayrollDTO, Payroll>();
 
-            CreateMap<GroupDTO, Group>();
+            CreateMap<GroupDTO, SalaryGroup>();
 
             //Map from internal entities to responses
             CreateMap<User, UserInfoDTO>()
                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(des => des.Sex, opt => opt.MapFrom(src => src.Sex == true ? "Nam" : "Nữ"))
-                .ForMember(des => des.TeamName, opt => opt.MapFrom(src => src.TeamBelong != null ? src.TeamBelong.Name : ""));
+                .ForMember(des => des.TeamName, opt => opt.MapFrom(src => src.Team != null ? src.Team.Name : "None"))
+                .ForMember(des => des.RoleName, opt => opt.MapFrom(src => src.Role != null ? src.Role.Name : "None"));
 
             CreateMap<Team, TeamInfoDTO>()
+                .ForMember(des => des.MemberIds, opt => opt.MapFrom(src => src.Members.Select(member => member.Id)))
+                .ForMember(des => des.MemberNames, opt => opt.MapFrom(src => src.Members.Select(member => member.Name)))
                 .ForMember(des => des.Description, opt => opt.MapFrom(src => src.Detail))
                 .ForMember(des => des.LeaderName, opt => opt.MapFrom(src => src.Leader != null ?
                     src.Leader.Name : "None"))
@@ -45,7 +48,9 @@ namespace Models
 
             CreateMap<Role, RoleInfoDTO>();
 
-            CreateMap<GroupInfoDTO, Group>();
+            CreateMap<Permission, PermissionInfoDTO>();
+
+            CreateMap<Group, GroupInfoDTO>();
 
             CreateMap<Department, DepartmentInfoDTO>();
 
@@ -62,7 +67,7 @@ namespace Models
                 .ForMember(m => m.PayrollName, opt => opt.MapFrom(src => src.Payroll.Name))
                 ;
 
-            CreateMap<Group, GroupInfoDTO>();
+            CreateMap<SalaryGroup, GroupInfoDTO>();
         }
     }
 }
