@@ -27,7 +27,6 @@ namespace Models.Models
 
         [Required]
         public DateTime ToMonth { get; set; }
-
         public List<User>? Users { get; set; }
     }
 }

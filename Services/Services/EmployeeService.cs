@@ -32,14 +32,28 @@ namespace Services.Services
 
         public User GetUserById(int id)
         {
-            return _userRepository.GetByID(id);
+            var user = _context.Users.Find(id);
+            if (user == null)
+            {
+                throw new Exception("User is null");
+            }
+
+            _context.Entry(user).Reference(u => u.Role).Load();
+            _context.Entry(user).Reference(u => u.Team).Load();
+
+            return user;
         }
 
         public void UpdateUser(int id, UserDTO userDTO)
         {
-            var user = _mapper.Map<User>(userDTO);
+            var user = _context.Users.Find(id);
+            if (user == null)
+            {
+                throw new Exception("User is null");
+            }
 
             user.Id = id;
+            user.RoleId = userDTO.RoleId;
             
             _context.Users.Update(user);
             _context.SaveChanges();

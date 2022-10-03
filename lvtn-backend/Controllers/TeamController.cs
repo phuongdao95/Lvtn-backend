@@ -21,7 +21,6 @@ namespace Models.Controllers
         }
 
 
-        [Authorize(Policy = "team.retrieve")]
         [HttpGet]
         public IActionResult GetTeamList(
             [FromQuery] int offset = 0,

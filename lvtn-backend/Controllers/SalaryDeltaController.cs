@@ -98,7 +98,7 @@ namespace lvtn_backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateSalaryDelta(SalaryDeltaDTO salaryDeltaDTO)
+        public IActionResult CreateSalaryDelta([FromBody] SalaryDeltaDTO salaryDeltaDTO)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace lvtn_backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteSalaryDelta(int id)
+        public IActionResult DeleteSalaryDelta([FromHeader] int id)
         {
             try 
             {

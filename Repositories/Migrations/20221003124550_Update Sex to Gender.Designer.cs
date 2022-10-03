@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.Repositories.DataContext;
 
@@ -11,9 +12,10 @@ using Models.Repositories.DataContext;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(EmsContext))]
-    partial class EmsContextModelSnapshot : ModelSnapshot
+    [Migration("20221003124550_Update Sex to Gender")]
+    partial class UpdateSextoGender
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,51 +282,6 @@ namespace Repositories.Migrations
                     b.HasIndex("PayslipId");
 
                     b.ToTable("PayslipSalaryDelta");
-                });
-
-            modelBuilder.Entity("Models.Models.PayslipWorkingShiftTimekeeping", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<decimal?>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("CheckinTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("CheckoutTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("DidCheckIn")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("DidCheckout")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Formula")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PayslipId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("WorkingShiftEventId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PayslipId");
-
-                    b.ToTable("PayslipWorkingShiftTimekeeping");
                 });
 
             modelBuilder.Entity("Models.Models.Permission", b =>
@@ -2717,12 +2674,17 @@ namespace Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<int?>("PayslipId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("WorkingShiftEventId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
+
+                    b.HasIndex("PayslipId");
 
                     b.HasIndex("WorkingShiftEventId");
 
@@ -26706,23 +26668,9 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Models.Models.PayslipSalaryDelta", b =>
                 {
-                    b.HasOne("Models.Models.Payslip", "Payslip")
+                    b.HasOne("Models.Models.Payslip", null)
                         .WithMany("SalaryDeltas")
-                        .HasForeignKey("PayslipId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Payslip");
-                });
-
-            modelBuilder.Entity("Models.Models.PayslipWorkingShiftTimekeeping", b =>
-                {
-                    b.HasOne("Models.Models.Payslip", "Payslip")
-                        .WithMany("Timekeepings")
-                        .HasForeignKey("PayslipId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Payslip");
+                        .HasForeignKey("PayslipId");
                 });
 
             modelBuilder.Entity("Models.Models.Task", b =>
@@ -26848,6 +26796,10 @@ namespace Repositories.Migrations
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Models.Models.Payslip", null)
+                        .WithMany("Timekeepings")
+                        .HasForeignKey("PayslipId");
 
                     b.HasOne("Models.Models.WorkingShiftEvent", "WorkingShiftEvent")
                         .WithMany("Timekeepings")

@@ -3,18 +3,18 @@
     public class UserDTO
     {
         // General Info
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
-        public string CitizenId { get; set; }
-        public string Email { get; set; }
-        public bool Sex { get; set; }
-        public DateTime Birthday { get; set; }
+        public string? UserName { get; set; }
+        public string? Password { get; set; }
+        public string? Name { get; set; }
+        public string? Address { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? CitizenId { get; set; }
+        public string? Email { get; set; }
+        public string Sex { get; set; }
+        public DateTime? Birthday { get; set; }
 
         // Salary Info
-        public decimal BaseSalary { get; set; }
+        public decimal? BaseSalary { get; set; }
         public string? BankName { get; set; }
         public string? BankCode { get; set; }
         public string? BankBranch { get; set; }

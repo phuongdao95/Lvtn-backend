@@ -12,14 +12,16 @@ namespace lvtn_backend.Controllers
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
+        private readonly IPermissionService _permissionService;
         private readonly IMapper _mapper;
-        public RoleController(IRoleService roleService, IMapper mapper)
+        public RoleController(IRoleService roleService, IMapper mapper, IPermissionService permissionService)
         {
             _roleService = roleService;
             _mapper = mapper;
+            _permissionService = permissionService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{roleId}")]
         public IActionResult GetRoleById(int roleId)
         {
             try
@@ -36,9 +38,9 @@ namespace lvtn_backend.Controllers
 
         [HttpGet]
         public IActionResult GetRoleList(
-            [FromQuery] int offset = 0, 
+            [FromQuery] int offset = 0,
             [FromQuery] int limit = 20,
-            [FromQuery] string? query = "", 
+            [FromQuery] string? query = "",
             [FromQuery] string? queryType = "name")
         {
             try
@@ -93,6 +95,26 @@ namespace lvtn_backend.Controllers
             {
                 _roleService.DeleteRoleById(id);
                 return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("{id}/permission")]
+        public IActionResult GetPermissionOfRole(int id)
+        {
+            try
+            {
+                var permission = _permissionService.GetPermissionsOfRole(id);
+                var mapped = _mapper.Map<IEnumerable<PermissionInfoDTO>>(permission);
+                return Ok(new Dictionary<string, object>
+                {
+                    {"data", mapped },
+                    {"count", mapped.Count() },
+                    {"total", mapped.Count() }
+                });
             }
             catch (Exception)
             {

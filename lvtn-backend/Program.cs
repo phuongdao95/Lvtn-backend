@@ -81,6 +81,7 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<ISalaryDeltaService, SalaryDeltaService>();
 builder.Services.AddScoped<ISalaryFormulaService, SalaryFormulaService>();
 builder.Services.AddScoped<IPayrollService, PayrollService>();
+builder.Services.AddScoped<IdentityService, IdentityService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
 
