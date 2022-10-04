@@ -11,8 +11,8 @@ namespace lvtn_backend.Controllers
     public class SalaryGroupController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly IGroupService _groupService;
-        public SalaryGroupController(IMapper mapper, IGroupService groupService)
+        private readonly ISalaryGroupService _groupService;
+        public SalaryGroupController(IMapper mapper, ISalaryGroupService groupService)
         {
             _mapper = mapper;
             _groupService = groupService;
@@ -27,9 +27,9 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                var groupList = _groupService.GetGroupList(offset, limit, query, queryType);
-                var groupListTotal = _groupService.GetGroupListCount(offset, limit, query, queryType);
-                var groupInfoList = _mapper.Map<IEnumerable<GroupInfoDTO>>(groupList);
+                var groupList = _groupService.GetSalaryGroupList(offset, limit, query, queryType);
+                var groupListTotal = _groupService.GetSalaryGroupCount(offset, limit, query, queryType);
+                var groupInfoList = _mapper.Map<IEnumerable<SalaryGroupInfoDTO>>(groupList);
 
                 return Ok(new Dictionary<string, object>()
                 {
@@ -45,11 +45,11 @@ namespace lvtn_backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateGroup([FromBody] GroupDTO groupDTO)
+        public IActionResult CreateGroup([FromBody] SalaryGroupDTO groupDTO)
         {
             try
             {
-                _groupService.CreateGroup(groupDTO);
+                _groupService.CreateSalaryGroup(groupDTO);
                 return Ok();
             }
             catch (Exception)
@@ -63,8 +63,8 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                var group = _groupService.GetGroupById(id);
-                return Ok(_mapper.Map<GroupInfoDTO>(group));
+                var group = _groupService.GetSalaryGroupById(id);
+                return Ok(_mapper.Map<SalaryGroupInfoDTO>(group));
             }
             catch (Exception)
             {
@@ -73,11 +73,11 @@ namespace lvtn_backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateGroup(int id, GroupDTO groupDTO)
+        public IActionResult UpdateGroup(int id, SalaryGroupDTO groupDTO)
         {
             try
             {
-                _groupService.UpdateGroup(id, groupDTO);
+                _groupService.UpdateSalaryGroup(id, groupDTO);
                 return Ok();
             }
             catch (Exception)
@@ -91,7 +91,7 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                _groupService.DeleteGroup(id);
+                _groupService.DeleteSalaryGroup(id);
                 return Ok();
             }
             catch (Exception)

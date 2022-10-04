@@ -144,7 +144,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 1,
                     Name = "Group A",
                     Description = "Group A",
-                    FormulaName = "formula_1",
+                    Formula = "formula_1",
                 }
             },
             {
@@ -154,7 +154,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 2,
                     Name = "Group B",
                     Description  = "Group B",
-                    FormulaName = "formula_2",
+                    Formula = "formula_2",
                 }
             },
             {
@@ -164,7 +164,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 3,
                     Name = "Group C",
                     Description = "Group C",
-                    FormulaName = "formula_3"
+                    Formula = "formula_3"
                 }
             }
         };
