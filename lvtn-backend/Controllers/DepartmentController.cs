@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Services.Contracts;
-using System.ComponentModel;
 
 namespace lvtn_backend.Controllers
 {
@@ -85,7 +83,7 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                _departmentService.GetDepartmentById(id);
+                _departmentService.DeleteDepartmentById(id);
                 return Ok();
             }
             catch (Exception)

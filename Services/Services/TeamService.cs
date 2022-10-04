@@ -43,7 +43,17 @@ namespace Services.Services
 
         public Team GetTeamById(int id)
         {
-            return _teamRepository.GetByID(id);
+            var team =  _teamRepository.GetByID(id);
+            if (team == null) 
+            {
+                throw new Exception("team is null");
+            }
+
+            _context.Entry(team).Reference(t => t.Department).Load();
+            _context.Entry(team).Reference(t => t.Leader).Load();
+            _context.Entry(team).Collection(t => t.Members).Load();
+
+            return team;
         }
 
         public int GetTeamCount()

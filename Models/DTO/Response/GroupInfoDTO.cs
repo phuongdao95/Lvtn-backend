@@ -1,10 +1,7 @@
-﻿namespace Models.DTO.Response
+﻿
+namespace Models.DTO.Response
 {
-    public class GroupInfoDTO
+    internal class GroupInfoDTO
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; } 
-        public string? FormulaName { get; set; }
     }
 }

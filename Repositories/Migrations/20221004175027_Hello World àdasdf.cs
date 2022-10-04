@@ -4,7 +4,7 @@
 
 namespace Repositories.Migrations
 {
-    public partial class RemoveFormulaDisplayNameofgroup : Migration
+    public partial class HelloWorldàdasdf : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -135,60 +135,60 @@ namespace Repositories.DataContext.DataSeeder
             }
         };
 
-        public static readonly Dictionary<string, Group> DefaultGroupMap = new Dictionary<string, Group>
+        public static readonly Dictionary<string, SalaryGroup> DefaultGroupMap = new Dictionary<string, SalaryGroup>
         {
             {
                 GROUP_A,
-                new Group
+                new SalaryGroup
                 {
                     Id = 1,
                     Name = "Group A",
                     Description = "Group A",
-                    FormulaName = "formula_1",
+                    Formula = "formula_1",
                 }
             },
             {
                 GROUP_B,
-                new Group
+                new SalaryGroup
                 {
                     Id = 2,
                     Name = "Group B",
                     Description  = "Group B",
-                    FormulaName = "formula_2",
+                    Formula = "formula_2",
                 }
             },
             {
                 GROUP_C,
-                new Group
+                new SalaryGroup
                 {
                     Id = 3,
                     Name = "Group C",
                     Description = "Group C",
-                    FormulaName = "formula_3"
+                    Formula = "formula_3"
                 }
             }
         };
 
-        private List<Permission> _permissions { get; set; }
-        private List<Role> _roles { get; set; }
-        private List<Dictionary<string, object>> _rolePermissions { get; set; }
-        private List<Department> _departments { get; set; }
-        private List<Team> _teams { get; set; }
-        private List<User> _users { get; set; }
-        private List<Group> _groups { get; set; }
+        public List<Permission> Permissions { get; set; }
+        public List<Role> Roles { get; set; }
+        public List<Dictionary<string, object>> RolePermission { get; set; }
+        public List<Department> Departments { get; set; }
+        public List<Team> Teams { get; set; }
+        public List<User> Users { get; set; }
+        public List<SalaryGroup> Groups { get; set; }
 
         private readonly ModelBuilder _modelBuilder;
 
         public AdministrationDataSeeder(ModelBuilder modelBuilder)
         {
             _modelBuilder = modelBuilder;
-            _permissions = initializePermissions();
-            _roles = initializeRoles();
-            _rolePermissions = initializeRolePermissions();
-            _departments = initializeDepartments();
-            _teams = initializeTeams();
-            _users = initializeUsers();
-            _groups = initializeGroups();
+            Permissions = initializePermissions();
+            Roles = initializeRoles();
+            RolePermission = initializeRolePermissions();
+            Departments = initializeDepartments();
+            Teams = initializeTeams();
+            Users = initializeUsers();
+            Groups = initializeGroups();
         }
 
         private List<Permission> initializePermissions()
@@ -227,9 +227,9 @@ namespace Repositories.DataContext.DataSeeder
         private List<Dictionary<string, object>> initializeRolePermissions()
         {
             var result = new List<Dictionary<string, object>>();
-            _roles.ForEach((role) =>
+            Roles.ForEach((role) =>
             {
-                _permissions.ForEach((permission) =>
+                Permissions.ForEach((permission) =>
                 {
                     result.Add(new Dictionary<string, object>
                     {
@@ -285,7 +285,7 @@ namespace Repositories.DataContext.DataSeeder
 
             result.AddRange(DefaultUserMap.Values);
 
-            result.AddRange(Enumerable.Range(startIndex + 1, 240).Select((index) => new User()
+            result.AddRange(Enumerable.Range(startIndex + 1, 100).Select((index) => new User()
             {
                 Id = index,
                 Name = $"User {index}",
@@ -298,9 +298,9 @@ namespace Repositories.DataContext.DataSeeder
             return result;
         }
 
-        private List<Group> initializeGroups()
+        private List<SalaryGroup> initializeGroups()
         {
-            var result = new List<Group>();
+            var result = new List<SalaryGroup>();
             var startIndex = DefaultGroupMap.Values.Count() + 1;
 
             result.AddRange(DefaultGroupMap.Values);
@@ -311,25 +311,25 @@ namespace Repositories.DataContext.DataSeeder
         public void SeedData()
         {
             _modelBuilder.Entity<Permission>()
-                .HasData(_permissions);
+                .HasData(Permissions);
 
             _modelBuilder.Entity<Role>()
-                .HasData(_roles);
+                .HasData(Roles);
 
             _modelBuilder.Entity("RolePermission")
-                .HasData(_rolePermissions);
+                .HasData(RolePermission);
 
             _modelBuilder.Entity<Department>()
-                .HasData(_departments);
+                .HasData(Departments);
 
             _modelBuilder.Entity<Team>()
-                .HasData(_teams);
+                .HasData(Teams);
 
             _modelBuilder.Entity<User>()
-                .HasData(_users);
+                .HasData(Users);
 
-            _modelBuilder.Entity<Group>()
-                .HasData(_groups);
+            _modelBuilder.Entity<SalaryGroup>()
+                .HasData(Groups);
         }
     }
 }

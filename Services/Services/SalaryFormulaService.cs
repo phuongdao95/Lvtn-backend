@@ -3,9 +3,8 @@ using Models.DTO.Request;
 using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
+using org.matheval;
 using Services.Contracts;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
 
 namespace Services.Services
 {
@@ -13,10 +12,14 @@ namespace Services.Services
     {
         private readonly IMapper _mapper;
         private readonly EmsContext _context;
-        public SalaryFormulaService(IMapper mapper, EmsContext context)
+        private readonly IPayrollService _payrollService;
+        public SalaryFormulaService(IMapper mapper, 
+            EmsContext context,
+            IPayrollService payrollService)
         {
             _mapper = mapper;
             _context = context;
+            _payrollService = payrollService; 
         }
 
         public void DeleteFormula(int id)
@@ -101,9 +104,59 @@ namespace Services.Services
             var mapped = _mapper.Map<SalaryFormula>(formulaDTO);
             mapped.Id = id;
 
+            ensuureFormulaValid(formula);
+
             _context.SalaryFormulas.Update(mapped);
             _context.SaveChanges();
 
+        }
+
+        private void ensuureFormulaValid(SalaryFormula formula)
+        {
+            var allSystemVariables = PayrollService.AllSystemVariables;
+            var expression = new Expression(formula.Define);
+
+            if (expression.GetError().Count > 0)
+            {
+                throw new Exception(string.Join("\n", expression.GetError()));
+            }
+
+            var variables = expression.getVariables();
+            foreach (var variable in variables)
+            {
+                if (!allSystemVariables.Contains(variable)
+                    || !_context.SalaryVariables.Any(x => x.Name == variable))
+                {
+                    throw new Exception("Cannot find variable name of " + variable);
+                }
+            }
+        }
+
+        private void ensureVariableValid(SalaryVariable variable)
+        {
+            try
+            {
+                if (variable.DataType == VariableDataType.Text)
+                {
+
+                }
+                else if (variable.DataType == VariableDataType.Number)
+                {
+                    decimal.Parse(variable.Value);
+                }
+                else if (variable.DataType == VariableDataType.DateTime)
+                {
+                    DateTime.Parse(variable.Value);
+                }
+                else if (variable.DataType == VariableDataType.Boolean)
+                {
+                    bool.Parse(variable.Value);
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Variable is invalid");
+            }
         }
 
         public void UpdateVariable(int id, SalaryVariableDTO variableDTO)
@@ -118,6 +171,8 @@ namespace Services.Services
             mapped.DataType = GetVariableDataType(variableDTO.DataType);
             mapped.Id = id;
 
+            ensureVariableValid(variable);
+
             _context.SalaryVariables.Update(mapped);
             _context.SaveChanges();
         }
@@ -126,6 +181,8 @@ namespace Services.Services
         {
             var formula = _mapper.Map<SalaryFormula>(formulaDTO);
 
+            ensuureFormulaValid(formula);
+
             _context.SalaryFormulas.Add(formula);
             _context.SaveChanges();
         }
@@ -133,9 +190,12 @@ namespace Services.Services
         public void CreateVariable(SalaryVariableDTO variableDTO)
         {
             var dataType = GetVariableDataType(variableDTO.DataType);
+
             var variable =  _mapper.Map<SalaryVariable>(variableDTO);
 
             variable.DataType = dataType;
+
+            ensureVariableValid(variable);
 
             _context.SalaryVariables.Add(variable);
             _context.SaveChanges();

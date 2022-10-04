@@ -24,7 +24,7 @@ namespace Services.Services
             var userIds = salaryDeltaDTO.UserIds ?? new List<int>();
             var users = _context.Users.Where((user) => userIds.Contains(user.Id)).ToList();
 
-            salaryDelta.Users = users;
+            //salaryDelta.Users = users;
             _context.SalaryDeltas.Add(salaryDelta);
             _context.SaveChanges();
         }

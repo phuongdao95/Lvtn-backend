@@ -13,5 +13,6 @@ namespace Models.Models
         public Department? Department { get; set; }
         public User? Leader { get; set; }
         public List<User>? Members { get; set; }
+        public List<TaskBoard>? TaskBoards { get; set; }
     }
 }

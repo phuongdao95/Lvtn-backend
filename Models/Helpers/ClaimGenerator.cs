@@ -13,8 +13,11 @@
             "group",
 
             "dab",
-            "formula",
-            "payslip"
+            "salary_formula",
+            "salary_variable",
+            "payroll",
+            "payslip",
+            "milestone",
         };
 
 

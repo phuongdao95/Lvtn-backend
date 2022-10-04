@@ -1,6 +1,10 @@
 ﻿using Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.DataContext.DataSeeder;
+using Task = Models.Models.Task;
+using Microsoft.Data.SqlClient.DataClassification;
+using System.Reflection.Emit;
+using System.Data.Common;
 
 namespace Models.Repositories.DataContext
 {
@@ -15,87 +19,31 @@ namespace Models.Repositories.DataContext
         public DbSet<Group> Groups { get; set; }
 
         /** Salary Management */
-        public DbSet<Payroll> Payrolls { get; set; }
+        public DbSet<SalaryGroup> SalaryGroups { get; set; }
         public DbSet<SalaryDelta> SalaryDeltas { get; set; }
         public DbSet<SalaryFormula> SalaryFormulas { get; set; }
         public DbSet<SalaryVariable> SalaryVariables { get; set; }
+        public DbSet<Payroll> Payrolls { get; set; }
         public DbSet<Payslip> Payslips { get; set; }
 
+        /** Timekeeping */
+        public DbSet<WorkingShiftEvent> WorkingShiftEvents { get; set; }
+        public DbSet<WorkingShiftTimekeeping> WorkingShiftTimekeepings { get; set; }
+
+        /** Virtual Space */
+        public DbSet<TaskBoard> TaskBoards { get; set; }
+        public DbSet<TaskColumn> TaskColumns { get; set; }
+        public DbSet<Task> Tasks { get; set; }
+        public DbSet<TaskComment> TaskComments { get; set; }
+        public DbSet<TaskFile> TaskFiles { get; set; }
+        public DbSet<TaskLabel> TaskLabels { get; set; }
         /***/
         public EmsContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // 1-1 Team-User (1 Team managed by one User)
-            modelBuilder.Entity<User>()
-                .HasOne<Team>(u => u.TeamManage)
-                .WithOne(t => t.Leader)
-                .HasForeignKey<Team>(t => t.LeaderId);
 
-            // 1-M Team-User (many Users belong to 1 Team)
-            modelBuilder.Entity<User>()
-                .HasOne<Team>(u => u.TeamBelong)
-                .WithMany(t => t.Members)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            // 1-1 User-BankInfo
-            modelBuilder.Entity<User>()
-                .HasOne<BankInfo>(u => u.BankInfo)
-                .WithOne()
-                .HasForeignKey<User>(u => u.BankInfoId);
-
-            // 1-M User-Workday
-            modelBuilder.Entity<User>()
-                .HasMany<WorkingShift>(u => u.WorkingShifts)
-                .WithOne()
-                .HasForeignKey(p => p.EmployeeId)
-                ;
-
-            modelBuilder.Entity<WorkingShift>()
-                .HasOne<WorkingShiftType>()
-                .WithMany(p => p.WorkingShifts)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                ;
-
-            // Self-relation department
-            modelBuilder.Entity<Department>()
-                .HasMany(d => d.Departments)
-                .WithOne(d => d.ParentDepartment)
-                .HasForeignKey(d => d.ParentDepartmentId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            // M-M User-SalaryDelta
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.SalaryDeltaList)
-                .WithMany(d => d.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserSalaryDelta",
-                    right => right.HasOne<SalaryDelta>().WithMany().HasForeignKey("SalaryDeltaId"),
-                    left => left.HasOne<User>().WithMany().HasForeignKey("UserId"),
-                    je => je.HasKey("UserId", "SalaryDeltaId")
-                );
-
-            // M-M 
-            modelBuilder.Entity<SalaryFormula>()
-                .HasIndex(p => p.Name)
-                .IsUnique();
-
-            modelBuilder.Entity<SalaryVariable>()
-                .HasIndex(p => p.Name)
-                .IsUnique();
-
-            // 1-M User-Payslip
-            modelBuilder.Entity<User>()
-                .HasMany(p => p.Payslips)
-                .WithOne(p => p.Employee)
-                .HasForeignKey(p => p.EmployeeId);
-
-            // 1-M Payroll-Payslip
-            modelBuilder.Entity<Payroll>()
-                .HasMany(p => p.PayslipList)
-                .WithOne(p => p.Payroll)
-                .HasForeignKey(p => p.PayrollId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+            /** Administration Mappings*/
 
             // 1-M User-Role
             modelBuilder.Entity<User>()
@@ -115,14 +63,166 @@ namespace Models.Repositories.DataContext
                     je => je.HasKey("PermissionId", "RoleId")
                 );
 
-            modelBuilder.Entity<Group>()
-                .HasMany(p => p.Users)
-                .WithOne(p => p.Group)
-                .HasForeignKey(p => p.GroupId)
-                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<User>()
+                .HasIndex(p => p.Username)
+                .IsUnique();
 
-            new AdministrationDataSeeder(modelBuilder).SeedData();
-            new SalaryManagementDataSeeder(modelBuilder).SeedData();
+            // 1-1 Team-User (1 Team managed by one User)
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.TeamManage)
+                .WithOne(t => t.Leader)
+                .HasForeignKey<Team>(t => t.LeaderId);
+
+            // 1-M Team-User (many Users belong to 1 Team)
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Team)
+                .WithMany(t => t.Members)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            // 1-1 User-BankInfo
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.BankInfo)
+                .WithOne()
+                .HasForeignKey<User>(u => u.BankInfoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Self-relation department
+            modelBuilder.Entity<Department>()
+                .HasMany(d => d.Departments)
+                .WithOne(d => d.ParentDepartment)
+                .HasForeignKey(d => d.ParentDepartmentId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+
+            /** Salary Manager Mappings*/
+            modelBuilder.Entity<SalaryDelta>()
+                .HasOne(p => p.Group)
+                .WithOne()
+                .HasForeignKey<SalaryDelta>(p => p.GroupId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<SalaryFormula>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<SalaryVariable>()
+                .HasIndex(p => p.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<SalaryGroup>()
+                .HasOne(p => p.Group)
+                .WithOne()
+                .HasForeignKey<SalaryGroup>(p => p.GroupId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            // 1-M User-Payslip
+            modelBuilder.Entity<User>()
+                .HasMany(p => p.Payslips)
+                .WithOne(p => p.Employee)
+                .HasForeignKey(p => p.EmployeeId);
+
+            // 1-M Payroll-Payslip
+            modelBuilder.Entity<Payroll>()
+                .HasMany(p => p.PayslipList)
+                .WithOne(p => p.Payroll)
+                .HasForeignKey(p => p.PayrollId)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Payslip>()
+                .HasMany(p => p.SalaryDeltas)
+                .WithOne(p => p.Payslip)
+                .HasForeignKey(p => p.PayslipId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Payslip>()
+                .HasMany(p => p.Timekeepings)
+                .WithOne(p => p.Payslip)
+                .HasForeignKey(p => p.PayslipId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            /** Virtual Space Mappings */
+            modelBuilder.Entity<Team>()
+                .HasMany(p => p.TaskBoards)
+                .WithOne(p => p.Team)
+                .HasForeignKey(p => p.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskBoard>()
+                .HasMany(p => p.TaskColumns)
+                .WithOne(p => p.Board)
+                .HasForeignKey(p => p.BoardId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskColumn>()
+                .HasMany(p => p.Tasks)
+                .WithOne()
+                .HasForeignKey(p => p.ColumnId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Task>()
+                .HasMany(p => p.Labels)
+                .WithMany(p => p.Tasks)
+                .UsingEntity<Dictionary<string, object>>(
+                    "TaskTaskLabel",
+                    right => right.HasOne<TaskLabel>().WithMany().HasForeignKey("TaskLabelId"),
+                    left => left.HasOne<Task>().WithMany().HasForeignKey("TaskId"),
+                    je => je.HasKey("TaskId", "TaskLabelId")
+                );
+
+            modelBuilder.Entity<Task>()
+                .HasMany(p => p.Comments)
+                .WithOne(p => p.Task)
+                .HasForeignKey(p => p.TaskId);
+
+            modelBuilder.Entity<TaskComment>()
+                .HasMany(p => p.TaskFiles)
+                .WithOne(p => p.TaskComment)
+                .HasForeignKey(p => p.TaskCommentId);
+
+
+            /** Timekeepings Mappings */
+            // Many to many User - WorkingShiftEvent
+            modelBuilder.Entity<User>()
+               .HasMany(p => p.WorkingShiftEvents)
+               .WithMany(p => p.Users)
+               .UsingEntity<Dictionary<string, object>>(
+                   "WorkingShiftEventUser",
+                   left => left.HasOne<WorkingShiftEvent>().WithMany().HasForeignKey("WorkingShiftEventId"),
+                   right => right.HasOne<User>().WithMany().HasForeignKey("UserId")
+               );
+
+            // One to many User - WorkingShift
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Timekeepings)
+                .WithOne(p => p.Employee)
+                .HasForeignKey(p => p.EmployeeId)
+                ;
+
+            // One to many WorkingShiftTimekeeping - WorkingShiftEvent
+            modelBuilder.Entity<WorkingShiftTimekeeping>()
+                .HasOne(p => p.WorkingShiftEvent)
+                .WithMany(p => p.Timekeepings)
+                .HasForeignKey(p => p.WorkingShiftEventId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                ;
+
+            seedData(modelBuilder);
+        }
+
+        private void seedData(ModelBuilder modelBuilder)
+        {
+            var administrationDataSeeder = new AdministrationDataSeeder(modelBuilder);
+            var users = administrationDataSeeder.Users;
+
+            administrationDataSeeder.SeedData();
+
+            new TimekeepingDataSeeder(modelBuilder, users)
+                .SeedData();
+
+            new SalaryManagementDataSeeder(modelBuilder)
+                .SeedData();
+
         }
     }
 }
