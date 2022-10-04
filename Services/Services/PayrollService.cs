@@ -57,91 +57,91 @@ namespace Services.Services
             _allSalaryVariables = _context.SalaryVariables.ToList();
         }
 
-        public void CreatePayroll(PayrollDTO payrollDTO)
-        {
-            var payroll = _mapper.Map<Payroll>(payrollDTO);
-            var users = _context.Users;
+        //public void CreatePayroll(PayrollDTO payrollDTO)
+        //{
+        //    var payroll = _mapper.Map<Payroll>(payrollDTO);
+        //    var users = _context.Users;
 
 
-            foreach (var user in users)
-            {
-                var salaryFormulaName = user.Group?.FormulaName;
-                var salaryFormula = _allSalaryFormulas.FirstOrDefault(formula => formula.Name.Equals(salaryFormulaName))
-                    ?.Name ?? $"{BASE_SALARY} - {TOTAL_DEDUCTION} + {TOTAL_ALLOWANCE} + {TOTAL_BONUS}";
+        //    foreach (var user in users)
+        //    {
+        //        var salaryFormulaName = user.Group?.Formula;
+        //        var salaryFormula = _allSalaryFormulas.FirstOrDefault(formula => formula.Name.Equals(salaryFormulaName))
+        //            ?.Name ?? $"{BASE_SALARY} - {TOTAL_DEDUCTION} + {TOTAL_ALLOWANCE} + {TOTAL_BONUS}";
 
-                decimal total = 0;
+        //        decimal total = 0;
 
-                var expression = new Expression(salaryFormula);
-                var variables = expression.getVariables();
+        //        var expression = new Expression(salaryFormula);
+        //        var variables = expression.getVariables();
 
-                foreach (var variable in variables)
-                {
-                    bindExpressionWithValueFromUser(user, expression, variable, payrollDTO.FromDate);
-                }
+        //        foreach (var variable in variables)
+        //        {
+        //            bindExpressionWithValueFromUser(user, expression, variable, payrollDTO.FromDate);
+        //        }
 
-                total = (decimal)expression.Eval();
+        //        total = (decimal)expression.Eval();
 
-                for (var date = payroll.FromDate; date < payroll.ToDate; date = date.AddDays(1))
-                {
-                    var workingShiftTimekeepings = _context.WorkingShiftTimekeepings.Where(
-                        x => x.WorkingShiftEvent.StartTime.Day == date.Day &&
-                            x.WorkingShiftEvent.StartTime.Month == date.Month &&
-                            x.WorkingShiftEvent.StartTime.Year == date.Year);
+        //        for (var date = payroll.FromDate; date < payroll.ToDate; date = date.AddDays(1))
+        //        {
+        //            var workingShiftTimekeepings = _context.WorkingShiftTimekeepings.Where(
+        //                x => x.WorkingShiftEvent.StartTime.Day == date.Day &&
+        //                    x.WorkingShiftEvent.StartTime.Month == date.Month &&
+        //                    x.WorkingShiftEvent.StartTime.Year == date.Year);
 
-                    foreach (var timekeeping in workingShiftTimekeepings)
-                    {
-                        WorkingShiftEvent shift = timekeeping.WorkingShiftEvent;
+        //            foreach (var timekeeping in workingShiftTimekeepings)
+        //            {
+        //                WorkingShiftEvent shift = timekeeping.WorkingShiftEvent;
 
-                        if (!shift.Users.Any(x => x.Id == timekeeping.EmployeeId))
-                        {
-                            break;
-                        }
-                        var formula = timekeeping.WorkingShiftEvent.Formula;
-                        var exp = new Expression(formula);
+        //                if (!shift.Users.Any(x => x.Id == timekeeping.EmployeeId))
+        //                {
+        //                    break;
+        //                }
+        //                var formula = timekeeping.WorkingShiftEvent.Formula;
+        //                var exp = new Expression(formula);
 
-                        if (
-                            timekeeping.DidCheckIn &&
-                            timekeeping.DidCheckout)
-                        {
-                            foreach (var variable in exp.getVariables())
-                            {
-                                bindExpressionWithValueFromTimekeeping(timekeeping, expression, variable);
-                            }
-                        }
-                        else
-                        {
-                            if (
-                                (!timekeeping.DidCheckIn && !timekeeping.DidCheckout && exp.getVariables().Contains(DID_NOT_CHECKIN_CHECKOUT)) ||
-                                (!timekeeping.DidCheckIn && timekeeping.DidCheckout && exp.getVariables().Contains(DID_NOT_CHECKIN)) ||
-                                (!timekeeping.DidCheckout && timekeeping.DidCheckIn && exp.getVariables().Contains(DID_NOT_CHECKIN)))
-                            {
-                                foreach (var variable in exp.getVariables())
-                                {
-                                    bindExpressionWithValueFromTimekeeping(timekeeping, expression, variable);
-                                }
-                            } else
-                            {
-                                exp = new Expression("0");
-                            }
-                        }
+        //                if (
+        //                    timekeeping.DidCheckIn &&
+        //                    timekeeping.DidCheckout)
+        //                {
+        //                    foreach (var variable in exp.getVariables())
+        //                    {
+        //                        bindExpressionWithValueFromTimekeeping(timekeeping, expression, variable);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (
+        //                        (!timekeeping.DidCheckIn && !timekeeping.DidCheckout && exp.getVariables().Contains(DID_NOT_CHECKIN_CHECKOUT)) ||
+        //                        (!timekeeping.DidCheckIn && timekeeping.DidCheckout && exp.getVariables().Contains(DID_NOT_CHECKIN)) ||
+        //                        (!timekeeping.DidCheckout && timekeeping.DidCheckIn && exp.getVariables().Contains(DID_NOT_CHECKIN)))
+        //                    {
+        //                        foreach (var variable in exp.getVariables())
+        //                        {
+        //                            bindExpressionWithValueFromTimekeeping(timekeeping, expression, variable);
+        //                        }
+        //                    } else
+        //                    {
+        //                        exp = new Expression("0");
+        //                    }
+        //                }
 
-                        total += exp.Eval<Decimal>();
-                    }
-                }
+        //                total += exp.Eval<Decimal>();
+        //            }
+        //        }
 
 
-                payroll.PayslipList.Add(new Payslip
-                {
-                    EmployeeId = user.Id,
-                    BaseSalary = user.BaseSalary,
-                    Description = payrollDTO.Description,
+        //        payroll.PayslipList.Add(new Payslip
+        //        {
+        //            EmployeeId = user.Id,
+        //            BaseSalary = user.BaseSalary,
+        //            Description = payrollDTO.Description,
                     
-                });
-            }
+        //        });
+        //    }
 
-            _context.Payrolls.Add(payroll);
-            _context.SaveChanges();
-        }
+        //    _context.Payrolls.Add(payroll);
+        //    _context.SaveChanges();
+        //}
 
         private void bindExpressionWithValueFromUser(User user, Expression expression, string variable, DateTime date)
         {
@@ -463,6 +463,11 @@ namespace Services.Services
         {
             var payslipList = GetPayslipListOfPayroll(id, offset, limit, query, queryType);
             return payslipList.Count();
+        }
+
+        public void CreatePayroll(PayrollDTO payrollDTO)
+        {
+            throw new NotImplementedException();
         }
     }
 }

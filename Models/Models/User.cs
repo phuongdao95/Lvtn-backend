@@ -39,7 +39,7 @@ namespace Models.Models
         public string? InsuranceCode { get; set; }
 
         // Navigation properties
-        public SalaryGroup? Group { get; set; }
+        public Group? Group { get; set; }
         public Role? Role { get; set; }
         public Team? TeamManage { get; set; }
         public Department? DepartmentManage { get; set; }

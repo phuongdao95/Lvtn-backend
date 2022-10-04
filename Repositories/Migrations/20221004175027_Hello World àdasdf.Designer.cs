@@ -12,8 +12,8 @@ using Models.Repositories.DataContext;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(EmsContext))]
-    [Migration("20221003132008_Updatasdfjalsdf")]
-    partial class Updatasdfjalsdf
+    [Migration("20221004175027_Hello World àdasdf")]
+    partial class HelloWorldàdasdf
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -163,6 +163,25 @@ namespace Repositories.Migrations
                             Name = "Department 11",
                             ParentDepartmentId = 1
                         });
+                });
+
+            modelBuilder.Entity("Models.Models.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("Models.Models.Payroll", b =>
@@ -714,6 +733,9 @@ namespace Repositories.Migrations
                     b.Property<DateTime>("FromMonth")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -724,7 +746,16 @@ namespace Repositories.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId")
+                        .IsUnique()
+                        .HasFilter("[GroupId] IS NOT NULL");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SalaryDeltas");
 
@@ -837,15 +868,22 @@ namespace Repositories.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FormulaName")
+                    b.Property<string>("Formula")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId")
+                        .IsUnique()
+                        .HasFilter("[GroupId] IS NOT NULL");
 
                     b.ToTable("SalaryGroups");
 
@@ -854,21 +892,21 @@ namespace Repositories.Migrations
                         {
                             Id = 1,
                             Description = "Group A",
-                            FormulaName = "formula_1",
+                            Formula = "formula_1",
                             Name = "Group A"
                         },
                         new
                         {
                             Id = 2,
                             Description = "Group B",
-                            FormulaName = "formula_2",
+                            Formula = "formula_2",
                             Name = "Group B"
                         },
                         new
                         {
                             Id = 3,
                             Description = "Group C",
-                            FormulaName = "formula_3",
+                            Formula = "formula_3",
                             Name = "Group C"
                         });
                 });
@@ -1265,7 +1303,7 @@ namespace Repositories.Migrations
                     b.Property<decimal>("BaseSalary")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CitizenId")
@@ -1345,7 +1383,6 @@ namespace Repositories.Migrations
                         {
                             Id = 1,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "000001",
                             Name = "Admin User",
                             Password = "admin",
@@ -1356,7 +1393,6 @@ namespace Repositories.Migrations
                         {
                             Id = 2,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "000002",
                             Name = "Manager User",
                             Password = "manager",
@@ -1367,7 +1403,6 @@ namespace Repositories.Migrations
                         {
                             Id = 4,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000004",
                             Name = "User 4",
                             Password = "password4",
@@ -1378,7 +1413,6 @@ namespace Repositories.Migrations
                         {
                             Id = 5,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000005",
                             Name = "User 5",
                             Password = "password5",
@@ -1389,7 +1423,6 @@ namespace Repositories.Migrations
                         {
                             Id = 6,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000006",
                             Name = "User 6",
                             Password = "password6",
@@ -1400,7 +1433,6 @@ namespace Repositories.Migrations
                         {
                             Id = 7,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000007",
                             Name = "User 7",
                             Password = "password7",
@@ -1411,7 +1443,6 @@ namespace Repositories.Migrations
                         {
                             Id = 8,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000008",
                             Name = "User 8",
                             Password = "password8",
@@ -1422,7 +1453,6 @@ namespace Repositories.Migrations
                         {
                             Id = 9,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000009",
                             Name = "User 9",
                             Password = "password9",
@@ -1433,7 +1463,6 @@ namespace Repositories.Migrations
                         {
                             Id = 10,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000010",
                             Name = "User 10",
                             Password = "password10",
@@ -1444,7 +1473,6 @@ namespace Repositories.Migrations
                         {
                             Id = 11,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000011",
                             Name = "User 11",
                             Password = "password11",
@@ -1455,7 +1483,6 @@ namespace Repositories.Migrations
                         {
                             Id = 12,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000012",
                             Name = "User 12",
                             Password = "password12",
@@ -1466,7 +1493,6 @@ namespace Repositories.Migrations
                         {
                             Id = 13,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000013",
                             Name = "User 13",
                             Password = "password13",
@@ -1477,7 +1503,6 @@ namespace Repositories.Migrations
                         {
                             Id = 14,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000014",
                             Name = "User 14",
                             Password = "password14",
@@ -1488,7 +1513,6 @@ namespace Repositories.Migrations
                         {
                             Id = 15,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000015",
                             Name = "User 15",
                             Password = "password15",
@@ -1499,7 +1523,6 @@ namespace Repositories.Migrations
                         {
                             Id = 16,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000016",
                             Name = "User 16",
                             Password = "password16",
@@ -1510,7 +1533,6 @@ namespace Repositories.Migrations
                         {
                             Id = 17,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000017",
                             Name = "User 17",
                             Password = "password17",
@@ -1521,7 +1543,6 @@ namespace Repositories.Migrations
                         {
                             Id = 18,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000018",
                             Name = "User 18",
                             Password = "password18",
@@ -1532,7 +1553,6 @@ namespace Repositories.Migrations
                         {
                             Id = 19,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000019",
                             Name = "User 19",
                             Password = "password19",
@@ -1543,7 +1563,6 @@ namespace Repositories.Migrations
                         {
                             Id = 20,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000020",
                             Name = "User 20",
                             Password = "password20",
@@ -1554,7 +1573,6 @@ namespace Repositories.Migrations
                         {
                             Id = 21,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000021",
                             Name = "User 21",
                             Password = "password21",
@@ -1565,7 +1583,6 @@ namespace Repositories.Migrations
                         {
                             Id = 22,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000022",
                             Name = "User 22",
                             Password = "password22",
@@ -1576,7 +1593,6 @@ namespace Repositories.Migrations
                         {
                             Id = 23,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000023",
                             Name = "User 23",
                             Password = "password23",
@@ -1587,7 +1603,6 @@ namespace Repositories.Migrations
                         {
                             Id = 24,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000024",
                             Name = "User 24",
                             Password = "password24",
@@ -1598,7 +1613,6 @@ namespace Repositories.Migrations
                         {
                             Id = 25,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000025",
                             Name = "User 25",
                             Password = "password25",
@@ -1609,7 +1623,6 @@ namespace Repositories.Migrations
                         {
                             Id = 26,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000026",
                             Name = "User 26",
                             Password = "password26",
@@ -1620,7 +1633,6 @@ namespace Repositories.Migrations
                         {
                             Id = 27,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000027",
                             Name = "User 27",
                             Password = "password27",
@@ -1631,7 +1643,6 @@ namespace Repositories.Migrations
                         {
                             Id = 28,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000028",
                             Name = "User 28",
                             Password = "password28",
@@ -1642,7 +1653,6 @@ namespace Repositories.Migrations
                         {
                             Id = 29,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000029",
                             Name = "User 29",
                             Password = "password29",
@@ -1653,7 +1663,6 @@ namespace Repositories.Migrations
                         {
                             Id = 30,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000030",
                             Name = "User 30",
                             Password = "password30",
@@ -1664,7 +1673,6 @@ namespace Repositories.Migrations
                         {
                             Id = 31,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000031",
                             Name = "User 31",
                             Password = "password31",
@@ -1675,7 +1683,6 @@ namespace Repositories.Migrations
                         {
                             Id = 32,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000032",
                             Name = "User 32",
                             Password = "password32",
@@ -1686,7 +1693,6 @@ namespace Repositories.Migrations
                         {
                             Id = 33,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000033",
                             Name = "User 33",
                             Password = "password33",
@@ -1697,7 +1703,6 @@ namespace Repositories.Migrations
                         {
                             Id = 34,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000034",
                             Name = "User 34",
                             Password = "password34",
@@ -1708,7 +1713,6 @@ namespace Repositories.Migrations
                         {
                             Id = 35,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000035",
                             Name = "User 35",
                             Password = "password35",
@@ -1719,7 +1723,6 @@ namespace Repositories.Migrations
                         {
                             Id = 36,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000036",
                             Name = "User 36",
                             Password = "password36",
@@ -1730,7 +1733,6 @@ namespace Repositories.Migrations
                         {
                             Id = 37,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000037",
                             Name = "User 37",
                             Password = "password37",
@@ -1741,7 +1743,6 @@ namespace Repositories.Migrations
                         {
                             Id = 38,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000038",
                             Name = "User 38",
                             Password = "password38",
@@ -1752,7 +1753,6 @@ namespace Repositories.Migrations
                         {
                             Id = 39,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000039",
                             Name = "User 39",
                             Password = "password39",
@@ -1763,7 +1763,6 @@ namespace Repositories.Migrations
                         {
                             Id = 40,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000040",
                             Name = "User 40",
                             Password = "password40",
@@ -1774,7 +1773,6 @@ namespace Repositories.Migrations
                         {
                             Id = 41,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000041",
                             Name = "User 41",
                             Password = "password41",
@@ -1785,7 +1783,6 @@ namespace Repositories.Migrations
                         {
                             Id = 42,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000042",
                             Name = "User 42",
                             Password = "password42",
@@ -1796,7 +1793,6 @@ namespace Repositories.Migrations
                         {
                             Id = 43,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000043",
                             Name = "User 43",
                             Password = "password43",
@@ -1807,7 +1803,6 @@ namespace Repositories.Migrations
                         {
                             Id = 44,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000044",
                             Name = "User 44",
                             Password = "password44",
@@ -1818,7 +1813,6 @@ namespace Repositories.Migrations
                         {
                             Id = 45,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000045",
                             Name = "User 45",
                             Password = "password45",
@@ -1829,7 +1823,6 @@ namespace Repositories.Migrations
                         {
                             Id = 46,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000046",
                             Name = "User 46",
                             Password = "password46",
@@ -1840,7 +1833,6 @@ namespace Repositories.Migrations
                         {
                             Id = 47,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000047",
                             Name = "User 47",
                             Password = "password47",
@@ -1851,7 +1843,6 @@ namespace Repositories.Migrations
                         {
                             Id = 48,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000048",
                             Name = "User 48",
                             Password = "password48",
@@ -1862,7 +1853,6 @@ namespace Repositories.Migrations
                         {
                             Id = 49,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000049",
                             Name = "User 49",
                             Password = "password49",
@@ -1873,7 +1863,6 @@ namespace Repositories.Migrations
                         {
                             Id = 50,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000050",
                             Name = "User 50",
                             Password = "password50",
@@ -1884,7 +1873,6 @@ namespace Repositories.Migrations
                         {
                             Id = 51,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000051",
                             Name = "User 51",
                             Password = "password51",
@@ -1895,7 +1883,6 @@ namespace Repositories.Migrations
                         {
                             Id = 52,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000052",
                             Name = "User 52",
                             Password = "password52",
@@ -1906,7 +1893,6 @@ namespace Repositories.Migrations
                         {
                             Id = 53,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000053",
                             Name = "User 53",
                             Password = "password53",
@@ -1917,7 +1903,6 @@ namespace Repositories.Migrations
                         {
                             Id = 54,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000054",
                             Name = "User 54",
                             Password = "password54",
@@ -1928,7 +1913,6 @@ namespace Repositories.Migrations
                         {
                             Id = 55,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000055",
                             Name = "User 55",
                             Password = "password55",
@@ -1939,7 +1923,6 @@ namespace Repositories.Migrations
                         {
                             Id = 56,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000056",
                             Name = "User 56",
                             Password = "password56",
@@ -1950,7 +1933,6 @@ namespace Repositories.Migrations
                         {
                             Id = 57,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000057",
                             Name = "User 57",
                             Password = "password57",
@@ -1961,7 +1943,6 @@ namespace Repositories.Migrations
                         {
                             Id = 58,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000058",
                             Name = "User 58",
                             Password = "password58",
@@ -1972,7 +1953,6 @@ namespace Repositories.Migrations
                         {
                             Id = 59,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000059",
                             Name = "User 59",
                             Password = "password59",
@@ -1983,7 +1963,6 @@ namespace Repositories.Migrations
                         {
                             Id = 60,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000060",
                             Name = "User 60",
                             Password = "password60",
@@ -1994,7 +1973,6 @@ namespace Repositories.Migrations
                         {
                             Id = 61,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000061",
                             Name = "User 61",
                             Password = "password61",
@@ -2005,7 +1983,6 @@ namespace Repositories.Migrations
                         {
                             Id = 62,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000062",
                             Name = "User 62",
                             Password = "password62",
@@ -2016,7 +1993,6 @@ namespace Repositories.Migrations
                         {
                             Id = 63,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000063",
                             Name = "User 63",
                             Password = "password63",
@@ -2027,7 +2003,6 @@ namespace Repositories.Migrations
                         {
                             Id = 64,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000064",
                             Name = "User 64",
                             Password = "password64",
@@ -2038,7 +2013,6 @@ namespace Repositories.Migrations
                         {
                             Id = 65,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000065",
                             Name = "User 65",
                             Password = "password65",
@@ -2049,7 +2023,6 @@ namespace Repositories.Migrations
                         {
                             Id = 66,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000066",
                             Name = "User 66",
                             Password = "password66",
@@ -2060,7 +2033,6 @@ namespace Repositories.Migrations
                         {
                             Id = 67,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000067",
                             Name = "User 67",
                             Password = "password67",
@@ -2071,7 +2043,6 @@ namespace Repositories.Migrations
                         {
                             Id = 68,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000068",
                             Name = "User 68",
                             Password = "password68",
@@ -2082,7 +2053,6 @@ namespace Repositories.Migrations
                         {
                             Id = 69,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000069",
                             Name = "User 69",
                             Password = "password69",
@@ -2093,7 +2063,6 @@ namespace Repositories.Migrations
                         {
                             Id = 70,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000070",
                             Name = "User 70",
                             Password = "password70",
@@ -2104,7 +2073,6 @@ namespace Repositories.Migrations
                         {
                             Id = 71,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000071",
                             Name = "User 71",
                             Password = "password71",
@@ -2115,7 +2083,6 @@ namespace Repositories.Migrations
                         {
                             Id = 72,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000072",
                             Name = "User 72",
                             Password = "password72",
@@ -2126,7 +2093,6 @@ namespace Repositories.Migrations
                         {
                             Id = 73,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000073",
                             Name = "User 73",
                             Password = "password73",
@@ -2137,7 +2103,6 @@ namespace Repositories.Migrations
                         {
                             Id = 74,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000074",
                             Name = "User 74",
                             Password = "password74",
@@ -2148,7 +2113,6 @@ namespace Repositories.Migrations
                         {
                             Id = 75,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000075",
                             Name = "User 75",
                             Password = "password75",
@@ -2159,7 +2123,6 @@ namespace Repositories.Migrations
                         {
                             Id = 76,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000076",
                             Name = "User 76",
                             Password = "password76",
@@ -2170,7 +2133,6 @@ namespace Repositories.Migrations
                         {
                             Id = 77,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000077",
                             Name = "User 77",
                             Password = "password77",
@@ -2181,7 +2143,6 @@ namespace Repositories.Migrations
                         {
                             Id = 78,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000078",
                             Name = "User 78",
                             Password = "password78",
@@ -2192,7 +2153,6 @@ namespace Repositories.Migrations
                         {
                             Id = 79,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000079",
                             Name = "User 79",
                             Password = "password79",
@@ -2203,7 +2163,6 @@ namespace Repositories.Migrations
                         {
                             Id = 80,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000080",
                             Name = "User 80",
                             Password = "password80",
@@ -2214,7 +2173,6 @@ namespace Repositories.Migrations
                         {
                             Id = 81,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000081",
                             Name = "User 81",
                             Password = "password81",
@@ -2225,7 +2183,6 @@ namespace Repositories.Migrations
                         {
                             Id = 82,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000082",
                             Name = "User 82",
                             Password = "password82",
@@ -2236,7 +2193,6 @@ namespace Repositories.Migrations
                         {
                             Id = 83,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000083",
                             Name = "User 83",
                             Password = "password83",
@@ -2247,7 +2203,6 @@ namespace Repositories.Migrations
                         {
                             Id = 84,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000084",
                             Name = "User 84",
                             Password = "password84",
@@ -2258,7 +2213,6 @@ namespace Repositories.Migrations
                         {
                             Id = 85,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000085",
                             Name = "User 85",
                             Password = "password85",
@@ -2269,7 +2223,6 @@ namespace Repositories.Migrations
                         {
                             Id = 86,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000086",
                             Name = "User 86",
                             Password = "password86",
@@ -2280,7 +2233,6 @@ namespace Repositories.Migrations
                         {
                             Id = 87,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000087",
                             Name = "User 87",
                             Password = "password87",
@@ -2291,7 +2243,6 @@ namespace Repositories.Migrations
                         {
                             Id = 88,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000088",
                             Name = "User 88",
                             Password = "password88",
@@ -2302,7 +2253,6 @@ namespace Repositories.Migrations
                         {
                             Id = 89,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000089",
                             Name = "User 89",
                             Password = "password89",
@@ -2313,7 +2263,6 @@ namespace Repositories.Migrations
                         {
                             Id = 90,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000090",
                             Name = "User 90",
                             Password = "password90",
@@ -2324,7 +2273,6 @@ namespace Repositories.Migrations
                         {
                             Id = 91,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000091",
                             Name = "User 91",
                             Password = "password91",
@@ -2335,7 +2283,6 @@ namespace Repositories.Migrations
                         {
                             Id = 92,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000092",
                             Name = "User 92",
                             Password = "password92",
@@ -2346,7 +2293,6 @@ namespace Repositories.Migrations
                         {
                             Id = 93,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000093",
                             Name = "User 93",
                             Password = "password93",
@@ -2357,7 +2303,6 @@ namespace Repositories.Migrations
                         {
                             Id = 94,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000094",
                             Name = "User 94",
                             Password = "password94",
@@ -2368,7 +2313,6 @@ namespace Repositories.Migrations
                         {
                             Id = 95,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000095",
                             Name = "User 95",
                             Password = "password95",
@@ -2379,7 +2323,6 @@ namespace Repositories.Migrations
                         {
                             Id = 96,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000096",
                             Name = "User 96",
                             Password = "password96",
@@ -2390,7 +2333,6 @@ namespace Repositories.Migrations
                         {
                             Id = 97,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000097",
                             Name = "User 97",
                             Password = "password97",
@@ -2401,7 +2343,6 @@ namespace Repositories.Migrations
                         {
                             Id = 98,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000098",
                             Name = "User 98",
                             Password = "password98",
@@ -2412,7 +2353,6 @@ namespace Repositories.Migrations
                         {
                             Id = 99,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000099",
                             Name = "User 99",
                             Password = "password99",
@@ -2423,7 +2363,6 @@ namespace Repositories.Migrations
                         {
                             Id = 100,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "000000100",
                             Name = "User 100",
                             Password = "password100",
@@ -2434,7 +2373,6 @@ namespace Repositories.Migrations
                         {
                             Id = 101,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "000000101",
                             Name = "User 101",
                             Password = "password101",
@@ -2445,7 +2383,6 @@ namespace Repositories.Migrations
                         {
                             Id = 102,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "000000102",
                             Name = "User 102",
                             Password = "password102",
@@ -2456,7 +2393,6 @@ namespace Repositories.Migrations
                         {
                             Id = 103,
                             BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "000000103",
                             Name = "User 103",
                             Password = "password103",
@@ -26645,21 +26581,6 @@ namespace Repositories.Migrations
                     b.ToTable("TaskTaskLabel");
                 });
 
-            modelBuilder.Entity("UserSalaryDelta", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SalaryDeltaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "SalaryDeltaId");
-
-                    b.HasIndex("SalaryDeltaId");
-
-                    b.ToTable("UserSalaryDelta");
-                });
-
             modelBuilder.Entity("WorkingShiftEventUser", b =>
                 {
                     b.Property<int>("UserId")
@@ -26725,6 +26646,28 @@ namespace Repositories.Migrations
                         .IsRequired();
 
                     b.Navigation("Payslip");
+                });
+
+            modelBuilder.Entity("Models.Models.SalaryDelta", b =>
+                {
+                    b.HasOne("Models.Models.Group", "Group")
+                        .WithOne()
+                        .HasForeignKey("Models.Models.SalaryDelta", "GroupId");
+
+                    b.HasOne("Models.Models.User", null)
+                        .WithMany("SalaryDeltaList")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("Models.Models.SalaryGroup", b =>
+                {
+                    b.HasOne("Models.Models.Group", "Group")
+                        .WithOne()
+                        .HasForeignKey("Models.Models.SalaryGroup", "GroupId");
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("Models.Models.Task", b =>
@@ -26821,10 +26764,9 @@ namespace Repositories.Migrations
                         .HasForeignKey("Models.Models.User", "BankInfoId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Models.Models.SalaryGroup", "Group")
+                    b.HasOne("Models.Models.Group", "Group")
                         .WithMany("Users")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("GroupId");
 
                     b.HasOne("Models.Models.Role", "Role")
                         .WithMany("Users")
@@ -26890,21 +26832,6 @@ namespace Repositories.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UserSalaryDelta", b =>
-                {
-                    b.HasOne("Models.Models.SalaryDelta", null)
-                        .WithMany()
-                        .HasForeignKey("SalaryDeltaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("WorkingShiftEventUser", b =>
                 {
                     b.HasOne("Models.Models.User", null)
@@ -26927,6 +26854,11 @@ namespace Repositories.Migrations
                     b.Navigation("Teams");
                 });
 
+            modelBuilder.Entity("Models.Models.Group", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Models.Models.Payroll", b =>
                 {
                     b.Navigation("PayslipList");
@@ -26940,11 +26872,6 @@ namespace Repositories.Migrations
                 });
 
             modelBuilder.Entity("Models.Models.Role", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Models.Models.SalaryGroup", b =>
                 {
                     b.Navigation("Users");
                 });
@@ -26981,6 +26908,8 @@ namespace Repositories.Migrations
                     b.Navigation("DepartmentManage");
 
                     b.Navigation("Payslips");
+
+                    b.Navigation("SalaryDeltaList");
 
                     b.Navigation("TeamManage");
 
