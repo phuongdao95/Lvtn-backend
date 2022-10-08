@@ -174,13 +174,14 @@ namespace Services.Services
                     recognizer.Train(mats.ToArray(), personLabes);
                     // write recognizer to file
                     recognizer.Write(recognizerFilePath);
+                    Directory.Delete(path, true);
                     return true;
                 }
                 else
                 {
+                    Directory.Delete(path, true);
                     return false;
                 }
-                Directory.Delete(path, true);
             }
             catch (Exception ex)
             {
@@ -218,7 +219,7 @@ namespace Services.Services
                     return true;
                 }
             }
-            //Directory.Delete(path, true);
+            Directory.Delete(path, true);
             Debug.WriteLine("not found face");
             return false;
         }

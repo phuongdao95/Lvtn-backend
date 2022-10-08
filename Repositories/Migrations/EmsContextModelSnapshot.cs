@@ -26793,7 +26793,8 @@ namespace Repositories.Migrations
 
                     b.HasOne("Models.Models.WorkingShiftEvent", "WorkingShiftEvent")
                         .WithMany("Timekeepings")
-                        .HasForeignKey("WorkingShiftEventId");
+                        .HasForeignKey("WorkingShiftEventId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Employee");
 
