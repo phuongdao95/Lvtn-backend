@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repositories.Migrations
 {
-    public partial class HelloWorld : Migration
+    public partial class asdfasdflasdfasdfasdasdfasdff : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -568,6 +568,16 @@ namespace Repositories.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Groups",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Group A", "Group A" },
+                    { 2, "Group B", "Group B" },
+                    { 3, "Group C", "Group C" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Payrolls",
                 columns: new[] { "Id", "Description", "FromDate", "Name", "Status", "ToDate" },
                 values: new object[,]
@@ -617,10 +627,7 @@ namespace Repositories.Migrations
                     { 33, "salary_variable.create", "salary_variable.create" },
                     { 34, "salary_variable.retrieve", "salary_variable.retrieve" },
                     { 35, "salary_variable.update", "salary_variable.update" },
-                    { 36, "salary_variable.delete", "salary_variable.delete" },
-                    { 37, "payroll.create", "payroll.create" },
-                    { 38, "payroll.retrieve", "payroll.retrieve" },
-                    { 39, "payroll.update", "payroll.update" }
+                    { 36, "salary_variable.delete", "salary_variable.delete" }
                 });
 
             migrationBuilder.InsertData(
@@ -628,6 +635,9 @@ namespace Repositories.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
+                    { 37, "payroll.create", "payroll.create" },
+                    { 38, "payroll.retrieve", "payroll.retrieve" },
+                    { 39, "payroll.update", "payroll.update" },
                     { 40, "payroll.delete", "payroll.delete" },
                     { 41, "payslip.create", "payslip.create" },
                     { 42, "payslip.retrieve", "payslip.retrieve" },
@@ -671,16 +681,6 @@ namespace Repositories.Migrations
                     { 2, "200000 + variable_1", "formula_2", "Formula Two", "formula_2" },
                     { 3, "variable_1 + variable_2", "formula_3", "Formula Three", "formula_3" },
                     { 4, "IF(variable_4, 400000, 200000)", "formula_4", "Formula Three", "formula_4" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SalaryGroups",
-                columns: new[] { "Id", "Description", "Formula", "GroupId", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Group A", "formula_1", null, "Group A" },
-                    { 2, "Group B", "formula_2", null, "Group B" },
-                    { 3, "Group C", "formula_3", null, "Group C" }
                 });
 
             migrationBuilder.InsertData(
@@ -1066,6 +1066,16 @@ namespace Repositories.Migrations
                     { 48, 5 },
                     { 48, 6 },
                     { 48, 7 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SalaryGroups",
+                columns: new[] { "Id", "Description", "Formula", "GroupId", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Salary Group A", "formula_1", 1, "Salary Group A" },
+                    { 2, "Salary Group B", "formula_2", 2, "Salary Group B" },
+                    { 3, "Salary Group C", "formula_3", 3, "Salary Group C" }
                 });
 
             migrationBuilder.InsertData(

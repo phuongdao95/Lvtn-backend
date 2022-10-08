@@ -129,7 +129,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 1,
                     Name = "Salary Delta 1",
                     Description = "Salary Delta 2",
-                    Formula = "variable_1"
+                    FormulaName = "formula_1"
                 }
             },
             {
@@ -139,7 +139,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 2,
                     Name = "Salary Delta 2",
                     Description = "Salary Delta 2",
-                    Formula = "variable_2"
+                    FormulaName = "formula_2"
                 }
             },
             {
@@ -149,7 +149,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 3,
                     Name = "Salary Delta 3",
                     Description = "Salary Delta 3",
-                    Formula = "variable_3"
+                    FormulaName = "formula_3"
                 }
             }
         };

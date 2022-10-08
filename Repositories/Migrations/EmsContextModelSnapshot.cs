@@ -180,6 +180,26 @@ namespace Repositories.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Group A",
+                            Name = "Group A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Group B",
+                            Name = "Group B"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Group C",
+                            Name = "Group C"
+                        });
                 });
 
             modelBuilder.Entity("Models.Models.Payroll", b =>
@@ -335,9 +355,6 @@ namespace Repositories.Migrations
 
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("WorkingShiftEventId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -724,7 +741,7 @@ namespace Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Formula")
+                    b.Property<string>("FormulaName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -762,7 +779,7 @@ namespace Repositories.Migrations
                         {
                             Id = 1,
                             Description = "Salary Delta 2",
-                            Formula = "variable_1",
+                            FormulaName = "formula_1",
                             FromMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Salary Delta 1",
                             ToMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -772,7 +789,7 @@ namespace Repositories.Migrations
                         {
                             Id = 2,
                             Description = "Salary Delta 2",
-                            Formula = "variable_2",
+                            FormulaName = "formula_2",
                             FromMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Salary Delta 2",
                             ToMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -782,7 +799,7 @@ namespace Repositories.Migrations
                         {
                             Id = 3,
                             Description = "Salary Delta 3",
-                            Formula = "variable_3",
+                            FormulaName = "formula_3",
                             FromMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Salary Delta 3",
                             ToMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -889,23 +906,26 @@ namespace Repositories.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Group A",
+                            Description = "Salary Group A",
                             Formula = "formula_1",
-                            Name = "Group A"
+                            GroupId = 1,
+                            Name = "Salary Group A"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Group B",
+                            Description = "Salary Group B",
                             Formula = "formula_2",
-                            Name = "Group B"
+                            GroupId = 2,
+                            Name = "Salary Group B"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Group C",
+                            Description = "Salary Group C",
                             Formula = "formula_3",
-                            Name = "Group C"
+                            GroupId = 3,
+                            Name = "Salary Group C"
                         });
                 });
 
@@ -2413,7 +2433,7 @@ namespace Repositories.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Formula")
+                    b.Property<string>("FormulaName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -2434,7 +2454,7 @@ namespace Repositories.Migrations
                             Id = 1,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 1, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 1, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2443,7 +2463,7 @@ namespace Repositories.Migrations
                             Id = 2,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 2, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 2, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2452,7 +2472,7 @@ namespace Repositories.Migrations
                             Id = 3,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 5, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 5, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2461,7 +2481,7 @@ namespace Repositories.Migrations
                             Id = 4,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 6, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 6, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2470,7 +2490,7 @@ namespace Repositories.Migrations
                             Id = 5,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 7, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 7, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2479,7 +2499,7 @@ namespace Repositories.Migrations
                             Id = 6,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 8, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 8, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2488,7 +2508,7 @@ namespace Repositories.Migrations
                             Id = 7,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 9, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 9, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2497,7 +2517,7 @@ namespace Repositories.Migrations
                             Id = 8,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 12, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 12, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2506,7 +2526,7 @@ namespace Repositories.Migrations
                             Id = 9,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 13, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 13, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2515,7 +2535,7 @@ namespace Repositories.Migrations
                             Id = 10,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 14, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 14, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2524,7 +2544,7 @@ namespace Repositories.Migrations
                             Id = 11,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 15, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 15, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2533,7 +2553,7 @@ namespace Repositories.Migrations
                             Id = 12,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 16, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 16, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2542,7 +2562,7 @@ namespace Repositories.Migrations
                             Id = 13,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 19, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 19, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2551,7 +2571,7 @@ namespace Repositories.Migrations
                             Id = 14,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 20, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 20, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2560,7 +2580,7 @@ namespace Repositories.Migrations
                             Id = 15,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 21, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 21, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2569,7 +2589,7 @@ namespace Repositories.Migrations
                             Id = 16,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 22, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 22, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2578,7 +2598,7 @@ namespace Repositories.Migrations
                             Id = 17,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 23, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 23, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2587,7 +2607,7 @@ namespace Repositories.Migrations
                             Id = 18,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 26, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 26, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2596,7 +2616,7 @@ namespace Repositories.Migrations
                             Id = 19,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 27, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 27, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2605,7 +2625,7 @@ namespace Repositories.Migrations
                             Id = 20,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 28, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 28, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2614,7 +2634,7 @@ namespace Repositories.Migrations
                             Id = 21,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 29, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 29, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2623,7 +2643,7 @@ namespace Repositories.Migrations
                             Id = 22,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 30, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 30, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         });
@@ -2650,7 +2670,6 @@ namespace Repositories.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("EmployeeId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("WorkingShiftEventId")
@@ -26787,9 +26806,7 @@ namespace Repositories.Migrations
                 {
                     b.HasOne("Models.Models.User", "Employee")
                         .WithMany("Timekeepings")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId");
 
                     b.HasOne("Models.Models.WorkingShiftEvent", "WorkingShiftEvent")
                         .WithMany("Timekeepings")

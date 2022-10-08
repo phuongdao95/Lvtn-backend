@@ -24,34 +24,15 @@ namespace lvtn_backend.Controllers
         public IActionResult GetSalaryDeltaList(
             [FromQuery] int offset = 0, 
             [FromQuery] int limit = 8,
-            [FromQuery] string? type = "deduction",
             [FromQuery] string? query = "",
-            [FromQuery] string? queryType = "display_name")
+            [FromQuery] string? queryType = "deduction")
         {
             try
             {
-                SalaryDeltaType sdType;
-
-                switch (type)
-                {
-                    case "deduction":
-                        sdType = SalaryDeltaType.Deduction;
-                        break; 
-                    case "allowance":
-                        sdType = SalaryDeltaType.Allowance;
-                        break;
-                    case "bonus":
-                        sdType = SalaryDeltaType.Bonus;
-                        break;
-                    default:
-                        sdType = SalaryDeltaType.Deduction;
-                        break;
-                }
-
-                var salaryDeltaList =  _salaryDeltaService.GetSalaryDeltaList(offset, limit, sdType, query, queryType);
+                var salaryDeltaList =  _salaryDeltaService.GetSalaryDeltaList(offset, limit, query, queryType);
 
                 var data = _mapper.Map<IEnumerable<SalaryDeltaInfoDTO>>(salaryDeltaList); 
-                var total = _salaryDeltaService.GetSalaryDeltaListCount(offset, int.MaxValue, sdType, query, queryType);
+                var total = _salaryDeltaService.GetSalaryDeltaListCount(query, queryType);
                 var count = data.Count();
 
                 return Ok(new Dictionary<string, object>
@@ -123,14 +104,6 @@ namespace lvtn_backend.Controllers
             {
                 return BadRequest();
             }
-        }
-
-        [HttpPut("{id}/user/{userId}")]
-        public IActionResult AddUserToSalaryDelta(
-            [FromQuery] int id,
-            [FromQuery] int userId)
-        {
-            return Ok();
         }
     }
 }

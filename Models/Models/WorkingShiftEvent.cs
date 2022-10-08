@@ -14,7 +14,7 @@ namespace Models.Models
         [Required]
         public DateTime EndTime { get; set; }
         [Required]
-        public string? Formula { get; set; }
+        public string? FormulaName { get; set; }
         public List<WorkingShiftTimekeeping>? Timekeepings{ get; set; }
         public List<User>? Users { get; set; }
     }

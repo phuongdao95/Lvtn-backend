@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 using Models.Helpers;
 using Models.Models;
 
@@ -135,16 +133,48 @@ namespace Repositories.DataContext.DataSeeder
             }
         };
 
-        public static readonly Dictionary<string, SalaryGroup> DefaultGroupMap = new Dictionary<string, SalaryGroup>
+        public static readonly Dictionary<string, Group> DefaultGroupMap = new Dictionary<string, Group>
+        {
+            {
+                GROUP_A,
+                new Group
+                {
+                    Id = 1,
+                    Name = "Group A",
+                    Description = "Group A",
+                }
+            },
+            {
+                GROUP_B,
+                new Group
+                {
+                    Id = 2,
+                    Name = "Group B",
+                    Description = "Group B",
+                }
+            },
+            {
+                GROUP_C,
+                new Group
+                {
+                    Id = 3,
+                    Name = "Group C",
+                    Description = "Group C"
+                }
+            }
+        };
+
+        public static readonly Dictionary<string, SalaryGroup> DefaultSalaryGroupMap = new Dictionary<string, SalaryGroup>
         {
             {
                 GROUP_A,
                 new SalaryGroup
                 {
                     Id = 1,
-                    Name = "Group A",
-                    Description = "Group A",
+                    Name = "Salary Group A",
+                    Description = "Salary Group A",
                     Formula = "formula_1",
+                    GroupId = DefaultGroupMap[GROUP_A].Id,
                 }
             },
             {
@@ -152,9 +182,10 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryGroup
                 {
                     Id = 2,
-                    Name = "Group B",
-                    Description  = "Group B",
+                    Name = "Salary Group B",
+                    Description  = "Salary Group B",
                     Formula = "formula_2",
+                    GroupId = DefaultGroupMap[GROUP_B].Id,
                 }
             },
             {
@@ -162,9 +193,10 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryGroup
                 {
                     Id = 3,
-                    Name = "Group C",
-                    Description = "Group C",
-                    Formula = "formula_3"
+                    Name = "Salary Group C",
+                    Description = "Salary Group C",
+                    Formula = "formula_3",
+                    GroupId = DefaultGroupMap[GROUP_C].Id
                 }
             }
         };
@@ -175,7 +207,8 @@ namespace Repositories.DataContext.DataSeeder
         public List<Department> Departments { get; set; }
         public List<Team> Teams { get; set; }
         public List<User> Users { get; set; }
-        public List<SalaryGroup> Groups { get; set; }
+        public List<SalaryGroup> SalaryGroups { get; set; }
+        public List<Group> Groups { get; set; }
 
         private readonly ModelBuilder _modelBuilder;
 
@@ -189,6 +222,7 @@ namespace Repositories.DataContext.DataSeeder
             Teams = initializeTeams();
             Users = initializeUsers();
             Groups = initializeGroups();
+            SalaryGroups = initializeSalaryGroup();
         }
 
         private List<Permission> initializePermissions()
@@ -298,15 +332,27 @@ namespace Repositories.DataContext.DataSeeder
             return result;
         }
 
-        private List<SalaryGroup> initializeGroups()
+        private List<Group> initializeGroups()
         {
-            var result = new List<SalaryGroup>();
+            var result = new List<Group>();
             var startIndex = DefaultGroupMap.Values.Count() + 1;
 
             result.AddRange(DefaultGroupMap.Values);
 
             return result;
         }
+
+        private List<SalaryGroup> initializeSalaryGroup()
+        {
+            var result = new List<SalaryGroup>();
+            var startIndex = DefaultSalaryGroupMap.Values.Count() + 1;
+
+            result.AddRange(DefaultSalaryGroupMap.Values);
+
+            return result;
+        }
+
+
 
         public void SeedData()
         {
@@ -325,11 +371,15 @@ namespace Repositories.DataContext.DataSeeder
             _modelBuilder.Entity<Team>()
                 .HasData(Teams);
 
+            _modelBuilder.Entity<Group>()
+                .HasData(Groups);
+
             _modelBuilder.Entity<User>()
                 .HasData(Users);
 
+
             _modelBuilder.Entity<SalaryGroup>()
-                .HasData(Groups);
+                .HasData(SalaryGroups);
         }
     }
 }

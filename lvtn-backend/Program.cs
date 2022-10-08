@@ -71,6 +71,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 
 // Add services
+builder.Services.AddScoped<IdentityService, IdentityService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IAiService, AiService>();
@@ -79,9 +80,10 @@ builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ISalaryGroupService, SalaryGroupService>();
 builder.Services.AddScoped<ISalaryDeltaService, SalaryDeltaService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<ISalaryCalculatorService, SalaryCalculatorService>();
 builder.Services.AddScoped<ISalaryFormulaService, SalaryFormulaService>();
 builder.Services.AddScoped<IPayrollService, PayrollService>();
-builder.Services.AddScoped<IdentityService, IdentityService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
 

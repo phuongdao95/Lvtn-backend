@@ -3,13 +3,13 @@ using Models.Models;
 
 namespace Services.Contracts
 {
-    public interface ISalaryGroupService
+    public interface IGroupService
     {
-        public void CreateSalaryGroup(SalaryGroupDTO groupDTO);
-        public void UpdateSalaryGroup(int id, SalaryGroupDTO groupDTO);
-        public void DeleteSalaryGroup(int id);
-        public SalaryGroup GetSalaryGroupById(int id);
-        public List<SalaryGroup> GetSalaryGroupList(int offset, int limit, string? query = "", string? queryType = "name");
-        public int GetSalaryGroupCount(int offset, int limit, string? query = "", string? queryType = "name");
+        public Group GetGroupById(int id, bool loadUser);
+        public List<Group> GetGroupList(int offset, int limit, string? query = "", string? queryType = "");
+        public int GetGroupListCount(string? query = "", string? queryType = "");
+        public void CreateGroup(GroupDTO groupDTO);
+        public void UpdateGroup(int id, GroupDTO groupDTO);
+        public void DeleteGroup(int id);
     }
 }

@@ -12,8 +12,8 @@ using Models.Repositories.DataContext;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(EmsContext))]
-    [Migration("20221004175027_Hello World àdasdf")]
-    partial class HelloWorldàdasdf
+    [Migration("20221005161943_asdfasdflasdfasdfasdasdfasdff")]
+    partial class asdfasdflasdfasdfasdasdfasdff
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -182,6 +182,26 @@ namespace Repositories.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Group A",
+                            Name = "Group A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Group B",
+                            Name = "Group B"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Group C",
+                            Name = "Group C"
+                        });
                 });
 
             modelBuilder.Entity("Models.Models.Payroll", b =>
@@ -891,23 +911,26 @@ namespace Repositories.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Group A",
+                            Description = "Salary Group A",
                             Formula = "formula_1",
-                            Name = "Group A"
+                            GroupId = 1,
+                            Name = "Salary Group A"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Group B",
+                            Description = "Salary Group B",
                             Formula = "formula_2",
-                            Name = "Group B"
+                            GroupId = 2,
+                            Name = "Salary Group B"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Group C",
+                            Description = "Salary Group C",
                             Formula = "formula_3",
-                            Name = "Group C"
+                            GroupId = 3,
+                            Name = "Salary Group C"
                         });
                 });
 
