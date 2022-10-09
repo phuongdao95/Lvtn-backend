@@ -16,7 +16,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 1,
                     Name = "variable_1",
                     DisplayName = "Variable One",
-                    Value = "200000",
+                    Value = "300000",
                     DataType = VariableDataType.Number,
                     Description = "variable 1"
                 }
@@ -77,7 +77,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 1,
                     Name = "formula_1",
-                    Define = "200000",
+                    Define = "2000000",
                     Description = "formula_1",
                     DisplayName = "Formula One"
                 }
@@ -195,6 +195,7 @@ namespace Repositories.DataContext.DataSeeder
         private readonly List<SalaryDelta> _salaryDeltaList;
         private readonly List<SalaryFormula> _salaryFormulaList;
         private readonly List<SalaryVariable> _salaryVariableList;
+        private readonly List<SalaryGroup> _salaryGroupList;
 
         private ModelBuilder _modelBuilder;
 
@@ -205,6 +206,56 @@ namespace Repositories.DataContext.DataSeeder
             _salaryDeltaList = seedSalaryDelta();
             _salaryFormulaList = seedSalaryFormula();
             _salaryVariableList = seedSalaryVariable();
+            _salaryGroupList = seedSalaryGroup();
+        }
+
+
+        private List<SalaryGroup> seedSalaryGroup()
+        {
+            var groupDefaultId = AdministrationDataSeeder.DefaultGroupMap[AdministrationDataSeeder.GROUP_DEFAULT].Id;
+            var groupAId = AdministrationDataSeeder.DefaultGroupMap[AdministrationDataSeeder.GROUP_A].Id;
+            var groupBId = AdministrationDataSeeder.DefaultGroupMap[AdministrationDataSeeder.GROUP_B].Id;
+            var groupCId = AdministrationDataSeeder.DefaultGroupMap[AdministrationDataSeeder.GROUP_C].Id;
+
+            return new List<SalaryGroup>()
+            {
+                new SalaryGroup()
+                {
+                    Id=1,
+                    GroupId = groupDefaultId,
+                    Name = "Salary Group Default",
+                    Description = "Salary config for Group Default",
+                    FormulaName = _defaultSalaryFormulaMap["formula_1"].Name,
+                },
+
+                new SalaryGroup()
+                {
+                    Id=2,
+                    GroupId = groupAId,
+                    Name = "Salary Group A",
+                    Description = "Salary config for Group A",
+                    FormulaName = _defaultSalaryFormulaMap["formula_2"].Name,
+                },
+
+                new SalaryGroup()
+                {
+                    Id=3,
+                    GroupId = groupBId,
+                    Name = "Salary Group B",
+                    Description = "Salary config for Group B",
+                    FormulaName = _defaultSalaryFormulaMap["formula_3"].Name,
+                },
+
+                new SalaryGroup()
+                {
+                    Id=4,
+                    GroupId = groupCId,
+                    Name = "Salary Group C",
+                    Description = "Salary config for Group C",
+                    FormulaName = _defaultSalaryFormulaMap["formula_3"].Name,
+                }
+
+            };
         }
 
         private List<SalaryVariable> seedSalaryVariable()
@@ -264,6 +315,9 @@ namespace Repositories.DataContext.DataSeeder
 
             _modelBuilder.Entity<Payroll>()
                 .HasData(_payrollList);
+
+            _modelBuilder.Entity<SalaryGroup>()
+                .HasData(_salaryGroupList);
         }
 
 

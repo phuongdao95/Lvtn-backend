@@ -15,14 +15,17 @@ namespace Services.Services
             _mapper = mapper;
             _context = context;
         }
-        public void CreateSalaryGroup(SalaryGroupDTO groupDTO)
+        public void CreateSalaryGroup(SalaryGroupDTO salaryGroupDTO)
         {
-            //var userIds = groupDTO.UserIds ?? new List<int>();
-            //var users = _context.Users.Where((user) => userIds.Contains(user.Id));
+            var group = _context.Groups.Find(salaryGroupDTO.GroupId);
+            if (group == null)
+            {
+                throw new Exception("Cannot find group for salary group");
+            }
 
-            var group = _mapper.Map<SalaryGroup>(groupDTO);
+            var salaryGroup = _mapper.Map<SalaryGroup>(salaryGroupDTO);
 
-            _context.SalaryGroups.Add(group);
+            _context.SalaryGroups.Add(salaryGroup);
             _context.SaveChanges();
         }
 
@@ -52,11 +55,21 @@ namespace Services.Services
 
         public List<SalaryGroup> GetSalaryGroupList(int offset = 0, int limit = 8, string query = "", string queryType = "name")
         {
-            return _context.SalaryGroups
+
+            var salaryGroupList = _context.SalaryGroups
                 .Where((group) => query.Contains(group.Name) || group.Name.Contains(query))
                 .Skip(offset)
                 .Take(limit)
                 .ToList();
+
+            foreach(var salaryGroup in salaryGroupList)
+            {
+                _context.Entry(salaryGroup)
+                    .Reference(s => s.Group)
+                    .Load();
+            }
+
+            return salaryGroupList;
         }
 
         public int GetSalaryGroupCount(int offset, int limit, string query, string queryType)

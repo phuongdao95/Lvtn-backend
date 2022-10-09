@@ -12,7 +12,7 @@ namespace Models.Models
         [Required]
         public string? Url { get; set; }
         [Required]
-        public int? TaskCommentId { get; set; }
-        public TaskComment? TaskComment { get; set; }
+        public int? TaskId { get; set; }
+        public Task? Task { get; set; }
     }
 }

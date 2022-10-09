@@ -58,7 +58,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization((options) =>
 {
-    var claimNames = ClaimGenerator.GenerateClaims();
+    var claimNames = ClaimGenerator.GenerateResourceAccessClaims();
 
     claimNames.ForEach((name) =>
     {

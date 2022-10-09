@@ -235,12 +235,12 @@ namespace Services.Services
                 throw new Exception("Cannot find salary");
             }
 
-            if (salaryGroup.Formula == null)
+            if (salaryGroup.FormulaName == null)
             {
                 throw new Exception("Cannot get the formula name of salary group");
             }
 
-            var salaryFormula = _allSalaryFormulas.Where(p => p.Name == salaryGroup.Formula).SingleOrDefault();
+            var salaryFormula = _allSalaryFormulas.Where(p => p.Name == salaryGroup.FormulaName).SingleOrDefault();
 
             if (salaryFormula == null || salaryFormula.Define == null)
             {

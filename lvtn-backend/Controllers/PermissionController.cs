@@ -35,6 +35,12 @@ namespace lvtn_backend.Controllers
             }
         }
 
+        [HttpGet("/page-access-permission")]
+        public IActionResult GetPageAccessPermission()
+        {
+            return Ok();
+        }
+
         [HttpGet]
         public IActionResult GetPermissionList()
         {

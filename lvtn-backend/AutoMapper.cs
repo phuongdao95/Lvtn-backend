@@ -67,7 +67,10 @@ namespace Models
                 .ForMember(m => m.PayrollName, opt => opt.MapFrom(src => src.Payroll.Name))
                 ;
 
-            CreateMap<SalaryGroup, SalaryGroupInfoDTO>();
+            CreateMap<SalaryGroup, SalaryGroupInfoDTO>()
+                .ForMember(m => m.GroupName, opt => opt.MapFrom(src => src.Group.Name))
+                .ForMember(m => m.GroupId, opt => opt.MapFrom(src => src.GroupId))
+                ;
         }
     }
 }
