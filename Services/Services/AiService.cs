@@ -112,7 +112,7 @@ namespace Services.Services
                             Directory.CreateDirectory(path);
                         resultImage.ROI = face;
                         //resize the image then saving it
-                        resultImage.Resize(100, 100, Inter.Cubic).Save(path + @"\" + name + j
+                        resultImage.Resize(100, 100, Inter.Cubic).Save(path + @"\" + name + i.ToString()
                                 + "_" + DateTime.Now.ToString("dd-mm-yyyy-hh-mm-ss") + ".png");
                         j++;
                     }
@@ -216,6 +216,7 @@ namespace Services.Services
                 if (result.Label != -1 && result.Distance < 3000)
                 {
                     Debug.WriteLine("found face");
+                    Directory.Delete(path, true);
                     return true;
                 }
             }
