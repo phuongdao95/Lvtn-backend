@@ -13,5 +13,8 @@ namespace Models.DTO.Request
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public string? Formula { get; set; }
+        public int? userId { get; set; }
+        public List<UserDTO>? Users { get; set; }
+        public Boolean? isCheck { get; set; }
     }
 }

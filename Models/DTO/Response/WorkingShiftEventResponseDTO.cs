@@ -13,5 +13,8 @@ namespace Models.DTO.Response
         public string? Description { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+        public string? Formula { get; set; }
+        public List<UserInfoDTO>? Users { get; set; }
+        public Boolean? isCheck { get; set; }
     }
 }
