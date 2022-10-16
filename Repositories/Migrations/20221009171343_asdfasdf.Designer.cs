@@ -12,8 +12,8 @@ using Models.Repositories.DataContext;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(EmsContext))]
-    [Migration("20221004174709_Hello World")]
-    partial class HelloWorld
+    [Migration("20221009171343_asdfasdf")]
+    partial class asdfasdf
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -182,6 +182,32 @@ namespace Repositories.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Group A",
+                            Name = "Group A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Group B",
+                            Name = "Group B"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Group C",
+                            Name = "Group C"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Group Default",
+                            Name = "Group Default"
+                        });
                 });
 
             modelBuilder.Entity("Models.Models.Payroll", b =>
@@ -338,9 +364,6 @@ namespace Repositories.Migrations
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("WorkingShiftEventId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PayslipId");
@@ -369,291 +392,453 @@ namespace Repositories.Migrations
                     b.HasData(
                         new
                         {
+                            Id = 68,
+                            Description = "page_access.my_dab",
+                            Name = "page_access.my_dab"
+                        },
+                        new
+                        {
+                            Id = 69,
+                            Description = "page_access.my_payslip",
+                            Name = "page_access.my_payslip"
+                        },
+                        new
+                        {
+                            Id = 70,
+                            Description = "page_access.board_list_of_team",
+                            Name = "page_access.board_list_of_team"
+                        },
+                        new
+                        {
+                            Id = 71,
+                            Description = "page_access.task_list_of_board",
+                            Name = "page_access.task_list_of_board"
+                        },
+                        new
+                        {
+                            Id = 72,
+                            Description = "page_access.label_list_of_board",
+                            Name = "page_access.label_list_of_board"
+                        },
+                        new
+                        {
+                            Id = 73,
+                            Description = "page_access.timekeeping_image_registration",
+                            Name = "page_access.timekeeping_image_registration"
+                        },
+                        new
+                        {
+                            Id = 74,
+                            Description = "page_access.timekeeping_check_in",
+                            Name = "page_access.timekeeping_check_in"
+                        },
+                        new
+                        {
+                            Id = 75,
+                            Description = "page_access.timekeeping_check_out",
+                            Name = "page_access.timekeeping_check_out"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Description = "page_access.user_list",
+                            Name = "page_access.user_list"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            Description = "page_access.role_list",
+                            Name = "page_access.role_list"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            Description = "page_access.permission_list",
+                            Name = "page_access.permission_list"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            Description = "page_access.team_list",
+                            Name = "page_access.team_list"
+                        },
+                        new
+                        {
+                            Id = 57,
+                            Description = "page_access.group_list",
+                            Name = "page_access.group_list"
+                        },
+                        new
+                        {
+                            Id = 58,
+                            Description = "page_access.department_list",
+                            Name = "page_access.department_list"
+                        },
+                        new
+                        {
+                            Id = 59,
+                            Description = "page_access.dab_list",
+                            Name = "page_access.dab_list"
+                        },
+                        new
+                        {
+                            Id = 60,
+                            Description = "page_access.salary_formula_list",
+                            Name = "page_access.salary_formula_list"
+                        },
+                        new
+                        {
+                            Id = 61,
+                            Description = "page_access.salary_variable_list",
+                            Name = "page_access.salary_variable_list"
+                        },
+                        new
+                        {
+                            Id = 62,
+                            Description = "page_access.salary_group_list",
+                            Name = "page_access.salary_group_list"
+                        },
+                        new
+                        {
+                            Id = 63,
+                            Description = "page_access.payroll_list",
+                            Name = "page_access.payroll_list"
+                        },
+                        new
+                        {
+                            Id = 64,
+                            Description = "page_access.board_list",
+                            Name = "page_access.board_list"
+                        },
+                        new
+                        {
+                            Id = 65,
+                            Description = "page_access.task_list",
+                            Name = "page_access.task_list"
+                        },
+                        new
+                        {
+                            Id = 66,
+                            Description = "page_access.timekeeping_list",
+                            Name = "page_access.timekeeping_list"
+                        },
+                        new
+                        {
+                            Id = 67,
+                            Description = "page_access.workingshift_list",
+                            Name = "page_access.workingshift_list"
+                        },
+                        new
+                        {
                             Id = 1,
-                            Description = "user.create",
-                            Name = "user.create"
+                            Description = "resource.user.create",
+                            Name = "resource.user.create"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "user.retrieve",
-                            Name = "user.retrieve"
+                            Description = "resource.user.retrieve",
+                            Name = "resource.user.retrieve"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "user.update",
-                            Name = "user.update"
+                            Description = "resource.user.update",
+                            Name = "resource.user.update"
                         },
                         new
                         {
                             Id = 4,
-                            Description = "user.delete",
-                            Name = "user.delete"
+                            Description = "resource.user.delete",
+                            Name = "resource.user.delete"
                         },
                         new
                         {
                             Id = 5,
-                            Description = "role.create",
-                            Name = "role.create"
+                            Description = "resource.role.create",
+                            Name = "resource.role.create"
                         },
                         new
                         {
                             Id = 6,
-                            Description = "role.retrieve",
-                            Name = "role.retrieve"
+                            Description = "resource.role.retrieve",
+                            Name = "resource.role.retrieve"
                         },
                         new
                         {
                             Id = 7,
-                            Description = "role.update",
-                            Name = "role.update"
+                            Description = "resource.role.update",
+                            Name = "resource.role.update"
                         },
                         new
                         {
                             Id = 8,
-                            Description = "role.delete",
-                            Name = "role.delete"
+                            Description = "resource.role.delete",
+                            Name = "resource.role.delete"
                         },
                         new
                         {
                             Id = 9,
-                            Description = "permission.create",
-                            Name = "permission.create"
+                            Description = "resource.permission.create",
+                            Name = "resource.permission.create"
                         },
                         new
                         {
                             Id = 10,
-                            Description = "permission.retrieve",
-                            Name = "permission.retrieve"
+                            Description = "resource.permission.retrieve",
+                            Name = "resource.permission.retrieve"
                         },
                         new
                         {
                             Id = 11,
-                            Description = "permission.update",
-                            Name = "permission.update"
+                            Description = "resource.permission.update",
+                            Name = "resource.permission.update"
                         },
                         new
                         {
                             Id = 12,
-                            Description = "permission.delete",
-                            Name = "permission.delete"
+                            Description = "resource.permission.delete",
+                            Name = "resource.permission.delete"
                         },
                         new
                         {
                             Id = 13,
-                            Description = "team.create",
-                            Name = "team.create"
+                            Description = "resource.team.create",
+                            Name = "resource.team.create"
                         },
                         new
                         {
                             Id = 14,
-                            Description = "team.retrieve",
-                            Name = "team.retrieve"
+                            Description = "resource.team.retrieve",
+                            Name = "resource.team.retrieve"
                         },
                         new
                         {
                             Id = 15,
-                            Description = "team.update",
-                            Name = "team.update"
+                            Description = "resource.team.update",
+                            Name = "resource.team.update"
                         },
                         new
                         {
                             Id = 16,
-                            Description = "team.delete",
-                            Name = "team.delete"
+                            Description = "resource.team.delete",
+                            Name = "resource.team.delete"
                         },
                         new
                         {
                             Id = 17,
-                            Description = "department.create",
-                            Name = "department.create"
+                            Description = "resource.department.create",
+                            Name = "resource.department.create"
                         },
                         new
                         {
                             Id = 18,
-                            Description = "department.retrieve",
-                            Name = "department.retrieve"
+                            Description = "resource.department.retrieve",
+                            Name = "resource.department.retrieve"
                         },
                         new
                         {
                             Id = 19,
-                            Description = "department.update",
-                            Name = "department.update"
+                            Description = "resource.department.update",
+                            Name = "resource.department.update"
                         },
                         new
                         {
                             Id = 20,
-                            Description = "department.delete",
-                            Name = "department.delete"
+                            Description = "resource.department.delete",
+                            Name = "resource.department.delete"
                         },
                         new
                         {
                             Id = 21,
-                            Description = "group.create",
-                            Name = "group.create"
+                            Description = "resource.group.create",
+                            Name = "resource.group.create"
                         },
                         new
                         {
                             Id = 22,
-                            Description = "group.retrieve",
-                            Name = "group.retrieve"
+                            Description = "resource.group.retrieve",
+                            Name = "resource.group.retrieve"
                         },
                         new
                         {
                             Id = 23,
-                            Description = "group.update",
-                            Name = "group.update"
+                            Description = "resource.group.update",
+                            Name = "resource.group.update"
                         },
                         new
                         {
                             Id = 24,
-                            Description = "group.delete",
-                            Name = "group.delete"
+                            Description = "resource.group.delete",
+                            Name = "resource.group.delete"
                         },
                         new
                         {
                             Id = 25,
-                            Description = "dab.create",
-                            Name = "dab.create"
+                            Description = "resource.dab.create",
+                            Name = "resource.dab.create"
                         },
                         new
                         {
                             Id = 26,
-                            Description = "dab.retrieve",
-                            Name = "dab.retrieve"
+                            Description = "resource.dab.retrieve",
+                            Name = "resource.dab.retrieve"
                         },
                         new
                         {
                             Id = 27,
-                            Description = "dab.update",
-                            Name = "dab.update"
+                            Description = "resource.dab.update",
+                            Name = "resource.dab.update"
                         },
                         new
                         {
                             Id = 28,
-                            Description = "dab.delete",
-                            Name = "dab.delete"
+                            Description = "resource.dab.delete",
+                            Name = "resource.dab.delete"
                         },
                         new
                         {
                             Id = 29,
-                            Description = "salary_formula.create",
-                            Name = "salary_formula.create"
+                            Description = "resource.salary_formula.create",
+                            Name = "resource.salary_formula.create"
                         },
                         new
                         {
                             Id = 30,
-                            Description = "salary_formula.retrieve",
-                            Name = "salary_formula.retrieve"
+                            Description = "resource.salary_formula.retrieve",
+                            Name = "resource.salary_formula.retrieve"
                         },
                         new
                         {
                             Id = 31,
-                            Description = "salary_formula.update",
-                            Name = "salary_formula.update"
+                            Description = "resource.salary_formula.update",
+                            Name = "resource.salary_formula.update"
                         },
                         new
                         {
                             Id = 32,
-                            Description = "salary_formula.delete",
-                            Name = "salary_formula.delete"
+                            Description = "resource.salary_formula.delete",
+                            Name = "resource.salary_formula.delete"
                         },
                         new
                         {
                             Id = 33,
-                            Description = "salary_variable.create",
-                            Name = "salary_variable.create"
+                            Description = "resource.salary_variable.create",
+                            Name = "resource.salary_variable.create"
                         },
                         new
                         {
                             Id = 34,
-                            Description = "salary_variable.retrieve",
-                            Name = "salary_variable.retrieve"
+                            Description = "resource.salary_variable.retrieve",
+                            Name = "resource.salary_variable.retrieve"
                         },
                         new
                         {
                             Id = 35,
-                            Description = "salary_variable.update",
-                            Name = "salary_variable.update"
+                            Description = "resource.salary_variable.update",
+                            Name = "resource.salary_variable.update"
                         },
                         new
                         {
                             Id = 36,
-                            Description = "salary_variable.delete",
-                            Name = "salary_variable.delete"
+                            Description = "resource.salary_variable.delete",
+                            Name = "resource.salary_variable.delete"
                         },
                         new
                         {
                             Id = 37,
-                            Description = "payroll.create",
-                            Name = "payroll.create"
+                            Description = "resource.payroll.create",
+                            Name = "resource.payroll.create"
                         },
                         new
                         {
                             Id = 38,
-                            Description = "payroll.retrieve",
-                            Name = "payroll.retrieve"
+                            Description = "resource.payroll.retrieve",
+                            Name = "resource.payroll.retrieve"
                         },
                         new
                         {
                             Id = 39,
-                            Description = "payroll.update",
-                            Name = "payroll.update"
+                            Description = "resource.payroll.update",
+                            Name = "resource.payroll.update"
                         },
                         new
                         {
                             Id = 40,
-                            Description = "payroll.delete",
-                            Name = "payroll.delete"
+                            Description = "resource.payroll.delete",
+                            Name = "resource.payroll.delete"
                         },
                         new
                         {
                             Id = 41,
-                            Description = "payslip.create",
-                            Name = "payslip.create"
+                            Description = "resource.payslip.create",
+                            Name = "resource.payslip.create"
                         },
                         new
                         {
                             Id = 42,
-                            Description = "payslip.retrieve",
-                            Name = "payslip.retrieve"
+                            Description = "resource.payslip.retrieve",
+                            Name = "resource.payslip.retrieve"
                         },
                         new
                         {
                             Id = 43,
-                            Description = "payslip.update",
-                            Name = "payslip.update"
+                            Description = "resource.payslip.update",
+                            Name = "resource.payslip.update"
                         },
                         new
                         {
                             Id = 44,
-                            Description = "payslip.delete",
-                            Name = "payslip.delete"
+                            Description = "resource.payslip.delete",
+                            Name = "resource.payslip.delete"
                         },
                         new
                         {
                             Id = 45,
-                            Description = "milestone.create",
-                            Name = "milestone.create"
+                            Description = "resource.task.create",
+                            Name = "resource.task.create"
                         },
                         new
                         {
                             Id = 46,
-                            Description = "milestone.retrieve",
-                            Name = "milestone.retrieve"
+                            Description = "resource.task.retrieve",
+                            Name = "resource.task.retrieve"
                         },
                         new
                         {
                             Id = 47,
-                            Description = "milestone.update",
-                            Name = "milestone.update"
+                            Description = "resource.task.update",
+                            Name = "resource.task.update"
                         },
                         new
                         {
                             Id = 48,
-                            Description = "milestone.delete",
-                            Name = "milestone.delete"
+                            Description = "resource.task.delete",
+                            Name = "resource.task.delete"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            Description = "resource.board.create",
+                            Name = "resource.board.create"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            Description = "resource.board.retrieve",
+                            Name = "resource.board.retrieve"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            Description = "resource.board.update",
+                            Name = "resource.board.update"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            Description = "resource.board.delete",
+                            Name = "resource.board.delete"
                         });
                 });
 
@@ -693,24 +878,6 @@ namespace Repositories.Migrations
                             Id = 3,
                             Description = "Employee Role",
                             Name = "Employee"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "Description for role Role 5",
-                            Name = "Role 5"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Description for role Role 6",
-                            Name = "Role 6"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Description = "Description for role Role 7",
-                            Name = "Role 7"
                         });
                 });
 
@@ -726,7 +893,7 @@ namespace Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Formula")
+                    b.Property<string>("FormulaName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -764,7 +931,7 @@ namespace Repositories.Migrations
                         {
                             Id = 1,
                             Description = "Salary Delta 2",
-                            Formula = "variable_1",
+                            FormulaName = "formula_1",
                             FromMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Salary Delta 1",
                             ToMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -774,7 +941,7 @@ namespace Repositories.Migrations
                         {
                             Id = 2,
                             Description = "Salary Delta 2",
-                            Formula = "variable_2",
+                            FormulaName = "formula_2",
                             FromMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Salary Delta 2",
                             ToMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -784,7 +951,7 @@ namespace Repositories.Migrations
                         {
                             Id = 3,
                             Description = "Salary Delta 3",
-                            Formula = "variable_3",
+                            FormulaName = "formula_3",
                             FromMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Salary Delta 3",
                             ToMonth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -826,7 +993,7 @@ namespace Repositories.Migrations
                         new
                         {
                             Id = 1,
-                            Define = "200000",
+                            Define = "2000000",
                             Description = "formula_1",
                             DisplayName = "Formula One",
                             Name = "formula_1"
@@ -868,7 +1035,7 @@ namespace Repositories.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Formula")
+                    b.Property<string>("FormulaName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -891,23 +1058,34 @@ namespace Repositories.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Group A",
-                            Formula = "formula_1",
-                            Name = "Group A"
+                            Description = "Salary config for Group Default",
+                            FormulaName = "formula_1",
+                            GroupId = 4,
+                            Name = "Salary Group Default"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "Group B",
-                            Formula = "formula_2",
-                            Name = "Group B"
+                            Description = "Salary config for Group A",
+                            FormulaName = "formula_2",
+                            GroupId = 1,
+                            Name = "Salary Group A"
                         },
                         new
                         {
                             Id = 3,
-                            Description = "Group C",
-                            Formula = "formula_3",
-                            Name = "Group C"
+                            Description = "Salary config for Group B",
+                            FormulaName = "formula_3",
+                            GroupId = 2,
+                            Name = "Salary Group B"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Salary config for Group C",
+                            FormulaName = "formula_3",
+                            GroupId = 3,
+                            Name = "Salary Group C"
                         });
                 });
 
@@ -952,7 +1130,7 @@ namespace Repositories.Migrations
                             Description = "variable 1",
                             DisplayName = "Variable One",
                             Name = "variable_1",
-                            Value = "200000"
+                            Value = "300000"
                         },
                         new
                         {
@@ -1017,6 +1195,9 @@ namespace Repositories.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Point")
+                        .HasColumnType("int");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -1126,6 +1307,9 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TaskCommentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TaskId")
                         .IsRequired()
                         .HasColumnType("int");
 
@@ -1136,6 +1320,8 @@ namespace Repositories.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("TaskCommentId");
+
+                    b.HasIndex("TaskId");
 
                     b.ToTable("TaskFiles");
                 });
@@ -1404,8 +1590,10 @@ namespace Repositories.Migrations
                             Id = 4,
                             BaseSalary = 0m,
                             CitizenId = "0000004",
+                            GroupId = 4,
                             Name = "User 4",
                             Password = "password4",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user4"
                         },
@@ -1414,8 +1602,10 @@ namespace Repositories.Migrations
                             Id = 5,
                             BaseSalary = 0m,
                             CitizenId = "0000005",
+                            GroupId = 4,
                             Name = "User 5",
                             Password = "password5",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user5"
                         },
@@ -1424,8 +1614,10 @@ namespace Repositories.Migrations
                             Id = 6,
                             BaseSalary = 0m,
                             CitizenId = "0000006",
+                            GroupId = 4,
                             Name = "User 6",
                             Password = "password6",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user6"
                         },
@@ -1434,8 +1626,10 @@ namespace Repositories.Migrations
                             Id = 7,
                             BaseSalary = 0m,
                             CitizenId = "0000007",
+                            GroupId = 4,
                             Name = "User 7",
                             Password = "password7",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user7"
                         },
@@ -1444,8 +1638,10 @@ namespace Repositories.Migrations
                             Id = 8,
                             BaseSalary = 0m,
                             CitizenId = "0000008",
+                            GroupId = 4,
                             Name = "User 8",
                             Password = "password8",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user8"
                         },
@@ -1454,8 +1650,10 @@ namespace Repositories.Migrations
                             Id = 9,
                             BaseSalary = 0m,
                             CitizenId = "0000009",
+                            GroupId = 4,
                             Name = "User 9",
                             Password = "password9",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user9"
                         },
@@ -1464,8 +1662,10 @@ namespace Repositories.Migrations
                             Id = 10,
                             BaseSalary = 0m,
                             CitizenId = "00000010",
+                            GroupId = 4,
                             Name = "User 10",
                             Password = "password10",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user10"
                         },
@@ -1474,8 +1674,10 @@ namespace Repositories.Migrations
                             Id = 11,
                             BaseSalary = 0m,
                             CitizenId = "00000011",
+                            GroupId = 4,
                             Name = "User 11",
                             Password = "password11",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user11"
                         },
@@ -1484,8 +1686,10 @@ namespace Repositories.Migrations
                             Id = 12,
                             BaseSalary = 0m,
                             CitizenId = "00000012",
+                            GroupId = 4,
                             Name = "User 12",
                             Password = "password12",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user12"
                         },
@@ -1494,8 +1698,10 @@ namespace Repositories.Migrations
                             Id = 13,
                             BaseSalary = 0m,
                             CitizenId = "00000013",
+                            GroupId = 4,
                             Name = "User 13",
                             Password = "password13",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user13"
                         },
@@ -1504,8 +1710,10 @@ namespace Repositories.Migrations
                             Id = 14,
                             BaseSalary = 0m,
                             CitizenId = "00000014",
+                            GroupId = 4,
                             Name = "User 14",
                             Password = "password14",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user14"
                         },
@@ -1514,8 +1722,10 @@ namespace Repositories.Migrations
                             Id = 15,
                             BaseSalary = 0m,
                             CitizenId = "00000015",
+                            GroupId = 4,
                             Name = "User 15",
                             Password = "password15",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user15"
                         },
@@ -1524,8 +1734,10 @@ namespace Repositories.Migrations
                             Id = 16,
                             BaseSalary = 0m,
                             CitizenId = "00000016",
+                            GroupId = 4,
                             Name = "User 16",
                             Password = "password16",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user16"
                         },
@@ -1534,8 +1746,10 @@ namespace Repositories.Migrations
                             Id = 17,
                             BaseSalary = 0m,
                             CitizenId = "00000017",
+                            GroupId = 4,
                             Name = "User 17",
                             Password = "password17",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user17"
                         },
@@ -1544,8 +1758,10 @@ namespace Repositories.Migrations
                             Id = 18,
                             BaseSalary = 0m,
                             CitizenId = "00000018",
+                            GroupId = 4,
                             Name = "User 18",
                             Password = "password18",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user18"
                         },
@@ -1554,8 +1770,10 @@ namespace Repositories.Migrations
                             Id = 19,
                             BaseSalary = 0m,
                             CitizenId = "00000019",
+                            GroupId = 4,
                             Name = "User 19",
                             Password = "password19",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user19"
                         },
@@ -1564,8 +1782,10 @@ namespace Repositories.Migrations
                             Id = 20,
                             BaseSalary = 0m,
                             CitizenId = "00000020",
+                            GroupId = 4,
                             Name = "User 20",
                             Password = "password20",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user20"
                         },
@@ -1574,8 +1794,10 @@ namespace Repositories.Migrations
                             Id = 21,
                             BaseSalary = 0m,
                             CitizenId = "00000021",
+                            GroupId = 4,
                             Name = "User 21",
                             Password = "password21",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user21"
                         },
@@ -1584,8 +1806,10 @@ namespace Repositories.Migrations
                             Id = 22,
                             BaseSalary = 0m,
                             CitizenId = "00000022",
+                            GroupId = 4,
                             Name = "User 22",
                             Password = "password22",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user22"
                         },
@@ -1594,8 +1818,10 @@ namespace Repositories.Migrations
                             Id = 23,
                             BaseSalary = 0m,
                             CitizenId = "00000023",
+                            GroupId = 4,
                             Name = "User 23",
                             Password = "password23",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user23"
                         },
@@ -1604,8 +1830,10 @@ namespace Repositories.Migrations
                             Id = 24,
                             BaseSalary = 0m,
                             CitizenId = "00000024",
+                            GroupId = 4,
                             Name = "User 24",
                             Password = "password24",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user24"
                         },
@@ -1614,8 +1842,10 @@ namespace Repositories.Migrations
                             Id = 25,
                             BaseSalary = 0m,
                             CitizenId = "00000025",
+                            GroupId = 4,
                             Name = "User 25",
                             Password = "password25",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user25"
                         },
@@ -1624,8 +1854,10 @@ namespace Repositories.Migrations
                             Id = 26,
                             BaseSalary = 0m,
                             CitizenId = "00000026",
+                            GroupId = 4,
                             Name = "User 26",
                             Password = "password26",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user26"
                         },
@@ -1634,8 +1866,10 @@ namespace Repositories.Migrations
                             Id = 27,
                             BaseSalary = 0m,
                             CitizenId = "00000027",
+                            GroupId = 4,
                             Name = "User 27",
                             Password = "password27",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user27"
                         },
@@ -1644,8 +1878,10 @@ namespace Repositories.Migrations
                             Id = 28,
                             BaseSalary = 0m,
                             CitizenId = "00000028",
+                            GroupId = 4,
                             Name = "User 28",
                             Password = "password28",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user28"
                         },
@@ -1654,8 +1890,10 @@ namespace Repositories.Migrations
                             Id = 29,
                             BaseSalary = 0m,
                             CitizenId = "00000029",
+                            GroupId = 4,
                             Name = "User 29",
                             Password = "password29",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user29"
                         },
@@ -1664,8 +1902,10 @@ namespace Repositories.Migrations
                             Id = 30,
                             BaseSalary = 0m,
                             CitizenId = "00000030",
+                            GroupId = 4,
                             Name = "User 30",
                             Password = "password30",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user30"
                         },
@@ -1674,8 +1914,10 @@ namespace Repositories.Migrations
                             Id = 31,
                             BaseSalary = 0m,
                             CitizenId = "00000031",
+                            GroupId = 4,
                             Name = "User 31",
                             Password = "password31",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user31"
                         },
@@ -1684,8 +1926,10 @@ namespace Repositories.Migrations
                             Id = 32,
                             BaseSalary = 0m,
                             CitizenId = "00000032",
+                            GroupId = 4,
                             Name = "User 32",
                             Password = "password32",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user32"
                         },
@@ -1694,8 +1938,10 @@ namespace Repositories.Migrations
                             Id = 33,
                             BaseSalary = 0m,
                             CitizenId = "00000033",
+                            GroupId = 4,
                             Name = "User 33",
                             Password = "password33",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user33"
                         },
@@ -1704,8 +1950,10 @@ namespace Repositories.Migrations
                             Id = 34,
                             BaseSalary = 0m,
                             CitizenId = "00000034",
+                            GroupId = 4,
                             Name = "User 34",
                             Password = "password34",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user34"
                         },
@@ -1714,8 +1962,10 @@ namespace Repositories.Migrations
                             Id = 35,
                             BaseSalary = 0m,
                             CitizenId = "00000035",
+                            GroupId = 4,
                             Name = "User 35",
                             Password = "password35",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user35"
                         },
@@ -1724,8 +1974,10 @@ namespace Repositories.Migrations
                             Id = 36,
                             BaseSalary = 0m,
                             CitizenId = "00000036",
+                            GroupId = 4,
                             Name = "User 36",
                             Password = "password36",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user36"
                         },
@@ -1734,8 +1986,10 @@ namespace Repositories.Migrations
                             Id = 37,
                             BaseSalary = 0m,
                             CitizenId = "00000037",
+                            GroupId = 4,
                             Name = "User 37",
                             Password = "password37",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user37"
                         },
@@ -1744,8 +1998,10 @@ namespace Repositories.Migrations
                             Id = 38,
                             BaseSalary = 0m,
                             CitizenId = "00000038",
+                            GroupId = 4,
                             Name = "User 38",
                             Password = "password38",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user38"
                         },
@@ -1754,8 +2010,10 @@ namespace Repositories.Migrations
                             Id = 39,
                             BaseSalary = 0m,
                             CitizenId = "00000039",
+                            GroupId = 4,
                             Name = "User 39",
                             Password = "password39",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user39"
                         },
@@ -1764,8 +2022,10 @@ namespace Repositories.Migrations
                             Id = 40,
                             BaseSalary = 0m,
                             CitizenId = "00000040",
+                            GroupId = 4,
                             Name = "User 40",
                             Password = "password40",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user40"
                         },
@@ -1774,8 +2034,10 @@ namespace Repositories.Migrations
                             Id = 41,
                             BaseSalary = 0m,
                             CitizenId = "00000041",
+                            GroupId = 4,
                             Name = "User 41",
                             Password = "password41",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user41"
                         },
@@ -1784,8 +2046,10 @@ namespace Repositories.Migrations
                             Id = 42,
                             BaseSalary = 0m,
                             CitizenId = "00000042",
+                            GroupId = 4,
                             Name = "User 42",
                             Password = "password42",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user42"
                         },
@@ -1794,8 +2058,10 @@ namespace Repositories.Migrations
                             Id = 43,
                             BaseSalary = 0m,
                             CitizenId = "00000043",
+                            GroupId = 4,
                             Name = "User 43",
                             Password = "password43",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user43"
                         },
@@ -1804,8 +2070,10 @@ namespace Repositories.Migrations
                             Id = 44,
                             BaseSalary = 0m,
                             CitizenId = "00000044",
+                            GroupId = 4,
                             Name = "User 44",
                             Password = "password44",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user44"
                         },
@@ -1814,8 +2082,10 @@ namespace Repositories.Migrations
                             Id = 45,
                             BaseSalary = 0m,
                             CitizenId = "00000045",
+                            GroupId = 4,
                             Name = "User 45",
                             Password = "password45",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user45"
                         },
@@ -1824,8 +2094,10 @@ namespace Repositories.Migrations
                             Id = 46,
                             BaseSalary = 0m,
                             CitizenId = "00000046",
+                            GroupId = 4,
                             Name = "User 46",
                             Password = "password46",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user46"
                         },
@@ -1834,8 +2106,10 @@ namespace Repositories.Migrations
                             Id = 47,
                             BaseSalary = 0m,
                             CitizenId = "00000047",
+                            GroupId = 4,
                             Name = "User 47",
                             Password = "password47",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user47"
                         },
@@ -1844,8 +2118,10 @@ namespace Repositories.Migrations
                             Id = 48,
                             BaseSalary = 0m,
                             CitizenId = "00000048",
+                            GroupId = 4,
                             Name = "User 48",
                             Password = "password48",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user48"
                         },
@@ -1854,8 +2130,10 @@ namespace Repositories.Migrations
                             Id = 49,
                             BaseSalary = 0m,
                             CitizenId = "00000049",
+                            GroupId = 4,
                             Name = "User 49",
                             Password = "password49",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user49"
                         },
@@ -1864,8 +2142,10 @@ namespace Repositories.Migrations
                             Id = 50,
                             BaseSalary = 0m,
                             CitizenId = "00000050",
+                            GroupId = 4,
                             Name = "User 50",
                             Password = "password50",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user50"
                         },
@@ -1874,8 +2154,10 @@ namespace Repositories.Migrations
                             Id = 51,
                             BaseSalary = 0m,
                             CitizenId = "00000051",
+                            GroupId = 4,
                             Name = "User 51",
                             Password = "password51",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user51"
                         },
@@ -1884,8 +2166,10 @@ namespace Repositories.Migrations
                             Id = 52,
                             BaseSalary = 0m,
                             CitizenId = "00000052",
+                            GroupId = 4,
                             Name = "User 52",
                             Password = "password52",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user52"
                         },
@@ -1894,8 +2178,10 @@ namespace Repositories.Migrations
                             Id = 53,
                             BaseSalary = 0m,
                             CitizenId = "00000053",
+                            GroupId = 4,
                             Name = "User 53",
                             Password = "password53",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user53"
                         },
@@ -1904,8 +2190,10 @@ namespace Repositories.Migrations
                             Id = 54,
                             BaseSalary = 0m,
                             CitizenId = "00000054",
+                            GroupId = 4,
                             Name = "User 54",
                             Password = "password54",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user54"
                         },
@@ -1914,8 +2202,10 @@ namespace Repositories.Migrations
                             Id = 55,
                             BaseSalary = 0m,
                             CitizenId = "00000055",
+                            GroupId = 4,
                             Name = "User 55",
                             Password = "password55",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user55"
                         },
@@ -1924,8 +2214,10 @@ namespace Repositories.Migrations
                             Id = 56,
                             BaseSalary = 0m,
                             CitizenId = "00000056",
+                            GroupId = 4,
                             Name = "User 56",
                             Password = "password56",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user56"
                         },
@@ -1934,8 +2226,10 @@ namespace Repositories.Migrations
                             Id = 57,
                             BaseSalary = 0m,
                             CitizenId = "00000057",
+                            GroupId = 4,
                             Name = "User 57",
                             Password = "password57",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user57"
                         },
@@ -1944,8 +2238,10 @@ namespace Repositories.Migrations
                             Id = 58,
                             BaseSalary = 0m,
                             CitizenId = "00000058",
+                            GroupId = 4,
                             Name = "User 58",
                             Password = "password58",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user58"
                         },
@@ -1954,8 +2250,10 @@ namespace Repositories.Migrations
                             Id = 59,
                             BaseSalary = 0m,
                             CitizenId = "00000059",
+                            GroupId = 4,
                             Name = "User 59",
                             Password = "password59",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user59"
                         },
@@ -1964,8 +2262,10 @@ namespace Repositories.Migrations
                             Id = 60,
                             BaseSalary = 0m,
                             CitizenId = "00000060",
+                            GroupId = 4,
                             Name = "User 60",
                             Password = "password60",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user60"
                         },
@@ -1974,8 +2274,10 @@ namespace Repositories.Migrations
                             Id = 61,
                             BaseSalary = 0m,
                             CitizenId = "00000061",
+                            GroupId = 4,
                             Name = "User 61",
                             Password = "password61",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user61"
                         },
@@ -1984,8 +2286,10 @@ namespace Repositories.Migrations
                             Id = 62,
                             BaseSalary = 0m,
                             CitizenId = "00000062",
+                            GroupId = 4,
                             Name = "User 62",
                             Password = "password62",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user62"
                         },
@@ -1994,8 +2298,10 @@ namespace Repositories.Migrations
                             Id = 63,
                             BaseSalary = 0m,
                             CitizenId = "00000063",
+                            GroupId = 4,
                             Name = "User 63",
                             Password = "password63",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user63"
                         },
@@ -2004,8 +2310,10 @@ namespace Repositories.Migrations
                             Id = 64,
                             BaseSalary = 0m,
                             CitizenId = "00000064",
+                            GroupId = 4,
                             Name = "User 64",
                             Password = "password64",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user64"
                         },
@@ -2014,8 +2322,10 @@ namespace Repositories.Migrations
                             Id = 65,
                             BaseSalary = 0m,
                             CitizenId = "00000065",
+                            GroupId = 4,
                             Name = "User 65",
                             Password = "password65",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user65"
                         },
@@ -2024,8 +2334,10 @@ namespace Repositories.Migrations
                             Id = 66,
                             BaseSalary = 0m,
                             CitizenId = "00000066",
+                            GroupId = 4,
                             Name = "User 66",
                             Password = "password66",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user66"
                         },
@@ -2034,8 +2346,10 @@ namespace Repositories.Migrations
                             Id = 67,
                             BaseSalary = 0m,
                             CitizenId = "00000067",
+                            GroupId = 4,
                             Name = "User 67",
                             Password = "password67",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user67"
                         },
@@ -2044,8 +2358,10 @@ namespace Repositories.Migrations
                             Id = 68,
                             BaseSalary = 0m,
                             CitizenId = "00000068",
+                            GroupId = 4,
                             Name = "User 68",
                             Password = "password68",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user68"
                         },
@@ -2054,8 +2370,10 @@ namespace Repositories.Migrations
                             Id = 69,
                             BaseSalary = 0m,
                             CitizenId = "00000069",
+                            GroupId = 4,
                             Name = "User 69",
                             Password = "password69",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user69"
                         },
@@ -2064,8 +2382,10 @@ namespace Repositories.Migrations
                             Id = 70,
                             BaseSalary = 0m,
                             CitizenId = "00000070",
+                            GroupId = 4,
                             Name = "User 70",
                             Password = "password70",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user70"
                         },
@@ -2074,8 +2394,10 @@ namespace Repositories.Migrations
                             Id = 71,
                             BaseSalary = 0m,
                             CitizenId = "00000071",
+                            GroupId = 4,
                             Name = "User 71",
                             Password = "password71",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user71"
                         },
@@ -2084,8 +2406,10 @@ namespace Repositories.Migrations
                             Id = 72,
                             BaseSalary = 0m,
                             CitizenId = "00000072",
+                            GroupId = 4,
                             Name = "User 72",
                             Password = "password72",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user72"
                         },
@@ -2094,8 +2418,10 @@ namespace Repositories.Migrations
                             Id = 73,
                             BaseSalary = 0m,
                             CitizenId = "00000073",
+                            GroupId = 4,
                             Name = "User 73",
                             Password = "password73",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user73"
                         },
@@ -2104,8 +2430,10 @@ namespace Repositories.Migrations
                             Id = 74,
                             BaseSalary = 0m,
                             CitizenId = "00000074",
+                            GroupId = 4,
                             Name = "User 74",
                             Password = "password74",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user74"
                         },
@@ -2114,8 +2442,10 @@ namespace Repositories.Migrations
                             Id = 75,
                             BaseSalary = 0m,
                             CitizenId = "00000075",
+                            GroupId = 4,
                             Name = "User 75",
                             Password = "password75",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user75"
                         },
@@ -2124,8 +2454,10 @@ namespace Repositories.Migrations
                             Id = 76,
                             BaseSalary = 0m,
                             CitizenId = "00000076",
+                            GroupId = 4,
                             Name = "User 76",
                             Password = "password76",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user76"
                         },
@@ -2134,8 +2466,10 @@ namespace Repositories.Migrations
                             Id = 77,
                             BaseSalary = 0m,
                             CitizenId = "00000077",
+                            GroupId = 4,
                             Name = "User 77",
                             Password = "password77",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user77"
                         },
@@ -2144,8 +2478,10 @@ namespace Repositories.Migrations
                             Id = 78,
                             BaseSalary = 0m,
                             CitizenId = "00000078",
+                            GroupId = 4,
                             Name = "User 78",
                             Password = "password78",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user78"
                         },
@@ -2154,8 +2490,10 @@ namespace Repositories.Migrations
                             Id = 79,
                             BaseSalary = 0m,
                             CitizenId = "00000079",
+                            GroupId = 4,
                             Name = "User 79",
                             Password = "password79",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user79"
                         },
@@ -2164,8 +2502,10 @@ namespace Repositories.Migrations
                             Id = 80,
                             BaseSalary = 0m,
                             CitizenId = "00000080",
+                            GroupId = 4,
                             Name = "User 80",
                             Password = "password80",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user80"
                         },
@@ -2174,8 +2514,10 @@ namespace Repositories.Migrations
                             Id = 81,
                             BaseSalary = 0m,
                             CitizenId = "00000081",
+                            GroupId = 4,
                             Name = "User 81",
                             Password = "password81",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user81"
                         },
@@ -2184,8 +2526,10 @@ namespace Repositories.Migrations
                             Id = 82,
                             BaseSalary = 0m,
                             CitizenId = "00000082",
+                            GroupId = 4,
                             Name = "User 82",
                             Password = "password82",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user82"
                         },
@@ -2194,8 +2538,10 @@ namespace Repositories.Migrations
                             Id = 83,
                             BaseSalary = 0m,
                             CitizenId = "00000083",
+                            GroupId = 4,
                             Name = "User 83",
                             Password = "password83",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user83"
                         },
@@ -2204,8 +2550,10 @@ namespace Repositories.Migrations
                             Id = 84,
                             BaseSalary = 0m,
                             CitizenId = "00000084",
+                            GroupId = 4,
                             Name = "User 84",
                             Password = "password84",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user84"
                         },
@@ -2214,8 +2562,10 @@ namespace Repositories.Migrations
                             Id = 85,
                             BaseSalary = 0m,
                             CitizenId = "00000085",
+                            GroupId = 4,
                             Name = "User 85",
                             Password = "password85",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user85"
                         },
@@ -2224,8 +2574,10 @@ namespace Repositories.Migrations
                             Id = 86,
                             BaseSalary = 0m,
                             CitizenId = "00000086",
+                            GroupId = 4,
                             Name = "User 86",
                             Password = "password86",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user86"
                         },
@@ -2234,8 +2586,10 @@ namespace Repositories.Migrations
                             Id = 87,
                             BaseSalary = 0m,
                             CitizenId = "00000087",
+                            GroupId = 4,
                             Name = "User 87",
                             Password = "password87",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user87"
                         },
@@ -2244,8 +2598,10 @@ namespace Repositories.Migrations
                             Id = 88,
                             BaseSalary = 0m,
                             CitizenId = "00000088",
+                            GroupId = 4,
                             Name = "User 88",
                             Password = "password88",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user88"
                         },
@@ -2254,8 +2610,10 @@ namespace Repositories.Migrations
                             Id = 89,
                             BaseSalary = 0m,
                             CitizenId = "00000089",
+                            GroupId = 4,
                             Name = "User 89",
                             Password = "password89",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user89"
                         },
@@ -2264,8 +2622,10 @@ namespace Repositories.Migrations
                             Id = 90,
                             BaseSalary = 0m,
                             CitizenId = "00000090",
+                            GroupId = 4,
                             Name = "User 90",
                             Password = "password90",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user90"
                         },
@@ -2274,8 +2634,10 @@ namespace Repositories.Migrations
                             Id = 91,
                             BaseSalary = 0m,
                             CitizenId = "00000091",
+                            GroupId = 4,
                             Name = "User 91",
                             Password = "password91",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user91"
                         },
@@ -2284,8 +2646,10 @@ namespace Repositories.Migrations
                             Id = 92,
                             BaseSalary = 0m,
                             CitizenId = "00000092",
+                            GroupId = 4,
                             Name = "User 92",
                             Password = "password92",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user92"
                         },
@@ -2294,8 +2658,10 @@ namespace Repositories.Migrations
                             Id = 93,
                             BaseSalary = 0m,
                             CitizenId = "00000093",
+                            GroupId = 4,
                             Name = "User 93",
                             Password = "password93",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user93"
                         },
@@ -2304,8 +2670,10 @@ namespace Repositories.Migrations
                             Id = 94,
                             BaseSalary = 0m,
                             CitizenId = "00000094",
+                            GroupId = 4,
                             Name = "User 94",
                             Password = "password94",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user94"
                         },
@@ -2314,8 +2682,10 @@ namespace Repositories.Migrations
                             Id = 95,
                             BaseSalary = 0m,
                             CitizenId = "00000095",
+                            GroupId = 4,
                             Name = "User 95",
                             Password = "password95",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user95"
                         },
@@ -2324,8 +2694,10 @@ namespace Repositories.Migrations
                             Id = 96,
                             BaseSalary = 0m,
                             CitizenId = "00000096",
+                            GroupId = 4,
                             Name = "User 96",
                             Password = "password96",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user96"
                         },
@@ -2334,8 +2706,10 @@ namespace Repositories.Migrations
                             Id = 97,
                             BaseSalary = 0m,
                             CitizenId = "00000097",
+                            GroupId = 4,
                             Name = "User 97",
                             Password = "password97",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user97"
                         },
@@ -2344,8 +2718,10 @@ namespace Repositories.Migrations
                             Id = 98,
                             BaseSalary = 0m,
                             CitizenId = "00000098",
+                            GroupId = 4,
                             Name = "User 98",
                             Password = "password98",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user98"
                         },
@@ -2354,8 +2730,10 @@ namespace Repositories.Migrations
                             Id = 99,
                             BaseSalary = 0m,
                             CitizenId = "00000099",
+                            GroupId = 4,
                             Name = "User 99",
                             Password = "password99",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user99"
                         },
@@ -2364,8 +2742,10 @@ namespace Repositories.Migrations
                             Id = 100,
                             BaseSalary = 0m,
                             CitizenId = "000000100",
+                            GroupId = 4,
                             Name = "User 100",
                             Password = "password100",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user100"
                         },
@@ -2374,8 +2754,10 @@ namespace Repositories.Migrations
                             Id = 101,
                             BaseSalary = 0m,
                             CitizenId = "000000101",
+                            GroupId = 4,
                             Name = "User 101",
                             Password = "password101",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user101"
                         },
@@ -2384,8 +2766,10 @@ namespace Repositories.Migrations
                             Id = 102,
                             BaseSalary = 0m,
                             CitizenId = "000000102",
+                            GroupId = 4,
                             Name = "User 102",
                             Password = "password102",
+                            RoleId = 3,
                             TeamId = 1,
                             Username = "user102"
                         },
@@ -2394,8 +2778,10 @@ namespace Repositories.Migrations
                             Id = 103,
                             BaseSalary = 0m,
                             CitizenId = "000000103",
+                            GroupId = 4,
                             Name = "User 103",
                             Password = "password103",
+                            RoleId = 3,
                             TeamId = 2,
                             Username = "user103"
                         });
@@ -2415,7 +2801,7 @@ namespace Repositories.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Formula")
+                    b.Property<string>("FormulaName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -2436,7 +2822,7 @@ namespace Repositories.Migrations
                             Id = 1,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 1, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 1, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2445,7 +2831,7 @@ namespace Repositories.Migrations
                             Id = 2,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 2, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 2, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2454,7 +2840,7 @@ namespace Repositories.Migrations
                             Id = 3,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 5, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 5, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2463,7 +2849,7 @@ namespace Repositories.Migrations
                             Id = 4,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 6, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 6, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2472,7 +2858,7 @@ namespace Repositories.Migrations
                             Id = 5,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 7, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 7, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2481,7 +2867,7 @@ namespace Repositories.Migrations
                             Id = 6,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 8, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 8, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2490,7 +2876,7 @@ namespace Repositories.Migrations
                             Id = 7,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 9, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 9, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2499,7 +2885,7 @@ namespace Repositories.Migrations
                             Id = 8,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 12, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 12, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2508,7 +2894,7 @@ namespace Repositories.Migrations
                             Id = 9,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 13, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 13, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2517,7 +2903,7 @@ namespace Repositories.Migrations
                             Id = 10,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 14, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 14, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2526,7 +2912,7 @@ namespace Repositories.Migrations
                             Id = 11,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 15, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 15, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2535,7 +2921,7 @@ namespace Repositories.Migrations
                             Id = 12,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 16, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 16, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2544,7 +2930,7 @@ namespace Repositories.Migrations
                             Id = 13,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 19, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 19, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2553,7 +2939,7 @@ namespace Repositories.Migrations
                             Id = 14,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 20, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 20, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2562,7 +2948,7 @@ namespace Repositories.Migrations
                             Id = 15,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 21, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 21, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2571,7 +2957,7 @@ namespace Repositories.Migrations
                             Id = 16,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 22, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 22, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2580,7 +2966,7 @@ namespace Repositories.Migrations
                             Id = 17,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 23, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 23, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2589,7 +2975,7 @@ namespace Repositories.Migrations
                             Id = 18,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 26, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 26, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2598,7 +2984,7 @@ namespace Repositories.Migrations
                             Id = 19,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 27, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 27, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2607,7 +2993,7 @@ namespace Repositories.Migrations
                             Id = 20,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 28, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 28, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2616,7 +3002,7 @@ namespace Repositories.Migrations
                             Id = 21,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 29, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 29, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -2625,7 +3011,7 @@ namespace Repositories.Migrations
                             Id = 22,
                             Description = "Normal Working Day",
                             EndTime = new DateTime(2022, 9, 30, 17, 0, 0, 0, DateTimeKind.Unspecified),
-                            Formula = "2",
+                            FormulaName = "formula_1",
                             Name = "Normal Working Day",
                             StartTime = new DateTime(2022, 9, 30, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         });
@@ -2652,7 +3038,6 @@ namespace Repositories.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("EmployeeId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("WorkingShiftEventId")
@@ -25126,6 +25511,81 @@ namespace Repositories.Migrations
                     b.HasData(
                         new
                         {
+                            PermissionId = 53,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 54,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 55,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 56,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 57,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 58,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 59,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 60,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 61,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 62,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 63,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 64,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 65,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 66,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 67,
+                            RoleId = 1
+                        },
+                        new
+                        {
                             PermissionId = 1,
                             RoleId = 1
                         },
@@ -25366,6 +25826,101 @@ namespace Repositories.Migrations
                         },
                         new
                         {
+                            PermissionId = 49,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 50,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 51,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 52,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            PermissionId = 53,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 54,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 55,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 56,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 57,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 58,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 59,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 60,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 61,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 62,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 63,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 64,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 65,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 66,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 67,
+                            RoleId = 2
+                        },
+                        new
+                        {
                             PermissionId = 1,
                             RoleId = 2
                         },
@@ -25606,6 +26161,66 @@ namespace Repositories.Migrations
                         },
                         new
                         {
+                            PermissionId = 49,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 50,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 51,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 52,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            PermissionId = 68,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            PermissionId = 69,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            PermissionId = 70,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            PermissionId = 71,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            PermissionId = 72,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            PermissionId = 73,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            PermissionId = 74,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            PermissionId = 75,
+                            RoleId = 3
+                        },
+                        new
+                        {
                             PermissionId = 1,
                             RoleId = 3
                         },
@@ -25846,723 +26461,23 @@ namespace Repositories.Migrations
                         },
                         new
                         {
-                            PermissionId = 1,
-                            RoleId = 5
+                            PermissionId = 49,
+                            RoleId = 3
                         },
                         new
                         {
-                            PermissionId = 2,
-                            RoleId = 5
+                            PermissionId = 50,
+                            RoleId = 3
                         },
                         new
                         {
-                            PermissionId = 3,
-                            RoleId = 5
+                            PermissionId = 51,
+                            RoleId = 3
                         },
                         new
                         {
-                            PermissionId = 4,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 5,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 6,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 7,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 8,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 9,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 10,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 11,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 12,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 13,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 14,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 15,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 16,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 17,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 18,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 19,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 20,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 21,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 22,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 23,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 24,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 25,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 26,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 27,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 28,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 29,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 30,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 31,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 32,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 33,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 34,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 35,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 36,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 37,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 38,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 39,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 40,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 41,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 42,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 43,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 44,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 45,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 46,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 47,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 48,
-                            RoleId = 5
-                        },
-                        new
-                        {
-                            PermissionId = 1,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 2,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 3,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 4,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 5,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 6,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 7,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 8,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 9,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 10,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 11,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 12,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 13,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 14,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 15,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 16,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 17,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 18,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 19,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 20,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 21,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 22,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 23,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 24,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 25,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 26,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 27,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 28,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 29,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 30,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 31,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 32,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 33,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 34,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 35,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 36,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 37,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 38,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 39,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 40,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 41,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 42,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 43,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 44,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 45,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 46,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 47,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 48,
-                            RoleId = 6
-                        },
-                        new
-                        {
-                            PermissionId = 1,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 2,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 3,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 4,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 5,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 6,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 7,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 8,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 9,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 10,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 11,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 12,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 13,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 14,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 15,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 16,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 17,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 18,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 19,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 20,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 21,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 22,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 23,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 24,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 25,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 26,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 27,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 28,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 29,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 30,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 31,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 32,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 33,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 34,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 35,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 36,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 37,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 38,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 39,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 40,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 41,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 42,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 43,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 44,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 45,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 46,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 47,
-                            RoleId = 7
-                        },
-                        new
-                        {
-                            PermissionId = 48,
-                            RoleId = 7
+                            PermissionId = 52,
+                            RoleId = 3
                         });
                 });
 
@@ -26733,13 +26648,17 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Models.Models.TaskFile", b =>
                 {
-                    b.HasOne("Models.Models.TaskComment", "TaskComment")
+                    b.HasOne("Models.Models.TaskComment", null)
                         .WithMany("TaskFiles")
-                        .HasForeignKey("TaskCommentId")
+                        .HasForeignKey("TaskCommentId");
+
+                    b.HasOne("Models.Models.Task", "Task")
+                        .WithMany("Files")
+                        .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("TaskComment");
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("Models.Models.Team", b =>
@@ -26789,9 +26708,7 @@ namespace Repositories.Migrations
                 {
                     b.HasOne("Models.Models.User", "Employee")
                         .WithMany("Timekeepings")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId");
 
                     b.HasOne("Models.Models.WorkingShiftEvent", "WorkingShiftEvent")
                         .WithMany("Timekeepings")
@@ -26879,6 +26796,8 @@ namespace Repositories.Migrations
             modelBuilder.Entity("Models.Models.Task", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("Models.Models.TaskBoard", b =>

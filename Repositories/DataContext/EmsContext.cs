@@ -2,9 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Repositories.DataContext.DataSeeder;
 using Task = Models.Models.Task;
-using Microsoft.Data.SqlClient.DataClassification;
-using System.Reflection.Emit;
-using System.Data.Common;
 
 namespace Models.Repositories.DataContext
 {
@@ -173,13 +170,14 @@ namespace Models.Repositories.DataContext
             modelBuilder.Entity<Task>()
                 .HasMany(p => p.Comments)
                 .WithOne(p => p.Task)
-                .HasForeignKey(p => p.TaskId);
+                .HasForeignKey(p => p.TaskId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<TaskComment>()
-                .HasMany(p => p.TaskFiles)
-                .WithOne(p => p.TaskComment)
-                .HasForeignKey(p => p.TaskCommentId);
-
+            modelBuilder.Entity<Task>()
+                .HasMany(p => p.Files)
+                .WithOne(p => p.Task)
+                .HasForeignKey(p => p.TaskId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             /** Timekeepings Mappings */
             // Many to many User - WorkingShiftEvent
@@ -196,16 +194,14 @@ namespace Models.Repositories.DataContext
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Timekeepings)
                 .WithOne(p => p.Employee)
-                .HasForeignKey(p => p.EmployeeId)
-                ;
+                .HasForeignKey(p => p.EmployeeId);
 
             // One to many WorkingShiftTimekeeping - WorkingShiftEvent
             modelBuilder.Entity<WorkingShiftTimekeeping>()
                 .HasOne(p => p.WorkingShiftEvent)
                 .WithMany(p => p.Timekeepings)
                 .HasForeignKey(p => p.WorkingShiftEventId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                ;
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             seedData(modelBuilder);
         }

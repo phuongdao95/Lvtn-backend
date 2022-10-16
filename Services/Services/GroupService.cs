@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Emgu.CV.ML;
 using Models.DTO.Request;
 using Models.Models;
 using Models.Repositories.DataContext;
@@ -6,77 +7,96 @@ using Services.Contracts;
 
 namespace Services.Services
 {
-    public class SalaryGroupService : ISalaryGroupService
+    public class GroupService : IGroupService
     {
-        private readonly IMapper _mapper;
-        private readonly EmsContext _context;
-        public SalaryGroupService(IMapper mapper, EmsContext context)
+        private EmsContext _context;
+        private IMapper _mapper;
+        public GroupService(EmsContext context, IMapper mapper)
         {
-            _mapper = mapper;
             _context = context;
-        }
-        public void CreateSalaryGroup(SalaryGroupDTO groupDTO)
-        {
-            //var userIds = groupDTO.UserIds ?? new List<int>();
-            //var users = _context.Users.Where((user) => userIds.Contains(user.Id));
-
-            var group = _mapper.Map<SalaryGroup>(groupDTO);
-
-            _context.SalaryGroups.Add(group);
-            _context.SaveChanges();
+            _mapper = mapper;
         }
 
-        public void DeleteSalaryGroup(int id)
+        public List<Group> GetGroupList(
+            int offset = 0,
+            int limit = 8,
+            string? query = "", 
+            string? queryType = "name")
         {
-            var group = _context.SalaryGroups.Find(id);
+            return getGroupListQuery(offset, limit, query, queryType)
+                .ToList();
+        }
 
+        public int GetGroupListCount(string? query = "", string? queryType = "")
+        {
+            return getGroupListQuery(0, int.MaxValue, query, queryType)
+                .Count();
+
+        }
+
+        public IQueryable<Group> getGroupListQuery(int offset, int limit, string? query = "", string? queryType = "")
+        {
+            return _context.Groups
+                .Where(group => group.Name.Contains(query) || query.Contains(group.Name))
+                .Skip(offset)
+                .Take(limit)
+            ;
+        }
+
+        public Group GetGroupById(int id, bool loadUser = false)
+        {
+            var group = _context.Groups.Find(id);
             if (group == null)
             {
-                throw new Exception("Cannot delete group of null");
+                throw new Exception("Cannot find group by id");
             }
 
-            _context.SalaryGroups.Remove(group);
-            _context.SaveChanges();
-        }
-
-        public SalaryGroup GetSalaryGroupById(int id)
-        {
-            var group = _context.SalaryGroups.Find(id);
-            if (group == null)
+            if (loadUser)
             {
-                throw new Exception("Group is null");
+                _context.Entry(group)
+                    .Collection(g => g.Users)
+                    .Load();
             }
 
             return group;
         }
 
-        public List<SalaryGroup> GetSalaryGroupList(int offset = 0, int limit = 8, string query = "", string queryType = "name")
+        public void CreateGroup(GroupDTO groupDTO)
         {
-            return _context.SalaryGroups
-                .Where((group) => query.Contains(group.Name) || group.Name.Contains(query))
-                .Skip(offset)
-                .Take(limit)
-                .ToList();
+            var users = _context.Users.Where(u => groupDTO.UserIds.Contains(u.Id)).ToList();
+            var group = _mapper.Map<Group>(groupDTO);
+            group.Users = users;
+            _context.SaveChanges();
+            
         }
 
-        public int GetSalaryGroupCount(int offset, int limit, string query, string queryType)
+        public void UpdateGroup(int id, GroupDTO groupDTO)
         {
-            return _context.SalaryGroups
-                .Where((group) => query.Contains(group.Name) || group.Name.Contains(query))
-                .Skip(offset)
-                .Take(limit)
-                .Count();
+            var group = _context.Groups.Find(id);
+            if (group == null)
+            {
+                throw new Exception("Cannot find group by id");
+            }
+
+            var users = _context.Users.Where(u => groupDTO.UserIds.Contains(u.Id)).ToList();
+
+            group.Name = groupDTO.Name;
+            group.Description = groupDTO.Description;
+            group.Users = users;
+
+            _context.Groups.Update(group);
+            _context.SaveChanges();
         }
 
-        public void UpdateSalaryGroup(int id, SalaryGroupDTO groupDTO)
+        public void DeleteGroup(int id)
         {
-            //var userIds = groupDTO.UserIds ?? new List<int>();
-            //var users = _context.Users.Where(user => userIds.Contains(user.Id)).ToList();
-            var group = _mapper.Map<SalaryGroup>(groupDTO);
+            var group = _context.Groups.Find(id);
+            if (group == null)
+            {
+                throw new Exception("Cannot find group by id");
+            }
 
-            group.Id = id;
-            //group.Users = users;
-            _context.SalaryGroups.Update(group);
+            _context.Groups.Remove(group);
             _context.SaveChanges();
         }
     }

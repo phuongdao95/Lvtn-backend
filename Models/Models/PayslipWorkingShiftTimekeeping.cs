@@ -16,7 +16,6 @@ namespace Models.Models
         public DateTime? CheckinTime { get; set; }
         public bool DidCheckout { get; set; }
         public DateTime? CheckoutTime { get; set; }
-        public int? WorkingShiftEventId { get; set; }
         public decimal? Amount { get; set; }
         public string? Formula { get; set; }
         public int PayslipId { get; set; }

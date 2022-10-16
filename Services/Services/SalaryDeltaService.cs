@@ -21,10 +21,10 @@ namespace Services.Services
         public void CreateSalaryDelta(SalaryDeltaDTO salaryDeltaDTO)
         {
             var salaryDelta = _mapper.Map<SalaryDelta>(salaryDeltaDTO);
-            var userIds = salaryDeltaDTO.UserIds ?? new List<int>();
-            var users = _context.Users.Where((user) => userIds.Contains(user.Id)).ToList();
+            var groupId = salaryDeltaDTO.GroupId;
+            var group = _context.Groups.Find(groupId);
 
-            //salaryDelta.Users = users;
+            salaryDelta.Group = group;
             _context.SalaryDeltas.Add(salaryDelta);
             _context.SaveChanges();
         }
@@ -55,24 +55,41 @@ namespace Services.Services
         public List<SalaryDelta> GetSalaryDeltaList(
             int offset, 
             int limit, 
-            SalaryDeltaType type,
             string? query, 
             string? queryType
             )
         {
-            var salaryDeltaList = _context.SalaryDeltas.Where((salaryDelta) => salaryDelta.Type == type);
+            return getSalaryDeltaListQuery(offset, limit, query, queryType).ToList();
+        }
 
-            return salaryDeltaList
+        public int GetSalaryDeltaListCount(string? query = "", string? queryType = "deduction")
+        {
+            return getSalaryDeltaListQuery(0, int.MaxValue, query, queryType)
+                .Count();
+        }
+
+        private IQueryable<SalaryDelta> getSalaryDeltaListQuery(int offset, int limit, string? query = "", string? queryType = "deduction")
+        {
+            IQueryable<SalaryDelta> salaryDeltaQuery;
+
+            if (queryType == "deduction")
+            {
+                salaryDeltaQuery = _context.SalaryDeltas.Where(sd => sd.Type == SalaryDeltaType.Deduction);
+            }
+            else if (queryType == "allowance")
+            {
+                salaryDeltaQuery = _context.SalaryDeltas.Where(sd => sd.Type == SalaryDeltaType.Deduction);
+            }
+            else
+            {
+                salaryDeltaQuery = _context.SalaryDeltas.Where(sd => sd.Type == SalaryDeltaType.Deduction);
+            }
+
+            return salaryDeltaQuery
                 .Where((salaryDelta) => salaryDelta.Name.Contains(query) || query.Contains(salaryDelta.Name))
                 .Skip(offset)
                 .Take(limit)
-                .ToList();
-        }
-
-        public int GetSalaryDeltaListCount(int offset, int limit, SalaryDeltaType type, string? query = "", string? queryType = "name")
-        {
-            return GetSalaryDeltaList(offset, limit, type, query, queryType)
-                .Count();
+                .OrderByDescending(p => p.ToMonth);
         }
 
         public void UpdateSalaryDelta(int id, SalaryDeltaDTO salaryDeltaDTO)
@@ -83,8 +100,11 @@ namespace Services.Services
                 throw new Exception("Cannot update salary delta of null");
             }
 
+            var group = _context.Groups.Find(id);
+
             var mapped = _mapper.Map<SalaryDelta>(salaryDeltaDTO);
             mapped.Id = id;
+            mapped.Group = group;
 
             _context.SalaryDeltas.Update(mapped);
             _context.SaveChanges();

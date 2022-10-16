@@ -74,7 +74,7 @@ namespace Repositories.DataContext.DataSeeder
                     StartTime = date.AddHours(8),
                     EndTime = date.AddHours(17),
                     Description = "Normal Working Day",
-                    Formula = "2"
+                    FormulaName = "formula_1"
                 });
             }
 

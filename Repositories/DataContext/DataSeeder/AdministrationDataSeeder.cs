@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 using Models.Helpers;
 using Models.Models;
+using System.Security;
 
 namespace Repositories.DataContext.DataSeeder
 {
@@ -21,6 +20,7 @@ namespace Repositories.DataContext.DataSeeder
         public static readonly string B_TEAM = "B_TEAM";
         public static readonly string C_TEAM = "C_TEAM";
 
+        public static readonly string GROUP_DEFAULT = "GROUP_DEFAULT";
         public static readonly string GROUP_A = "GROUP_A";
         public static readonly string GROUP_B = "GROUP_B";
         public static readonly string GROUP_C = "GROUP_C";
@@ -135,39 +135,46 @@ namespace Repositories.DataContext.DataSeeder
             }
         };
 
-        public static readonly Dictionary<string, SalaryGroup> DefaultGroupMap = new Dictionary<string, SalaryGroup>
+        public static readonly Dictionary<string, Group> DefaultGroupMap = new Dictionary<string, Group>
         {
             {
                 GROUP_A,
-                new SalaryGroup
+                new Group
                 {
                     Id = 1,
                     Name = "Group A",
                     Description = "Group A",
-                    Formula = "formula_1",
                 }
             },
             {
                 GROUP_B,
-                new SalaryGroup
+                new Group
                 {
                     Id = 2,
                     Name = "Group B",
-                    Description  = "Group B",
-                    Formula = "formula_2",
+                    Description = "Group B",
                 }
             },
             {
                 GROUP_C,
-                new SalaryGroup
+                new Group
                 {
                     Id = 3,
                     Name = "Group C",
-                    Description = "Group C",
-                    Formula = "formula_3"
+                    Description = "Group C"
+                }
+            },
+            {
+                GROUP_DEFAULT,
+                new Group
+                {
+                    Id = 4,
+                    Name = "Group Default",
+                    Description = "Group Default"
                 }
             }
         };
+
 
         public List<Permission> Permissions { get; set; }
         public List<Role> Roles { get; set; }
@@ -175,7 +182,10 @@ namespace Repositories.DataContext.DataSeeder
         public List<Department> Departments { get; set; }
         public List<Team> Teams { get; set; }
         public List<User> Users { get; set; }
-        public List<SalaryGroup> Groups { get; set; }
+        public List<Group> Groups { get; set; }
+        private (int, int) pageAccessPermissionForAdminIdRange { get; set; }
+        private (int, int) pageAccessPermissionForNormalUserIdRange { get; set; }
+        private (int, int) resourceAccessPermissionIdRange { get; set; }
 
         private readonly ModelBuilder _modelBuilder;
 
@@ -187,23 +197,57 @@ namespace Repositories.DataContext.DataSeeder
             RolePermission = initializeRolePermissions();
             Departments = initializeDepartments();
             Teams = initializeTeams();
-            Users = initializeUsers();
             Groups = initializeGroups();
+            Users = initializeUsers();
         }
 
         private List<Permission> initializePermissions()
         {
-            var index = 0;
-            var permissionTextList = ClaimGenerator.GenerateClaims();
+            var result = new List<Permission>();
 
-            var permissionList = permissionTextList.Select((permission) => new Permission()
+            int index = 0; 
+            int startIndex = index; 
+            var resourceAccessPermission = ClaimGenerator.GenerateResourceAccessClaims();
+
+            var resourceAccessPermissionList = resourceAccessPermission.Select((permission) => new Permission()
+            {
+                Id = ++index,
+                Name = permission,
+                Description = permission
+            }).ToList();
+            int endIndex = index;
+            resourceAccessPermissionIdRange = (startIndex, endIndex);
+
+
+            startIndex = index + 1;
+            var pageAccessPermissionForAdmin = ClaimGenerator.GeneratePageAccessClaimsForAdminUser();
+            var pageAccessPermissionListForAdminUser= pageAccessPermissionForAdmin.Select((permission) => new Permission()
             {
                 Id = ++index,
                 Name = permission,
                 Description = permission
             }).ToList();
 
-            return permissionList;
+            endIndex = index;
+            pageAccessPermissionForAdminIdRange = (startIndex, endIndex);
+
+            startIndex = index + 1;
+            var pageAccessForNormalUser = ClaimGenerator.GeneratePageAccessClaimsForNormalUser();
+            var pageAccessPermissionListForNormalUser = pageAccessForNormalUser.Select((permission) => new Permission()
+            {
+                Id = ++index,
+                Name = permission,
+                Description = permission
+            }).ToList();
+            endIndex = index;
+            pageAccessPermissionForNormalUserIdRange = (startIndex, endIndex);
+
+
+            result.AddRange(pageAccessPermissionListForNormalUser);
+            result.AddRange(pageAccessPermissionListForAdminUser);
+            result.AddRange(resourceAccessPermissionList);
+
+            return result;
         }
 
         private List<Role> initializeRoles()
@@ -212,14 +256,6 @@ namespace Repositories.DataContext.DataSeeder
             var result = new List<Role>() { };
 
             result.AddRange(DefaultRoleMap.Values.ToList());
-
-            result.AddRange(
-                Enumerable.Range(startIndex + 1, result.Count()).Select((id) => new Role()
-                {
-                    Id = id,
-                    Name = $"Role {id}",
-                    Description = $"Description for role Role {id}",
-                }).ToList());
 
             return result;
         }
@@ -231,16 +267,54 @@ namespace Repositories.DataContext.DataSeeder
             {
                 Permissions.ForEach((permission) =>
                 {
-                    result.Add(new Dictionary<string, object>
+                    // Generate permissions for admin, manager
+                    if ((role.Id == 1 || role.Id == 2) && 
+                        (
+                            (
+                                permission.Id >= pageAccessPermissionForAdminIdRange.Item1 && 
+                                permission.Id <= pageAccessPermissionForAdminIdRange.Item2
+                            ) ||
+                            (
+
+                                permission.Id >= resourceAccessPermissionIdRange.Item1 &&
+                                permission.Id <= resourceAccessPermissionIdRange.Item2
+                            )
+                         )
+                    )
                     {
-                        ["RoleId"] = role.Id,
-                        ["PermissionId"] = permission.Id,
-                    });
+                        result.Add(new Dictionary<string, object>
+                        {
+                            ["RoleId"] = role.Id,
+                            ["PermissionId"] = permission.Id,
+                        });
+                    }
+                    // Generate permissions for normal user
+                    else if (
+                        (role.Id != 1 && role.Id != 2) &&
+                        (
+                            (
+                                permission.Id >= pageAccessPermissionForNormalUserIdRange.Item1 &&
+                                permission.Id <= pageAccessPermissionForNormalUserIdRange.Item2
+                            ) ||
+                            (
+                                permission.Id >= resourceAccessPermissionIdRange.Item1 &&
+                                permission.Id <= resourceAccessPermissionIdRange.Item2
+                            )
+                        )
+                    )
+                    {
+                        result.Add(new Dictionary<string, object>
+                        {
+                            ["RoleId"] = role.Id,
+                            ["PermissionId"] = permission.Id,
+                        });
+                    }
                 });
             });
 
             return result;
         }
+
 
         private List<Department> initializeDepartments()
         {
@@ -292,15 +366,17 @@ namespace Repositories.DataContext.DataSeeder
                 Username = $"user{index}",
                 Password = $"password{index}",
                 CitizenId = $"000000{index}",
+                GroupId = DefaultGroupMap[GROUP_DEFAULT].Id,
+                RoleId = DefaultRoleMap[EMPLOYEE_ROLE].Id ,
                 TeamId = index % 2 == 0 ? DefaultTeamMap[A_TEAM].Id : DefaultTeamMap[B_TEAM].Id
             }));
 
             return result;
         }
 
-        private List<SalaryGroup> initializeGroups()
+        private List<Group> initializeGroups()
         {
-            var result = new List<SalaryGroup>();
+            var result = new List<Group>();
             var startIndex = DefaultGroupMap.Values.Count() + 1;
 
             result.AddRange(DefaultGroupMap.Values);
@@ -325,11 +401,11 @@ namespace Repositories.DataContext.DataSeeder
             _modelBuilder.Entity<Team>()
                 .HasData(Teams);
 
+            _modelBuilder.Entity<Group>()
+                .HasData(Groups);
+
             _modelBuilder.Entity<User>()
                 .HasData(Users);
-
-            _modelBuilder.Entity<SalaryGroup>()
-                .HasData(Groups);
         }
     }
 }

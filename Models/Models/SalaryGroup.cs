@@ -11,8 +11,7 @@ namespace Models.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         [Required]
-        [DefaultValue("base_salary + allowance + bonus - deduction")]
-        public string? Formula { get; set; }
+        public string? FormulaName { get; set; }
         public int? GroupId { get; set; }
         public Group? Group { get; set; }
     }

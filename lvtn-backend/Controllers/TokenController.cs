@@ -53,6 +53,20 @@ namespace lvtn_backend.Controllers
                         expires: DateTime.UtcNow.AddMinutes(60 * 4),
                         signingCredentials: signIn);
 
+                    _context.Entry(user)
+                        .Reference(u => u.Role)
+                        .Load();
+
+                    var role = user.Role;
+
+                    _context.Entry(role)
+                        .Collection(r => r.Permissions)
+                        .Load();
+
+                    var pageAccessList = role.Permissions.Where(p => p.Name.StartsWith("page_access"))
+                        .Select(p => p.Name.Split(".")[1])
+                        .ToList();
+
                     return Ok(new Dictionary<string, object>
                     {
                         {
@@ -67,6 +81,12 @@ namespace lvtn_backend.Controllers
                         },
                         {
                             "user_name", user.Username
+                        },
+                        {
+                            "user_role", user.Role.Name
+                        },
+                        {
+                            "page_access_list", pageAccessList  
                         }
                     });
 
