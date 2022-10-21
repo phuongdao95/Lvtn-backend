@@ -37,7 +37,7 @@ namespace Services.Services
             shift.StartTime = dto.StartTime;
             shift.EndTime = dto.EndTime;
             shift.Description = dto.Description;
-            shift.FormulaName = dto.Formula;
+            shift.FormulaName = dto.FormulaName;
             _context.WorkingShiftEvents.Update(shift);
             _context.SaveChanges();
         }
