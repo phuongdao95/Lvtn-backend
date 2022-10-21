@@ -34,6 +34,8 @@ namespace Models
 
             CreateMap<WorkingShiftEventDTO, WorkingShiftEvent>();
 
+            CreateMap<WorkingShiftTimekeepingDTO, WorkingShiftTimekeeping>();
+
             //Map from internal entities to responses
             CreateMap<User, UserInfoDTO>()
                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Name))
@@ -72,6 +74,7 @@ namespace Models
 
             CreateMap<SalaryGroup, SalaryGroupInfoDTO>();
             CreateMap<WorkingShiftEvent, WorkingShiftEventResponseDTO>();
+            CreateMap<WorkingShiftTimekeeping, WorkingShiftTimekeepingInfo>();
         }
     }
 }
