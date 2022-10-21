@@ -12,14 +12,11 @@ namespace Services.Services
     {
         private readonly IMapper _mapper;
         private readonly EmsContext _context;
-        private readonly IPayrollService _payrollService;
         public SalaryFormulaService(IMapper mapper, 
-            EmsContext context,
-            IPayrollService payrollService)
+            EmsContext context)
         {
             _mapper = mapper;
             _context = context;
-            _payrollService = payrollService; 
         }
 
         public void DeleteFormula(int id)
@@ -113,7 +110,7 @@ namespace Services.Services
 
         private void ensuureFormulaValid(SalaryFormula formula)
         {
-            var allSystemVariables = PayrollService.AllSystemVariables;
+            var allSystemVariables = SalaryCalculatorService.AllSystemVariables;
             var expression = new Expression(formula.Define);
 
             if (expression.GetError().Count > 0)

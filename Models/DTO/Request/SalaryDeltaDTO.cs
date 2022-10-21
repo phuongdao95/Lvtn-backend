@@ -8,7 +8,7 @@ namespace Models.DTO.Request
         public string? Description { get; set; }
         public DateTime FromMonth { get; set; }
         public DateTime ToMonth { get; set; }
-        public SalaryDeltaType DeltaType { get; set; }
-        public List<int>? UserIds { get; set; }
+        public SalaryDeltaType? DeltaType { get; set; }
+        public int? GroupId { get; set; }
     }
 }

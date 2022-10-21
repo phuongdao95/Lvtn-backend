@@ -16,8 +16,7 @@ namespace Models.Models
         public string? Description { get; set; }
 
         [Required]
-        [DefaultValue("0")]
-        public string? Formula { get; set; }
+        public string? FormulaName { get; set; }
 
         [Required]
         public SalaryDeltaType Type { get; set; }

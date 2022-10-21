@@ -2,7 +2,6 @@
 using Models.Models;
 using Models.DTO.Request;
 using Models.DTO.Response;
-using System.Text.RegularExpressions;
 using Group = Models.Models.Group;
 
 namespace Models
@@ -18,7 +17,7 @@ namespace Models
 
             CreateMap<RoleDTO, Role>();
 
-            CreateMap<SalaryGroupDTO, SalaryGroup>();
+            CreateMap<GroupDTO, Group>();
 
             CreateMap<DepartmentDTO, Department>();
 
@@ -55,7 +54,7 @@ namespace Models
 
             CreateMap<Permission, PermissionInfoDTO>();
 
-            CreateMap<Group, SalaryGroupInfoDTO>();
+            CreateMap<Group, GroupInfoDTO>();
 
             CreateMap<Department, DepartmentInfoDTO>();
 
@@ -72,9 +71,13 @@ namespace Models
                 .ForMember(m => m.PayrollName, opt => opt.MapFrom(src => src.Payroll.Name))
                 ;
 
-            CreateMap<SalaryGroup, SalaryGroupInfoDTO>();
+
             CreateMap<WorkingShiftEvent, WorkingShiftEventResponseDTO>();
             CreateMap<WorkingShiftTimekeeping, WorkingShiftTimekeepingInfo>();
+            CreateMap<SalaryGroup, SalaryGroupInfoDTO>()
+                .ForMember(m => m.GroupName, opt => opt.MapFrom(src => src.Group.Name))
+                .ForMember(m => m.GroupId, opt => opt.MapFrom(src => src.GroupId))
+                ;
         }
     }
 }
