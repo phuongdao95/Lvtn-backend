@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
 using Models.Enums;
 using Models.Models;
@@ -12,11 +13,11 @@ namespace Services.Services
     {
         private readonly IMapper _mapper;
         private readonly EmsContext _context;
-        private readonly ISalaryCalculatorService _salaryCalculatorService;
+        private readonly SalaryCalculatorService _salaryCalculatorService;
         public PayrollService(
             IMapper mapper,
-            EmsContext context, 
-            ISalaryCalculatorService salaryCalculatorService)
+            EmsContext context,
+            SalaryCalculatorService salaryCalculatorService)
         {
             _mapper = mapper;
             _context = context;
@@ -25,7 +26,25 @@ namespace Services.Services
 
         public void CreatePayroll(PayrollDTO payrollDTO)
         {
-            _salaryCalculatorService.CalculateSalaryAndWritePayslipsIntoDatabase(payrollDTO);
+            _salaryCalculatorService.CalculateUserSalaryAndWriteIntoDatabases(payrollDTO);
+        }
+
+        public List<Payslip> GetPayslipsOfPayroll(int payrollId)
+        {
+            var payroll = _context.Payrolls.Find(payrollId);
+            if (payroll == null)
+            {
+                throw new Exception("Payroll is null");
+            }
+
+            _context.Entry(payroll).Collection(p => p.PayslipList).Load();
+
+            if (payroll.PayslipList == null)
+            {
+                return new List<Payslip>();
+            }
+
+            return payroll.PayslipList;
         }
         public void DeletePayroll(int id)
         {
@@ -140,5 +159,43 @@ namespace Services.Services
             return payslipList.Count();
         }
 
+        public List<PayslipWorkingShiftTimekeeping> GetPayslipTimekeepings(int id)
+        {
+            var payslip = _context.Payslips.Where(x => x.Id == id)
+                .Include(p => p.Timekeepings)
+                .FirstOrDefault();
+
+            if (payslip == null)
+            {
+                throw new Exception("Payslip not found");
+            }
+
+            if (payslip.Timekeepings == null)
+            {
+                throw new Exception("Timekeepings not initialized");
+            }
+
+            return payslip.Timekeepings;
+
+        }
+
+        public List<PayslipSalaryDelta> GetPayslipSalaryDeltas(int id)
+        {
+            var payslip = _context.Payslips.Where(x => x.Id == id)
+                .Include(p => p.SalaryDeltas)
+                .FirstOrDefault();
+
+            if (payslip == null)
+            {
+                throw new Exception("Payslip not found");
+            }
+
+            if (payslip.SalaryDeltas == null)
+            {
+                throw new Exception("SalaryDeltas not initialized");
+            }
+
+            return payslip.SalaryDeltas;
+        }
     }
 }

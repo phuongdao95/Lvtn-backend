@@ -11,5 +11,6 @@ namespace Services.Contracts
         public void CreateGroup(GroupDTO groupDTO);
         public void UpdateGroup(int id, GroupDTO groupDTO);
         public void DeleteGroup(int id);
+        public List<User> GetUsersOfGroup(int id);
     }
 }

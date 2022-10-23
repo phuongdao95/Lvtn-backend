@@ -78,12 +78,14 @@ builder.Services.AddScoped<IAiService, AiService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-builder.Services.AddScoped<ISalaryGroupService, SalaryGroupService>();
 builder.Services.AddScoped<ISalaryDeltaService, SalaryDeltaService>();
-builder.Services.AddScoped<IGroupService, GroupService>();
-builder.Services.AddScoped<ISalaryCalculatorService, SalaryCalculatorService>();
-builder.Services.AddScoped<ISalaryFormulaService, SalaryFormulaService>();
-builder.Services.AddScoped<IPayrollService, PayrollService>();
+builder.Services.AddScoped<PayrollService, PayrollService>();
+builder.Services.AddScoped<SalaryFormulaService, SalaryFormulaService>();
+builder.Services.AddScoped<GroupService, GroupService>();
+builder.Services.AddScoped<SalaryGroupService, SalaryGroupService>();
+builder.Services.AddScoped<SalaryCalculatorService, SalaryCalculatorService>();
+builder.Services.AddScoped<TaskService, TaskService>();
+builder.Services.AddScoped<TaskBoardService, TaskBoardService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
 

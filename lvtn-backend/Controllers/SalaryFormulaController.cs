@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
-using org.matheval.Common;
-using Services.Contracts;
+using Models.Enums;
 using Services.Services;
 
 namespace lvtn_backend.Controllers
@@ -13,9 +12,9 @@ namespace lvtn_backend.Controllers
     public class SalaryFormulaController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly ISalaryFormulaService _formulaService;
+        private readonly SalaryFormulaService _formulaService;
 
-        public SalaryFormulaController(IMapper mapper, ISalaryFormulaService formulaService)
+        public SalaryFormulaController(IMapper mapper, SalaryFormulaService formulaService)
         {
             _mapper = mapper;
             _formulaService = formulaService;
@@ -23,19 +22,19 @@ namespace lvtn_backend.Controllers
 
         [HttpGet]
         public IActionResult GetFormulaList(
-            [FromQuery] int offset = 0, 
-            [FromQuery] int limit = 8, 
-            [FromQuery] string? query = "", 
-            [FromQuery] string? queryType = "display_name" )
+            [FromQuery] int offset = 0,
+            [FromQuery] int limit = 8,
+            [FromQuery] string? query = "",
+            [FromQuery] string? queryType = "display_name")
         {
             try
             {
                 var result = new Dictionary<string, object>();
-                
+
                 var formulaList = _formulaService.GetFormulaList(offset, limit, query, queryType);
                 var formulaListTotal = _formulaService.GetVariableListCount(offset, int.MaxValue, query, queryType);
                 var formulaInfoList = _mapper.Map<IEnumerable<SalaryFormulaInfoDTO>>(formulaList);
-                
+
                 return Ok(new Dictionary<string, object>
                 {
                     { "data", formulaInfoList },
@@ -129,7 +128,7 @@ namespace lvtn_backend.Controllers
                 var variable = _formulaService.GetVariableById(id);
                 var variableInfoDTO = _mapper.Map<SalaryVariableInfoDTO>(variable);
                 return Ok(variableInfoDTO);
-            } 
+            }
             catch (Exception)
             {
                 return BadRequest();
@@ -138,9 +137,9 @@ namespace lvtn_backend.Controllers
 
         [HttpGet("/api/SalaryVariable/")]
         public IActionResult GetVariableList(
-            [FromQuery] int offset = 0, 
-            [FromQuery] int limit = 8, 
-            [FromQuery] string? query = "" , 
+            [FromQuery] int offset = 0,
+            [FromQuery] int limit = 8,
+            [FromQuery] string? query = "",
             [FromQuery] string? queryType = "name")
         {
             try
@@ -192,9 +191,47 @@ namespace lvtn_backend.Controllers
         }
 
         [HttpGet("/api/SalarySystemVariable")]
-        public IActionResult GetSystemVariableList()
+        public IActionResult GetSystemVariableList([FromQuery(Name = "kind")] string type)
         {
-            return Ok();
+            try
+            {
+                SalarySystemVariableKind kind;
+                if (type == "salarygroup")
+                {
+                    kind = SalarySystemVariableKind.SalaryGroup;
+                }
+                else if (type == "salarydelta")
+                {
+                    kind = SalarySystemVariableKind.SalaryDelta;
+                }
+                else if (type == "timekeeping")
+                {
+                    kind = SalarySystemVariableKind.Timekeeping;
+                }
+                else if (type == "kpi")
+                {
+                    kind = SalarySystemVariableKind.KPI;
+                }
+                else
+                {
+                    throw new Exception("Variable kind not found.");
+                }
+
+                var data = _formulaService.GetSystemVariables(kind);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    { "data", data },
+                    { "count", count },
+                    { "total", total }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }

@@ -34,6 +34,7 @@ namespace Models.Repositories.DataContext
         public DbSet<TaskComment> TaskComments { get; set; }
         public DbSet<TaskFile> TaskFiles { get; set; }
         public DbSet<TaskLabel> TaskLabels { get; set; }
+
         /***/
         public EmsContext(DbContextOptions options) : base(options) { }
 
@@ -41,7 +42,6 @@ namespace Models.Repositories.DataContext
         {
 
             /** Administration Mappings*/
-
             // 1-M User-Role
             modelBuilder.Entity<User>()
                 .HasOne(p => p.Role)
@@ -83,6 +83,16 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey<User>(u => u.BankInfoId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Groups)
+                .WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "UserGroup",
+                    left => left.HasOne<Group>().WithMany().HasForeignKey("GroupId"),
+                    right => right.HasOne<User>().WithMany().HasForeignKey("UserId"),
+                    je => je.HasKey("GroupId", "UserId")
+                );
+
             // Self-relation department
             modelBuilder.Entity<Department>()
                 .HasMany(d => d.Departments)
@@ -94,8 +104,8 @@ namespace Models.Repositories.DataContext
             /** Salary Manager Mappings*/
             modelBuilder.Entity<SalaryDelta>()
                 .HasOne(p => p.Group)
-                .WithOne()
-                .HasForeignKey<SalaryDelta>(p => p.GroupId)
+                .WithMany(p => p.SalaryDeltas)
+                .HasForeignKey(p => p.GroupId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             modelBuilder.Entity<SalaryFormula>()
@@ -108,8 +118,8 @@ namespace Models.Repositories.DataContext
 
             modelBuilder.Entity<SalaryGroup>()
                 .HasOne(p => p.Group)
-                .WithOne()
-                .HasForeignKey<SalaryGroup>(p => p.GroupId)
+                .WithMany(p => p.SalaryGroups)
+                .HasForeignKey(p => p.GroupId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             // 1-M User-Payslip
@@ -151,19 +161,25 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey(p => p.BoardId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<TaskBoard>()
+                .HasMany(p => p.TaskLabels)
+                .WithOne(p => p.TaskBoard)
+                .HasForeignKey(p => p.TaskBoardId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<TaskColumn>()
                 .HasMany(p => p.Tasks)
                 .WithOne()
                 .HasForeignKey(p => p.ColumnId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             modelBuilder.Entity<Task>()
                 .HasMany(p => p.Labels)
                 .WithMany(p => p.Tasks)
                 .UsingEntity<Dictionary<string, object>>(
                     "TaskTaskLabel",
-                    right => right.HasOne<TaskLabel>().WithMany().HasForeignKey("TaskLabelId"),
-                    left => left.HasOne<Task>().WithMany().HasForeignKey("TaskId"),
+                    right => right.HasOne<TaskLabel>().WithMany().HasForeignKey("TaskLabelId").OnDelete(DeleteBehavior.Cascade),
+                    left => left.HasOne<Task>().WithMany().HasForeignKey("TaskId").OnDelete(DeleteBehavior.ClientCascade),
                     je => je.HasKey("TaskId", "TaskLabelId")
                 );
 
@@ -219,6 +235,8 @@ namespace Models.Repositories.DataContext
             new SalaryManagementDataSeeder(modelBuilder)
                 .SeedData();
 
+            new VirtualSpaceDataseeder(modelBuilder)
+                .SeedData();
         }
     }
 }

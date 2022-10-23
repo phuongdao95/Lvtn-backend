@@ -6,16 +6,20 @@ namespace Models.Models
     {
         [Key]
         public int Id { get; set; }
+
         [Required]
         public string? Name { get; set; }
         public string? Description { get; set; }
-        [Required]
-        public DateTime? Deadline { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
         public int? Point { get; set; }
-        public int? EmployeeId { get; set; }
+        public int? InChargeId { get; set; }
+        public int? ReportToId { get; set; }
+        [Required]
         public int? ColumnId { get; set; }
         public TaskColumn? Column { get; set; }
-        public User? User { get; set; }
+        public User? InCharge { get; set; }
+        public User? ReportTo { get; set; }
         public List<TaskLabel>? Labels { get; set; }
         public List<TaskComment>? Comments { get; set; }
         public List<TaskFile>? Files { get; set; }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
-using Services.Contracts;
+using Services.Services;
 
 namespace lvtn_backend.Controllers
 {
@@ -10,9 +10,9 @@ namespace lvtn_backend.Controllers
     [Route("api/[controller]")]
     public class GroupController : ControllerBase
     {
-        private readonly IGroupService _groupService;
+        private readonly GroupService _groupService;
         private IMapper _mapper;
-        public GroupController(IMapper mapper, IGroupService groupService)
+        public GroupController(IMapper mapper, GroupService groupService)
         {
             _mapper = mapper;
             _groupService = groupService;
@@ -25,7 +25,7 @@ namespace lvtn_backend.Controllers
             {
                 var group = _groupService.GetGroupById(id, true);
                 var groupInfo = _mapper.Map<GroupInfoDTO>(group);
-                return Ok(group);
+                return Ok(groupInfo);
             }
             catch (Exception)
             {
@@ -53,7 +53,7 @@ namespace lvtn_backend.Controllers
                     {"count", count},
                     {"total", total},
                 });
-                
+
             }
             catch (Exception)
             {
@@ -82,6 +82,31 @@ namespace lvtn_backend.Controllers
             {
                 _groupService.CreateGroup(groupDTO);
                 return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpGet("{id}/user")]
+        public IActionResult GetUsersOfGroup(int id)
+        {
+            try
+            {
+                var users = _groupService.GetUsersOfGroup(id);
+
+                var data = _mapper.Map<IEnumerable<UserInfoDTO>>(users);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    {"data", data},
+                    {"count", count},
+                    {"total", total }
+                });
             }
             catch (Exception)
             {

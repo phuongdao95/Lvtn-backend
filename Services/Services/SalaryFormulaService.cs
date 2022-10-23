@@ -4,11 +4,11 @@ using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
 using org.matheval;
-using Services.Contracts;
+using Services.SalaryManagement.Calculators;
 
 namespace Services.Services
 {
-    public class SalaryFormulaService : ISalaryFormulaService
+    public class SalaryFormulaService
     {
         private readonly IMapper _mapper;
         private readonly EmsContext _context;
@@ -22,6 +22,11 @@ namespace Services.Services
         public void DeleteFormula(int id)
         {
             var formula = _context.SalaryFormulas.Find(id);
+            if (formula == null)
+            {
+                throw new Exception("Formula not found");
+            }
+
             _context.SalaryFormulas.Remove(formula);
             _context.SaveChanges();
         }
@@ -92,62 +97,35 @@ namespace Services.Services
 
         public void UpdateFormula(int id, SalaryFormulaDTO formulaDTO)
         {
-            var formula = _context.SalaryFormulas.Find(id);
-            if (formula == null)
-            {
-                throw new Exception("");
-            }
-
             var mapped = _mapper.Map<SalaryFormula>(formulaDTO);
             mapped.Id = id;
-
-            ensuureFormulaValid(formula);
 
             _context.SalaryFormulas.Update(mapped);
             _context.SaveChanges();
 
         }
 
-        private void ensuureFormulaValid(SalaryFormula formula)
-        {
-            var allSystemVariables = SalaryCalculatorService.AllSystemVariables;
-            var expression = new Expression(formula.Define);
-
-            if (expression.GetError().Count > 0)
-            {
-                throw new Exception(string.Join("\n", expression.GetError()));
-            }
-
-            var variables = expression.getVariables();
-            foreach (var variable in variables)
-            {
-                if (!allSystemVariables.Contains(variable)
-                    || !_context.SalaryVariables.Any(x => x.Name == variable))
-                {
-                    throw new Exception("Cannot find variable name of " + variable);
-                }
-            }
-        }
-
         private void ensureVariableValid(SalaryVariable variable)
         {
             try
             {
+                var expression = new Expression(variable.Value);
+
                 if (variable.DataType == VariableDataType.Text)
                 {
-
+                    expression.Eval<string>();   
                 }
-                else if (variable.DataType == VariableDataType.Number)
+                else if (variable.DataType == VariableDataType.Decimal)
                 {
-                    decimal.Parse(variable.Value);
+                    expression.Eval<decimal>();
                 }
-                else if (variable.DataType == VariableDataType.DateTime)
+                else if (variable.DataType == VariableDataType.Integer)
                 {
-                    DateTime.Parse(variable.Value);
+                    expression.Eval<int>();
                 }
                 else if (variable.DataType == VariableDataType.Boolean)
                 {
-                    bool.Parse(variable.Value);
+                    expression.Eval<bool>();
                 }
             }
             catch (Exception)
@@ -158,17 +136,11 @@ namespace Services.Services
 
         public void UpdateVariable(int id, SalaryVariableDTO variableDTO)
         {
-            var variable = _context.SalaryVariables.Find(id);
-            if (variable == null)
-            {
-                throw new Exception("variable not found");
-            }
-
             var mapped = _mapper.Map<SalaryVariable>(variableDTO);
-            mapped.DataType = GetVariableDataType(variableDTO.DataType);
             mapped.Id = id;
+            mapped.DataType = GetVariableDataType(variableDTO.DataType);
 
-            ensureVariableValid(variable);
+            ensureVariableValid(mapped);
 
             _context.SalaryVariables.Update(mapped);
             _context.SaveChanges();
@@ -177,8 +149,6 @@ namespace Services.Services
         public void CreateFormula(SalaryFormulaDTO formulaDTO)
         {
             var formula = _mapper.Map<SalaryFormula>(formulaDTO);
-
-            ensuureFormulaValid(formula);
 
             _context.SalaryFormulas.Add(formula);
             _context.SaveChanges();
@@ -203,7 +173,7 @@ namespace Services.Services
             VariableDataType type;
             if (dataType == "number")
             {
-                type = VariableDataType.Number;
+                type = VariableDataType.Decimal;
             }
             else if (dataType == "text")
             {
@@ -215,7 +185,7 @@ namespace Services.Services
             }
             else if (dataType == "datetime")
             {
-                type = VariableDataType.DateTime;
+                type = VariableDataType.Integer;
             }
             else
             {
@@ -223,6 +193,35 @@ namespace Services.Services
             }
 
             return type;
+        }
+
+        public List<SalarySystemVariable> GetSystemVariables(SalarySystemVariableKind kind)
+        {
+            var result = new List<SalarySystemVariable>();
+            switch (kind)
+            {
+                case SalarySystemVariableKind.SalaryDelta:
+                    result = SalaryDeltaVariableBinder.GetSystemVariables();
+                    break;
+                case SalarySystemVariableKind.SalaryGroup:
+                    result = TotalSalaryVariableBinder.GetSystemVariables();
+                    break;
+                case SalarySystemVariableKind.Timekeeping:
+                    result = TimekeepingVariableBinder.GetSystemVariables();
+                    break;
+                case SalarySystemVariableKind.KPI:
+                    result = KPIVariableBinder.GetSystemVariables();
+                    break;
+                default:
+                    throw new Exception("VariableKind not found");
+            }
+
+            result.ForEach(systemVariable =>
+            {
+                systemVariable.IsUsedFor = kind;
+            });
+
+            return result;
         }
     }
 }

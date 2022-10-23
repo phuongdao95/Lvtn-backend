@@ -12,7 +12,10 @@ namespace Models.Models
         public string? Description { get; set; }
         [Required]
         public string? FormulaName { get; set; }
-        public int? GroupId { get; set; }
+        [Required]
+        public int GroupId { get; set; }
+        [Required]
+        public int? Priority { get; set; }
         public Group? Group { get; set; }
     }
 }

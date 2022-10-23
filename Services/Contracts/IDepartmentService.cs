@@ -16,6 +16,7 @@ namespace Services.Contracts
         Department GetDepartmentById(int id);
         List<Department> GetDepartmentList(int offset, int limit, string query, string queryType);
         int GetDepartmentCount();
+        public List<Team> GetTeamsOfDepartment(int id);
 
     }
 }

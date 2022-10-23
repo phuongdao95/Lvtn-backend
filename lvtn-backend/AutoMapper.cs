@@ -3,6 +3,7 @@ using Models.Models;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Group = Models.Models.Group;
+using Task = Models.Models.Task;
 
 namespace Models
 {
@@ -31,6 +32,18 @@ namespace Models
 
             CreateMap<SalaryGroupDTO, SalaryGroup>();
 
+            CreateMap<TaskDTO, Task>();
+
+            CreateMap<TaskBoardDTO, TaskBoard>();
+
+            CreateMap<TaskLabelDTO, TaskLabel>();
+
+            CreateMap<TaskColumnDTO, TaskColumn>();
+
+            CreateMap<TaskFile, TaskFileDTO>();
+
+            CreateMap<TaskCommentDTO, TaskComment>();
+
             //Map from internal entities to responses
             CreateMap<User, UserInfoDTO>()
                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Name))
@@ -46,13 +59,18 @@ namespace Models
                 .ForMember(des => des.DepartmentName, opt => opt.MapFrom(src => src.Department != null ?
                     src.Department.Name : "None"));
 
+
             CreateMap<Role, RoleInfoDTO>();
 
             CreateMap<Permission, PermissionInfoDTO>();
 
             CreateMap<Group, GroupInfoDTO>();
 
-            CreateMap<Department, DepartmentInfoDTO>();
+            CreateMap<Department, DepartmentInfoDTO>()
+                .ForMember(p => p.ManagerId, opt => opt.MapFrom(src => src.ManagerId))
+                .ForMember(p => p.ManagerName, opt => opt.MapFrom(dest => dest.Manager.Name))
+                .ForMember(p => p.ParentDepartmentId, opt => opt.MapFrom(src => src.ParentDepartment.Id))
+                .ForMember(p => p.ParentDepartmentName, opt => opt.MapFrom(src => src.ParentDepartment.Name));
 
             CreateMap<SalaryDelta, SalaryDeltaInfoDTO>();
 
@@ -67,10 +85,35 @@ namespace Models
                 .ForMember(m => m.PayrollName, opt => opt.MapFrom(src => src.Payroll.Name))
                 ;
 
+            CreateMap<PayslipWorkingShiftTimekeeping, PayslipTimekeepingInfoDTO>();
+
+            CreateMap<PayslipSalaryDelta, PayslipSalaryDeltaInfoDTO>();
+
             CreateMap<SalaryGroup, SalaryGroupInfoDTO>()
                 .ForMember(m => m.GroupName, opt => opt.MapFrom(src => src.Group.Name))
-                .ForMember(m => m.GroupId, opt => opt.MapFrom(src => src.GroupId))
                 ;
+
+            CreateMap<TaskBoard, TaskBoardInfoDTO>()
+                .ForMember(m => m.TeamName, opt => opt.MapFrom(src => src.Team.Name));
+
+            CreateMap<TaskLabel, TaskLabelInfoDTO>()
+                .ForMember(m => m.TaskBoardName, opt => opt.MapFrom(src => src.TaskBoard.Name));
+
+            CreateMap<TaskColumn, TaskColumnInfoDTO>()
+                .ForMember(m => m.BoardName, opt => opt.MapFrom(src => src.Board.Name));
+
+            CreateMap<Task, TaskInfoDTO>()
+                .ForMember(m => m.ColumnName, opt => opt.MapFrom(src => src.Column.Name))
+                .ForMember(m => m.ReportToName, opt => opt.MapFrom(src => src.ReportTo != null ? src.ReportTo.Name : "Unassigned"))
+                .ForMember(m => m.InChargeName, opt => opt.MapFrom(src => src.InCharge != null ? src.InCharge.Name : "Unassigned"));
+
+            CreateMap<TaskFile, TaskFileInfoDTO>()
+                .ForMember(m => m.DisplayName, opt => opt.MapFrom(src => src.DisplayFileName))
+                .ForMember(m => m.Path, opt => opt.MapFrom(src => $"/taskfile/{src.Id}"));
+
+            CreateMap<TaskComment, TaskCommentInfoDTO>()
+                .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.Name));
         }
+
     }
 }

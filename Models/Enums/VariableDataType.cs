@@ -6,11 +6,11 @@ namespace Models.Enums
     {
         [EnumMember(Value = "Text")]
         Text,
-        [EnumMember(Value = "Number")]
-        Number,
+        [EnumMember(Value = "Decimal")]
+        Decimal,
         [EnumMember(Value = "Boolean")]
         Boolean,
-        [EnumMember(Value = "DateTime")]
-        DateTime
+        [EnumMember(Value = "Integer")]
+        Integer
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
@@ -15,6 +16,8 @@ namespace Models.Models
         public DateTime EndTime { get; set; }
         [Required]
         public string? FormulaName { get; set; }
+        [Required]
+        public WorkingShiftEventType Type { get; set; }
         public List<WorkingShiftTimekeeping>? Timekeepings{ get; set; }
         public List<User>? Users { get; set; }
     }

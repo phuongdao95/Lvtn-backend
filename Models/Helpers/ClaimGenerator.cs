@@ -51,6 +51,8 @@
             "timekeeping_check_out",
             "timekeeping_list",
             "workingshift_list",
+
+
         };
 
         public static List<string> AdminUserPageAccessClaims = new List<string>
@@ -90,7 +92,7 @@
         {
             var result = new List<string> { };
             ModuleNames.ForEach((module) =>
-            {
+            {   
                 result.AddRange(generateResourceClaimsForModule(module));
             });
 

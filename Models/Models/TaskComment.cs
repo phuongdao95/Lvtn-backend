@@ -2,7 +2,7 @@
 
 namespace Models.Models
 {
-    public class TaskComment
+    public class TaskComment : BaseEntity
     {
         [Key]
         public int Id { get; set; }
@@ -16,7 +16,6 @@ namespace Models.Models
         [Required]
         public int? UserId { get; set; }
 
-        public List<TaskFile>? TaskFiles { get; set; }
         public Task? Task { get; set; }
         public User? User { get; set; }
     }

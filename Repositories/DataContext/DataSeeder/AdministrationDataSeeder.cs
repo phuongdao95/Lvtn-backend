@@ -5,7 +5,7 @@ using System.Security;
 
 namespace Repositories.DataContext.DataSeeder
 {
-    public class AdministrationDataSeeder : DataSeeder
+public class AdministrationDataSeeder : DataSeeder
     {
         public static readonly string ADMIN_ROLE = "ADMIN_USER";
         public static readonly string MANAGER_ROLE = "MANAGER_USER";
@@ -16,9 +16,9 @@ namespace Repositories.DataContext.DataSeeder
 
         public static readonly string HEAD_DEPARTMENT = "HEAD_DEPARTMENT";
 
-        public static readonly string A_TEAM = "A_TEAM";
-        public static readonly string B_TEAM = "B_TEAM";
-        public static readonly string C_TEAM = "C_TEAM";
+        public static readonly string TEAM_A = "TEAM_A";
+        public static readonly string TEAM_B = "TEAM_B";
+        public static readonly string TEAM_C = "TEAM_C";
 
         public static readonly string GROUP_DEFAULT = "GROUP_DEFAULT";
         public static readonly string GROUP_A = "GROUP_A";
@@ -52,7 +52,7 @@ namespace Repositories.DataContext.DataSeeder
                     Name = "Employee",
                     Description = "Employee Role"
                 }
-            }
+            },
         };
 
         public static readonly Dictionary<string, User> DefaultUserMap = new Dictionary<string, User>
@@ -66,7 +66,7 @@ namespace Repositories.DataContext.DataSeeder
                     Username = "admin",
                     Password = "admin",
                     RoleId = DefaultRoleMap[ADMIN_ROLE].Id,
-                    CitizenId = "000001"
+                    CitizenId = "000001",
                 }
             },
             {
@@ -78,7 +78,7 @@ namespace Repositories.DataContext.DataSeeder
                     Username = "manager",
                     Password = "manager",
                     RoleId = DefaultRoleMap[MANAGER_ROLE].Id,
-                    CitizenId = "000002"
+                    CitizenId = "000002",
                 }
             },
         };
@@ -100,7 +100,7 @@ namespace Repositories.DataContext.DataSeeder
         public static readonly Dictionary<string, Team> DefaultTeamMap = new Dictionary<string, Team>
         {
             {
-                A_TEAM,
+                TEAM_A,
                 new Team()
                 {
                     Id = 1,
@@ -111,7 +111,7 @@ namespace Repositories.DataContext.DataSeeder
                 }
             },
             {
-                B_TEAM,
+                TEAM_B,
                 new Team()
                 {
                     Id = 2,
@@ -123,7 +123,7 @@ namespace Repositories.DataContext.DataSeeder
                 }
             },
             {
-                C_TEAM,
+                TEAM_C,
                 new Team()
                 {
                     Id = 3,
@@ -183,6 +183,7 @@ namespace Repositories.DataContext.DataSeeder
         public List<Team> Teams { get; set; }
         public List<User> Users { get; set; }
         public List<Group> Groups { get; set; }
+        private List<Dictionary<string,object>> UserGroups { get; set; }
         private (int, int) pageAccessPermissionForAdminIdRange { get; set; }
         private (int, int) pageAccessPermissionForNormalUserIdRange { get; set; }
         private (int, int) resourceAccessPermissionIdRange { get; set; }
@@ -199,6 +200,7 @@ namespace Repositories.DataContext.DataSeeder
             Teams = initializeTeams();
             Groups = initializeGroups();
             Users = initializeUsers();
+            UserGroups = initializeUserGroups();
         }
 
         private List<Permission> initializePermissions()
@@ -212,7 +214,8 @@ namespace Repositories.DataContext.DataSeeder
             var resourceAccessPermissionList = resourceAccessPermission.Select((permission) => new Permission()
             {
                 Id = ++index,
-                Name = permission,
+                Module = permission.Split(".")[1],
+                Name = permission.Split(".")[2],
                 Description = permission
             }).ToList();
             int endIndex = index;
@@ -224,6 +227,7 @@ namespace Repositories.DataContext.DataSeeder
             var pageAccessPermissionListForAdminUser= pageAccessPermissionForAdmin.Select((permission) => new Permission()
             {
                 Id = ++index,
+                Module = permission.Split(".")[0],
                 Name = permission,
                 Description = permission
             }).ToList();
@@ -236,6 +240,7 @@ namespace Repositories.DataContext.DataSeeder
             var pageAccessPermissionListForNormalUser = pageAccessForNormalUser.Select((permission) => new Permission()
             {
                 Id = ++index,
+                Module = permission.Split(".")[0],
                 Name = permission,
                 Description = permission
             }).ToList();
@@ -256,6 +261,25 @@ namespace Repositories.DataContext.DataSeeder
             var result = new List<Role>() { };
 
             result.AddRange(DefaultRoleMap.Values.ToList());
+
+            return result;
+        }
+
+        private List<Dictionary<string, object>> initializeUserGroups()
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            Users.ForEach((user) =>
+            {
+                Groups.ForEach((group) =>
+                {
+                    result.Add(new Dictionary<string, object>
+                    {
+                        ["UserId"]= user.Id,
+                        ["GroupId"]= group.Id,
+                    });
+                });
+            });
 
             return result;
         }
@@ -366,9 +390,9 @@ namespace Repositories.DataContext.DataSeeder
                 Username = $"user{index}",
                 Password = $"password{index}",
                 CitizenId = $"000000{index}",
-                GroupId = DefaultGroupMap[GROUP_DEFAULT].Id,
                 RoleId = DefaultRoleMap[EMPLOYEE_ROLE].Id ,
-                TeamId = index % 2 == 0 ? DefaultTeamMap[A_TEAM].Id : DefaultTeamMap[B_TEAM].Id
+                TeamId = Teams[index % Teams.Count()].Id,
+                BaseSalary = 10_000_000
             }));
 
             return result;
@@ -406,6 +430,9 @@ namespace Repositories.DataContext.DataSeeder
 
             _modelBuilder.Entity<User>()
                 .HasData(Users);
+
+            _modelBuilder.Entity("UserGroup")
+                .HasData(UserGroups);
         }
     }
 }

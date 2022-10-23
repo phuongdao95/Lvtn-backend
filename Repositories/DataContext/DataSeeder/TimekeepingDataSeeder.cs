@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Models.Enums;
 using Models.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories.DataContext.DataSeeder
 {
@@ -58,7 +53,7 @@ namespace Repositories.DataContext.DataSeeder
             var index = 0;
 
             DateTime startDate = new DateTime(2022, 9, 1);
-            DateTime endDate = new DateTime(2022, 10, 1);
+            DateTime endDate = new DateTime(2023, 1, 1);
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
@@ -73,8 +68,9 @@ namespace Repositories.DataContext.DataSeeder
                     Name = "Normal Working Day",
                     StartTime = date.AddHours(8),
                     EndTime = date.AddHours(17),
+                    Type = WorkingShiftEventType.FIXED_SHIFT,
                     Description = "Normal Working Day",
-                    FormulaName = "formula_1"
+                    FormulaName = "salary_formula_per_day"
                 });
             }
 

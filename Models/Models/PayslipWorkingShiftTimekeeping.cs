@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Models.Enums;
 
 namespace Models.Models
 {
@@ -16,8 +11,9 @@ namespace Models.Models
         public DateTime? CheckinTime { get; set; }
         public bool DidCheckout { get; set; }
         public DateTime? CheckoutTime { get; set; }
-        public decimal? Amount { get; set; }
+        public decimal Amount { get; set; }
         public string? Formula { get; set; }
+        public WorkingShiftEventType Type { get; set; }
         public int PayslipId { get; set; }
         public Payslip? Payslip { get; set; }
     }

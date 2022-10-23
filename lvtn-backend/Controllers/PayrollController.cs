@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
-using Models.Repositories.DataContext;
-using Services.Contracts;
+using Services.Services;
 
 namespace lvtn_backend.Controllers
 {
@@ -12,8 +11,9 @@ namespace lvtn_backend.Controllers
     public class PayrollController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly IPayrollService _payrollService;
-        public PayrollController(IMapper mapper, IPayrollService payrollService)
+        private readonly PayrollService _payrollService;
+        public PayrollController(IMapper mapper,
+            PayrollService payrollService)
         {
             _mapper = mapper;
             _payrollService = payrollService;
@@ -45,6 +45,7 @@ namespace lvtn_backend.Controllers
                 var payroll = _payrollService.GetPayrollList(offset, limit, query, queryType);
                 var payrollListCount = _payrollService.GetPayrollListCount(offset, limit, query, queryType);
                 var payrollInfo = _mapper.Map<IEnumerable<PayrollInfoDTO>>(payroll);
+
                 return Ok(new Dictionary<string, object>
                 {
                     { "data", payrollInfo },
@@ -67,6 +68,31 @@ namespace lvtn_backend.Controllers
                 var payrollInfo = _mapper.Map<PayrollInfoDTO>(payroll);
 
                 return Ok(payrollInfo);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("{id}/payslip")]
+        public IActionResult GetPayslipsOfPayroll(int id)
+        {
+            try
+            {
+                var payslips = _payrollService.GetPayslipsOfPayroll(id);
+                var payslipInfos = _mapper.Map<IEnumerable<PayslipInfoDTO>>(payslips);
+
+                var data = payslipInfos;
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    {"data", payslipInfos},
+                    {"count", count},
+                    {"total", total},
+                });
             }
             catch (Exception)
             {
@@ -102,31 +128,32 @@ namespace lvtn_backend.Controllers
             }
         }
 
-        [HttpGet("payroll/{id}/payslip")]
-        public IActionResult GetPayslipsOfPayroll(
-            [FromRoute] int id,
-            [FromQuery] int offset = 0,
-            [FromQuery] int limit = 8,
-            [FromQuery] string? query = "",
-            [FromQuery] string? queryType = "name")
+        [HttpGet("/api/payslip/{id}")]
+        public IActionResult GetPayslipDetail(int id)
+        {
+            return Ok();
+        }
+
+        [HttpGet("/api/payslip/{id}/timekeeping")]
+        public IActionResult GetPayslipTimekeepingList(int id)
         {
             try
             {
-                var payslips = _payrollService.GetPayslipListOfPayroll(
-                    id, offset, limit, query, queryType);
+                var timekeepings = _payrollService.GetPayslipTimekeepings(id);
 
-                var payslipInfo = _mapper.Map<IEnumerable<PayslipInfoDTO>>(payslips);
-                var count = payslipInfo.Count();
-                var total = _payrollService.GetPayslipListOfPayrollCount(
-                    id, offset, limit, query, queryType);
+                var data = _mapper
+                    .Map<IEnumerable<PayslipTimekeepingInfoDTO>>(timekeepings)
+                    .ToList();
+
+                var count = data.Count();
+                var total = data.Count();
 
                 return Ok(new Dictionary<string, object>
                 {
-                    {"data", payslipInfo },
-                    {"total", total },
-                    {"count", count }
+                    { "data", data },
+                    { "count", count },
+                    { "total", total }
                 });
-                
             }
             catch (Exception)
             {
@@ -134,16 +161,31 @@ namespace lvtn_backend.Controllers
             }
         }
 
-        [HttpGet("api/payslip/{id}")]
-        public IActionResult GetPayslipDetail(int id)
+        [HttpGet("/api/payslip/{id}/salarydelta")]
+        public IActionResult GetPayslipSalaryDelta(int id)
         {
-            return Ok();
-        }
+            try
+            {
+                var salaryDeltas = _payrollService.GetPayslipSalaryDeltas(id);
 
-        [HttpPut("api/payslip/{id}")]
-        public IActionResult UpdatePayslip(int id)
-        {
-            return Ok();
+                var data = _mapper
+                    .Map<IEnumerable<PayslipSalaryDeltaInfoDTO>>(salaryDeltas)
+                    .ToList();
+
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    { "data", data },
+                    { "count", count },
+                    { "total", total }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }

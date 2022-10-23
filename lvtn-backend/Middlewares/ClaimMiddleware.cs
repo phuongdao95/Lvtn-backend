@@ -51,7 +51,7 @@ namespace lvtn_backend.Middleware
             }
 
             return _next(httpContext);
-        }
+        }   
     }
 
 }
