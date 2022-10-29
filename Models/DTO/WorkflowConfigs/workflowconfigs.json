@@ -1,0 +1,142 @@
+{
+  "NghiPhepConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 1,
+      "DepartmentIds": [
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        7,
+        8
+      ]
+    },
+    "LongHolidaySet": 8,
+    "OverDay": 9
+  },
+  "NghiThaiSanConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67
+      ]
+    },
+    "Primary": 6,
+    "Secondary": 14
+  },
+  "HelpDeskConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67
+      ]
+    }
+  },
+  "CostConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67
+      ]
+    }
+  },
+  "WfhConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67
+      ]
+    },
+    "MaxDayInWeek": 2
+  },
+  "AdvancePaymentConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67
+      ]
+    },
+    "MaxMonth": 3
+  },
+  "CheckInOutManualConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67
+      ]
+    }
+  },
+  "OverTimeConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67
+      ]
+    },
+    "MaxHourInWeek": 5
+  }
+}

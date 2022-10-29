@@ -21,6 +21,13 @@ namespace Models.Repositories.DataContext
         public DbSet<SalaryVariable> SalaryVariables { get; set; }
         public DbSet<Payslip> Payslips { get; set; }
 
+        /** Workflow */
+        public DbSet<Workflow> Workflows { get; set; }
+        public DbSet<NghiPhepWorkflow> NghiPhepWorkflows { get; set; }
+        public DbSet<NghiThaiSanWorkflow> NghiThaiSanWorkflows { get; set; }
+        public DbSet<WorkflowComment> WorkflowComments { get; set; }
+
+
         /***/
         public EmsContext(DbContextOptions options) : base(options) { }
 
@@ -120,6 +127,13 @@ namespace Models.Repositories.DataContext
                 .WithOne(p => p.Group)
                 .HasForeignKey(p => p.GroupId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // 1-M Workflow WorkflowComment
+            modelBuilder.Entity<Workflow>()
+                .HasMany(wl => wl.WorkflowComments)
+                .WithOne(wc => wc.Workflow)
+                .HasForeignKey(wc => wc.WorkflowId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             new AdministrationDataSeeder(modelBuilder).SeedData();
             new SalaryManagementDataSeeder(modelBuilder).SeedData();
