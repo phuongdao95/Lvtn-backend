@@ -10,14 +10,15 @@ namespace Models.Controllers
     public class UploadImageController : ControllerBase
     {
         private IAiService _aiService;
+        private IWorkingShiftTimekeepingService _workingShiftTimekeepingService;
         // get local path
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UploadImageController(IAiService aiService, 
-            IWebHostEnvironment webHostEnvironment)
+        public UploadImageController(IAiService aiService, IWebHostEnvironment webHostEnvironment, IWorkingShiftTimekeepingService workingShiftTimekeepingService)
         {
             _aiService = aiService;
             _webHostEnvironment = webHostEnvironment;
+            _workingShiftTimekeepingService = workingShiftTimekeepingService;
         }
 
         // upload image
@@ -31,6 +32,14 @@ namespace Models.Controllers
                 bool result = _aiService.UploadImage(img.ImageName, img.ImageData, localPath);
                 if (result)
                 {
+                    if (img.dto.DidCheckout)
+                    {
+                        _workingShiftTimekeepingService.Update(img.dto.Id, img.dto);
+                    }
+                    else
+                    {
+                        _workingShiftTimekeepingService.Add(img.dto);
+                    }
                     return Ok(img.ImageName);
                 }
                 else
