@@ -263,7 +263,8 @@ namespace Models.Repositories.DataContext
                 .HasOne(p => p.WorkingShiftEvent)
                 .WithMany(p => p.Timekeepings)
                 .HasForeignKey(p => p.WorkingShiftEventId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade)
+                ;
 
             seedData(modelBuilder);
         }

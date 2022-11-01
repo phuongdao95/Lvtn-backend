@@ -102,6 +102,9 @@ builder.Services.AddScoped<TaskService, TaskService>();
 builder.Services.AddScoped<TaskBoardService, TaskBoardService>();
 builder.Services.AddScoped<TaskHistoryService, TaskHistoryService>();
 builder.Services.AddScoped<IdentityService, IdentityService>();
+builder.Services.AddScoped<IdentityService, IdentityService>();
+builder.Services.AddScoped<IWorkingShiftEventService, WorkingShiftEventService>();
+builder.Services.AddScoped<IWorkingShiftTimekeepingService, WorkingShiftTimekeepingService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
 

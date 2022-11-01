@@ -32,6 +32,10 @@ namespace Models
 
             CreateMap<SalaryGroupDTO, SalaryGroup>();
 
+            CreateMap<WorkingShiftEventDTO, WorkingShiftEvent>();
+
+            CreateMap<WorkingShiftTimekeepingDTO, WorkingShiftTimekeeping>();
+
             CreateMap<TaskDTO, Task>();
 
             CreateMap<TaskBoardDTO, TaskBoard>();
@@ -89,6 +93,9 @@ namespace Models
 
             CreateMap<PayslipSalaryDelta, PayslipSalaryDeltaInfoDTO>();
 
+
+            CreateMap<WorkingShiftEvent, WorkingShiftEventResponseDTO>();
+            CreateMap<WorkingShiftTimekeeping, WorkingShiftTimekeepingInfo>();
             CreateMap<SalaryGroup, SalaryGroupInfoDTO>()
                 .ForMember(m => m.GroupName, opt => opt.MapFrom(src => src.Group.Name))
                 ;
