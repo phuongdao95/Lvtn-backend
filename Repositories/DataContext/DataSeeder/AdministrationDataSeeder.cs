@@ -67,6 +67,7 @@ public class AdministrationDataSeeder : DataSeeder
                     Password = "admin",
                     RoleId = DefaultRoleMap[ADMIN_ROLE].Id,
                     CitizenId = "000001",
+                    Gender = "male",
                 }
             },
             {
@@ -79,6 +80,7 @@ public class AdministrationDataSeeder : DataSeeder
                     Password = "manager",
                     RoleId = DefaultRoleMap[MANAGER_ROLE].Id,
                     CitizenId = "000002",
+                    Gender = "male",
                 }
             },
         };
@@ -392,7 +394,8 @@ public class AdministrationDataSeeder : DataSeeder
                 CitizenId = $"000000{index}",
                 RoleId = DefaultRoleMap[EMPLOYEE_ROLE].Id ,
                 TeamId = Teams[index % Teams.Count()].Id,
-                BaseSalary = 10_000_000
+                BaseSalary = new Random().Next(100, 220) * 100_000,
+                Gender = new Random().Next(0, 4) % 2 == 0 ? "male" : "female",
             }));
 
             return result;

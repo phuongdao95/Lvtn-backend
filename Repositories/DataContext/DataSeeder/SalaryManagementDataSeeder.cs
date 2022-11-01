@@ -14,9 +14,9 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryVariable
                 {
                     Id = 1,
-                    Name = "variable_1",
-                    DisplayName = "Variable One",
-                    Value = "300000",
+                    Name = "tax_1",
+                    DisplayName = "Tax 1",
+                    Value = "0.15",
                     DataType = VariableDataType.Decimal,
                     Description = "variable 1"
                 }
@@ -26,9 +26,9 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryVariable
                 {
                     Id = 2,
-                    Name = "variable_2",
-                    DisplayName = "Variable Two",
-                    Value = "170000",
+                    Name = "tax_2",
+                    DisplayName = "Tax 2",
+                    Value = "0.12",
                     DataType = VariableDataType.Decimal,
                     Description = "variable 2"
                 }
@@ -76,7 +76,7 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryFormula
                 {
                     Id = 1,
-                    Name = "formula_1",
+                    Name = "cong_thuc_tang_giam_luong_1",
                     Define = "200000",
                     Description = "formula_1",
                     DisplayName = "Formula One"
@@ -88,7 +88,7 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryFormula
                 {
                     Id = 2,
-                    Name = "formula_2",
+                    Name = "cong_thuc_tinh_luong_1",
                     Define = "salary_after_tk_calc - total_deduction + total_allowance + total_bonus",
                     Description = "formula_2",
                     DisplayName = "Formula Two"
@@ -100,8 +100,8 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryFormula
                 {
                     Id = 3,
-                    Name = "formula_3",
-                    Define = "variable_1 + variable_2",
+                    Name = "cong_thuc_tinh_luong_2",
+                    Define = "(salary_after_tk_calc - total_deduction + total_allowance + total_bonus) * (1 - tax_1)",
                     Description = "formula_3",
                     DisplayName = "Formula Three"
                 }
@@ -112,7 +112,7 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryFormula
                 {
                     Id = 4,
-                    Name = "formula_4",
+                    Name = "cong_thuc_tang_giam_luong_2",
                     Define = $"IF(variable_4, 400000, 200000)",
                     Description = "formula_4",
                     DisplayName = "Formula Three"

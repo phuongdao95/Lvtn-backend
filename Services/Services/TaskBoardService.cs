@@ -18,6 +18,16 @@ namespace Services.Services
             _identityService = identityService;
         }
 
+        public TaskColumn GetTaskColumnById(int id)
+        {
+            var taskColumn = _context.TaskColumns.Find(id);
+            if (taskColumn == null)
+            {
+                throw new Exception("Task column not found");
+            }
+
+            return taskColumn;
+        }
         public List<TaskBoard> GetTaskBoardListOfUser(int id)
         {
             var result = new List<TaskBoard>();
@@ -147,9 +157,15 @@ namespace Services.Services
                 throw new Exception("Cannot find task board");
             }
 
+            if (taskColumnDTO.Order == null)
+            {
+                throw new Exception("Required fields are missing");
+            }
+
             var taskColumn = _mapper.Map<TaskColumn>(taskColumnDTO);
 
             taskColumn.BoardId = taskColumnDTO.TaskBoardId;
+            
             _context.TaskColumns.Add(taskColumn);
             _context.SaveChanges();
         }
@@ -237,7 +253,7 @@ namespace Services.Services
 
             taskColumn.Name = taskColumnDTO.Name;
             taskColumn.Description = taskColumnDTO.Description;
-            taskColumn.BoardId = taskColumnDTO.TaskBoardId;
+            taskColumn.Order = taskColumnDTO.Order;
 
             _context.TaskColumns.Update(taskColumn);
             _context.SaveChanges();
@@ -279,7 +295,9 @@ namespace Services.Services
             }
 
 
-            return taskboard.TaskColumns;
+            return taskboard.TaskColumns
+                .OrderBy(column => column.Order)
+                .ToList();
         }
 
         public List<TaskLabel> GetTaskLabelsOfBoard(int id)

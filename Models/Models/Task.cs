@@ -15,6 +15,7 @@ namespace Models.Models
         public int? Point { get; set; }
         public int? InChargeId { get; set; }
         public int? ReportToId { get; set; }
+        public int? Order { get; set; }
         [Required]
         public int? ColumnId { get; set; }
         public TaskColumn? Column { get; set; }
@@ -23,5 +24,6 @@ namespace Models.Models
         public List<TaskLabel>? Labels { get; set; }
         public List<TaskComment>? Comments { get; set; }
         public List<TaskFile>? Files { get; set; }
+        public List<TaskHistory>? TaskHistories { get; set; }
     }
 }

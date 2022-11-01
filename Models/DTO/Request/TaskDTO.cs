@@ -10,6 +10,5 @@
         public int? InChargeId { get; set; }
         public int? ReportToId { get; set; }
         public string? Description { get; set; }
-        public List<int>? TaskLabelIds { get; set; }
     }
 }

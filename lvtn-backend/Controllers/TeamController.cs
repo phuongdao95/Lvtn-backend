@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Models.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TeamController : ControllerBase
@@ -19,7 +20,6 @@ namespace Models.Controllers
             _teamService = teamService;
             _mapper = mapper;
         }
-
 
         [HttpGet]
         public IActionResult GetTeamList(

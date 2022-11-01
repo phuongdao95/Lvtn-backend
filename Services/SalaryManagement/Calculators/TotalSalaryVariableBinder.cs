@@ -14,34 +14,39 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name = "total_deduction",
-                Description = "Khoảng thời gian trễ khi checkin trong một ca làm việc của nhân viên",
+                DisplayName = "Tổng khấu trừ",
+                Description = "Tổng khấu trừ trong tháng của nhân viên",
                 DataType = VariableDataType.Decimal,
             },
 
             new SalarySystemVariable
             {
                 Name = "total_allowance",
-                Description = "Khoảng thời gian sớm khi checkout trong một ca làm việc của nhân viên.",
+                DisplayName = "Tổng phụ cấp",
+                Description = "Tổng phụ cấp trong tháng của nhân viên",
                 DataType= VariableDataType.Decimal,
             },
 
             new SalarySystemVariable
             {
                 Name = "total_bonus",
-                Description = "Xác định nhân viên đã check in hay chưa.",
+                DisplayName = "Tổng thưởng",
+                Description = "Tổng thưởng trong tháng của nhân viên",
                 DataType = VariableDataType.Decimal,
             },
 
             new SalarySystemVariable
             {
                 Name = "salary_after_tk_calc",
-                Description = "Lương của nhân viên sau khi đã trừ các khoản chấm công",
+                DisplayName = "Tổng lương sau chấm công",
+                Description = "Lương của nhân viên sau khi đã trừ các khoản phạt do chấm công",
                 DataType = VariableDataType.Decimal,
             },
 
             new SalarySystemVariable
             {
                 Name = "total_ot_shifts_salary",
+                DisplayName =  "Tổng lương OT",
                 Description = "Tổng lương nhận được từ thời gian ot",
                 DataType = VariableDataType.Decimal,
             },
@@ -49,6 +54,7 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name = "total_fixed_shifts_salary",
+                DisplayName = "Tổng lương fixed shift",
                 Description = "Tổng lương nhận được từ các ca làm việc thông thường",
                 DataType = VariableDataType.Decimal,
             },
@@ -56,6 +62,7 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name = "num_work_days",
+                DisplayName = "Số ngày làm việc trong tháng",
                 Description = "Số ngày làm việc (không tính ot) trong tháng",
                 DataType = VariableDataType.Integer
             }
@@ -83,16 +90,24 @@ namespace Services.SalaryManagement.Calculators
             switch (variable)
             {
                 case "total_deduction":
-                    expression.Bind(variable, getTotalDeduction());
+                    var totalDeduction = getTotalDeduction();
+                    _payslip.TotalDeduction = totalDeduction;
+                    expression.Bind(variable, totalDeduction);
                     break;
                 case "total_allowance":
-                    expression.Bind(variable, getTotalAllowance());
+                    var totalAllowance = getTotalAllowance();
+                    _payslip.TotalAllowance = totalAllowance;
+                    expression.Bind(variable, totalAllowance);
                     break;
                 case "total_bonus":
-                    expression.Bind(variable, getTotalBonus());
+                    var totalBonus = getTotalBonus();
+                    _payslip.TotalBonus = totalBonus;
+                    expression.Bind(variable, totalBonus);
                     break;
                 case "salary_after_tk_calc":
-                    expression.Bind(variable, getTotalSalaryAfterTimekeepingCalculation());
+                    var salaryAfterTimekeepingCalculation = getTotalSalaryAfterTimekeepingCalculation();
+                    _payslip.SalaryAfterTimekeeepingCalculation = salaryAfterTimekeepingCalculation;
+                    expression.Bind(variable, salaryAfterTimekeepingCalculation);
                     break;
                 case "num_work_days":
                     expression.Bind(variable, getNumberOfWorkDays());

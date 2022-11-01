@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Models.Models;
 using Models.Repositories.DataContext;
 using org.matheval;
@@ -19,9 +20,17 @@ namespace Services.SalaryManagement.Calculators
         {
             _context = context;
             _user = user;
-            _salaryDelta = salaryDelta;
+            _salaryDelta = initSalaryDelta(salaryDelta);
             _userVariableBinder = new UserVariableBinder(context, user);
             _salaryVariableBinder = new SalaryVariableBinder(context);
+
+        }
+
+        private SalaryDelta initSalaryDelta(SalaryDelta salaryDelta)
+        {
+            _context.Entry(salaryDelta).Reference(sd => sd.Group).Load();
+
+            return salaryDelta;
         }
 
         public PayslipSalaryDelta Calculate()
@@ -63,11 +72,14 @@ namespace Services.SalaryManagement.Calculators
 
             return new PayslipSalaryDelta
             {
+                FormulaDefine = formula.Define,
                 Amount = expression.Eval<decimal>(),
                 FromMonth = _salaryDelta.FromMonth,
                 ToMonth = _salaryDelta.ToMonth,
                 Name = _salaryDelta.Name,
                 SalaryDeltaType = _salaryDelta.Type,
+                GroupName = _salaryDelta.Group.Name,
+                GroupId = _salaryDelta.GroupId
             };
         }
     }

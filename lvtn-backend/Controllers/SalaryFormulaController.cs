@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
@@ -7,6 +8,7 @@ using Services.Services;
 
 namespace lvtn_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class SalaryFormulaController : ControllerBase
@@ -31,7 +33,7 @@ namespace lvtn_backend.Controllers
             {
                 var result = new Dictionary<string, object>();
 
-                var formulaList = _formulaService.GetFormulaList(offset, limit, query, queryType);
+                var formulaList = _formulaService.GetFormulaList(offset, int.MaxValue, query, queryType);
                 var formulaListTotal = _formulaService.GetVariableListCount(offset, int.MaxValue, query, queryType);
                 var formulaInfoList = _mapper.Map<IEnumerable<SalaryFormulaInfoDTO>>(formulaList);
 

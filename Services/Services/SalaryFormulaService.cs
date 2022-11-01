@@ -171,19 +171,19 @@ namespace Services.Services
         private VariableDataType GetVariableDataType(string dataType)
         {
             VariableDataType type;
-            if (dataType == "number")
+            if (dataType == "Decimal")
             {
                 type = VariableDataType.Decimal;
             }
-            else if (dataType == "text")
+            else if (dataType == "Text")
             {
                 type = VariableDataType.Text;
             }
-            else if (dataType == "boolean")
+            else if (dataType == "Boolean")
             {
                 type = VariableDataType.Boolean;
             }
-            else if (dataType == "datetime")
+            else if (dataType == "Integer")
             {
                 type = VariableDataType.Integer;
             }
@@ -216,8 +216,11 @@ namespace Services.Services
                     throw new Exception("VariableKind not found");
             }
 
+            int index = 0;
+
             result.ForEach(systemVariable =>
             {
+                systemVariable.Id = ++index;
                 systemVariable.IsUsedFor = kind;
             });
 

@@ -1,22 +1,30 @@
 ﻿using AutoMapper;
+using lvtn_backend.Hubs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Services.Services;
 
 namespace lvtn_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PayrollController : Controller
     {
         private readonly IMapper _mapper;
         private readonly PayrollService _payrollService;
-        public PayrollController(IMapper mapper,
-            PayrollService payrollService)
+        private readonly IHubContext<NotificationHub> _notificationHubContext;
+        public PayrollController(
+            IMapper mapper,
+            PayrollService payrollService,
+            IHubContext<NotificationHub> notificationHubContext)
         {
             _mapper = mapper;
             _payrollService = payrollService;
+            _notificationHubContext = notificationHubContext;
         }
 
         [HttpPost]
@@ -25,6 +33,7 @@ namespace lvtn_backend.Controllers
             try
             {
                 _payrollService.CreatePayroll(payrollDTO);
+                _notificationHubContext.Clients.All.SendAsync("receiveMessage", "refreshNotification");
                 return Ok();
             }
             catch (Exception)
@@ -42,14 +51,13 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                var payroll = _payrollService.GetPayrollList(offset, limit, query, queryType);
-                var payrollListCount = _payrollService.GetPayrollListCount(offset, limit, query, queryType);
+                var payroll = _payrollService.GetPayrollList(offset, int.MaxValue, query, queryType);
                 var payrollInfo = _mapper.Map<IEnumerable<PayrollInfoDTO>>(payroll);
 
                 return Ok(new Dictionary<string, object>
                 {
                     { "data", payrollInfo },
-                    { "total", payrollListCount },
+                    { "total", payroll.Count() },
                     { "count", payrollInfo.Count() }
                 });
             }
@@ -128,11 +136,6 @@ namespace lvtn_backend.Controllers
             }
         }
 
-        [HttpGet("/api/payslip/{id}")]
-        public IActionResult GetPayslipDetail(int id)
-        {
-            return Ok();
-        }
 
         [HttpGet("/api/payslip/{id}/timekeeping")]
         public IActionResult GetPayslipTimekeepingList(int id)
@@ -161,6 +164,47 @@ namespace lvtn_backend.Controllers
             }
         }
 
+
+        [HttpGet("/api/user/{id}/payslip")]
+        public IActionResult GetPayslipListOfUser(int id)
+        {
+            try
+            {
+                var payslips = _payrollService.GetPayslipsOfUser(id);
+
+                var data = _mapper.Map<IEnumerable<PayslipInfoDTO>>(payslips);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    { "data", data },
+                    { "total", total },
+                    { "count", count }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("/api/payslip/{id}")]
+        public IActionResult GetPayslipById(int id)
+        {
+            try
+            {
+                var payslip = _payrollService.GetPayslipById(id);
+                var data = _mapper.Map<PayslipInfoDTO>(payslip);
+
+                return Ok(data);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpGet("/api/payslip/{id}/salarydelta")]
         public IActionResult GetPayslipSalaryDelta(int id)
         {
@@ -181,6 +225,20 @@ namespace lvtn_backend.Controllers
                     { "count", count },
                     { "total", total }
                 });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{id}/status")]
+        public IActionResult SendPayroll(int id)
+        {
+            try
+            {
+                _payrollService.SendPayroll(id);
+                return Ok();
             }
             catch (Exception)
             {

@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
-using Models.Enums;
 using Services.Contracts;
-using System.Security.Cryptography;
 
 namespace lvtn_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class SalaryDeltaController : ControllerBase
@@ -22,14 +22,14 @@ namespace lvtn_backend.Controllers
 
         [HttpGet]
         public IActionResult GetSalaryDeltaList(
-            [FromQuery] int offset = 0, 
-            [FromQuery] int limit = 8,
+            [FromQuery] int? offset = 0,
+            [FromQuery] int? limit = 8,
             [FromQuery] string? query = "",
-            [FromQuery] string? queryType = "deduction")
+            [FromQuery] string? queryType = "")
         {
             try
             {
-                var salaryDeltaList =  _salaryDeltaService.GetSalaryDeltaList(offset, limit, query, queryType);
+                var salaryDeltaList =  _salaryDeltaService.GetSalaryDeltaList(0, int.MaxValue, query, queryType);
 
                 var data = _mapper.Map<IEnumerable<SalaryDeltaInfoDTO>>(salaryDeltaList); 
                 var total = _salaryDeltaService.GetSalaryDeltaListCount(query, queryType);
@@ -78,8 +78,9 @@ namespace lvtn_backend.Controllers
             }
         }
 
+
         [HttpPost]
-        public IActionResult CreateSalaryDelta([FromBody] SalaryDeltaDTO salaryDeltaDTO)
+        public IActionResult CreateSalaryDelta(SalaryDeltaDTO salaryDeltaDTO)
         {
             try
             {
@@ -93,7 +94,7 @@ namespace lvtn_backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteSalaryDelta([FromHeader] int id)
+        public IActionResult DeleteSalaryDelta(int id)
         {
             try 
             {

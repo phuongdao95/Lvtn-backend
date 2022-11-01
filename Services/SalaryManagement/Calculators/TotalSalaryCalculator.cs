@@ -81,10 +81,9 @@ namespace Services.SalaryManagement.Calculators
             var groupIds = _groups.Select(gr => gr.Id).ToList();
 
             var salaryDeltaList = _context.SalaryDeltas
-                .Where(sd => groupIds.Contains(sd.Id))
-                .Where(sd => sd.FromMonth.Month >= _startOfMonth.Month &&
-                    sd.ToMonth.Month <= _endOfMonth.Month &&
-                    sd.FromMonth.Year == _startOfMonth.Year)
+                .Where(sd => groupIds.Contains(sd.GroupId))
+                .Where(sd => sd.FromMonth <= _startOfMonth &&
+                    sd.ToMonth >= _endOfMonth)
                 .ToList();
 
 
@@ -136,6 +135,9 @@ namespace Services.SalaryManagement.Calculators
             var formula = _context.SalaryFormulas
                 .Where(x => x.Name == salaryGroup.FormulaName)
                 .Single();
+
+            payslip.FormulaName = formula.DisplayName;
+            payslip.FormulaDefine = formula.Define;
 
             if (formula == null)
             {

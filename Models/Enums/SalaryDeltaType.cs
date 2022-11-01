@@ -6,8 +6,10 @@ namespace Models.Enums
     {
         [EnumMember(Value = "deduction")]
         Deduction,
+
         [EnumMember(Value = "allowance")]
         Allowance,
+        
         [EnumMember(Value = "bonus")]
         Bonus
     }

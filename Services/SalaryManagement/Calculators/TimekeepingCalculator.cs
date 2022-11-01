@@ -84,7 +84,7 @@ namespace Services.SalaryManagement.Calculators
                 CheckoutTime = _timekeeping.CheckoutTime,
                 StartTime = _workingShift.StartTime,
                 EndTime = _workingShift.EndTime,
-                Formula = formula.Define
+                FormulaDefine = formula.Define
             };
         }
 

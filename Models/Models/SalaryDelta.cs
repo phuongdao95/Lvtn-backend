@@ -26,7 +26,7 @@ namespace Models.Models
 
         [Required]
         public DateTime ToMonth { get; set; }
-        public int? GroupId { get; set; }
+        public int GroupId { get; set; }
         public Group? Group { get; set; }
     }
 }

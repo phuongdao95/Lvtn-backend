@@ -272,6 +272,23 @@ namespace lvtn_backend.Controllers
             }
         }
 
+
+        [HttpGet("/api/taskcolumn/{id}")]
+        public IActionResult GetTaskColumnById(int id)
+        {
+            try
+            {
+                var taskColumn = _taskBoardService.GetTaskColumnById(id);
+                var data = _mapper.Map<TaskColumnInfoDTO>(taskColumn);
+                return Ok(data);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
         [HttpPut("/api/taskcolumn/{id}")]
         public IActionResult UpdateTaskColumnForBoard(int id, TaskColumnDTO taskColumnDTO)
         {

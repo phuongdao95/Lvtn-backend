@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
 using Models.Enums;
@@ -29,6 +30,19 @@ namespace Services.Services
             _salaryCalculatorService.CalculateUserSalaryAndWriteIntoDatabases(payrollDTO);
         }
 
+        public void SendPayroll(int payrollId)
+        {
+            var payroll = _context.Payrolls.Find(payrollId);
+            if (payroll == null)
+            {
+                throw new Exception("Payroll not found");
+            }
+
+            payroll.Status = PayrollStatus.Sent;
+            _context.Payrolls.Update(payroll);
+            _context.SaveChanges();
+        }
+
         public List<Payslip> GetPayslipsOfPayroll(int payrollId)
         {
             var payroll = _context.Payrolls.Find(payrollId);
@@ -39,6 +53,11 @@ namespace Services.Services
 
             _context.Entry(payroll).Collection(p => p.PayslipList).Load();
 
+            foreach (var payslip in payroll.PayslipList)
+            {
+                _context.Entry(payslip).Reference(p => p.Employee).Load();
+            }
+
             if (payroll.PayslipList == null)
             {
                 return new List<Payslip>();
@@ -48,29 +67,27 @@ namespace Services.Services
         }
         public void DeletePayroll(int id)
         {
-            var payroll = _context.Payrolls.Find(id);
+            var payroll = _context.Payrolls.Where(payroll => payroll.Id == id)
+                .Include(payroll => payroll.PayslipList)
+                .Single();
 
             if (payroll == null)
             {
                 throw new Exception("Cannot delete payroll of null");
             }
 
-            _context.Payrolls.Remove(payroll);
-            _context.SaveChanges();
-        }
-
-        public void SendPayroll(int id)
-        {
-            var payroll = _context.Payrolls.Find(id);
-
-            if (payroll == null)
+            if (payroll.PayslipList == null)
             {
-                throw new Exception("Pay roll cannot be null");
+                throw new Exception("Payroll not init properly");
             }
 
-            payroll.Status = PayrollStatus.Sent;
+            foreach (var payslip in payroll.PayslipList)
+            {
+                _context.Entry(payslip).Collection(p => p.Timekeepings).Load();
+                _context.Entry(payslip).Collection(p => p.SalaryDeltas).Load();
+            }
 
-            _context.Payrolls.Update(payroll);
+            _context.Payrolls.Remove(payroll);
             _context.SaveChanges();
         }
 
@@ -140,9 +157,10 @@ namespace Services.Services
                 return new List<Payslip>();
             }
 
-            return payroll.PayslipList
-                .Where(payslip => payslip.Employee.Name.Contains(query) ||
-                    query.Contains(payslip.Employee.Name))
+
+            return _context.Payslips
+                .Where(payslip => payslip.PayrollId == id)
+                .Include(p => p.Employee)
                 .Skip(offset)
                 .Take(limit)
                 .ToList();
@@ -177,6 +195,33 @@ namespace Services.Services
 
             return payslip.Timekeepings;
 
+        }
+        public List<Payslip> GetPayslipsOfUser(int userId)
+        {
+            var user = _context.Users.Find(userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            return _context.Payslips.Where(p => p.EmployeeId == userId)
+                .Where(p => p.Payroll.Status == PayrollStatus.Sent)
+                .ToList();
+        }
+
+        public Payslip GetPayslipById(int id)
+        {
+            var payslip = _context.Payslips.Where(p => p.Id == id)
+                .Include(p => p.Employee)
+                .Single();
+
+            if (payslip == null)
+            {
+                throw new Exception("Payslip not found");
+            }
+
+            return payslip;
         }
 
         public List<PayslipSalaryDelta> GetPayslipSalaryDeltas(int id)

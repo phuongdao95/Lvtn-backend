@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
 using Models.DTO.Response;
+using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
 using Services.Services;
@@ -10,6 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace lvtn_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TaskController : ControllerBase
@@ -17,18 +21,24 @@ namespace lvtn_backend.Controllers
         private readonly IMapper _mapper;
         private readonly EmsContext _context;
         private readonly TaskService _taskService;
-        public TaskController(IMapper mapper, EmsContext context, TaskService taskService)
+        private readonly TaskHistoryService _taskHistoryService;
+        public TaskController(
+            IMapper mapper,
+            EmsContext context,
+            TaskService taskService,
+            TaskHistoryService taskHistoryService)
         {
             _mapper = mapper;
             _context = context;
             _taskService = taskService;
+            _taskHistoryService = taskHistoryService;
         }
 
 
         [HttpPost]
         public IActionResult CreateTask(TaskDTO taskDTO)
         {
-            try 
+            try
             {
                 _taskService.CreateTask(taskDTO);
                 return Ok();
@@ -108,6 +118,55 @@ namespace lvtn_backend.Controllers
             }
         }
 
+        [HttpPost("{id}/tasklabel/{tasklabelid}")]
+        public IActionResult AddTaskLabel(int id, int tasklabelid)
+        {
+            try
+            {
+                _taskService.AddTaskLabel(id, tasklabelid);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("{id}/tasklabel/{tasklabelid}")]
+        public IActionResult RemoveTaskLabel(int id, int tasklabelid)
+        {
+            try
+            {
+                _taskService.RemoveTaskLabelFromTask(id, tasklabelid);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("{id}/taskhistory")]
+        public IActionResult GetTaskHistoryOfTask(int id)
+        {
+            try
+            {
+                var taskHistoryDTO = _taskHistoryService.GetTaskHistoriesOfTask(id);
+
+                return Ok(new Dictionary<string, object>
+                {
+                    { "data", taskHistoryDTO },
+                    { "count", taskHistoryDTO.Count() },
+                    { "total", taskHistoryDTO.Count() }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
         [HttpPut("/api/taskfile/{id}/")]
         public IActionResult UpdateTaskFile(int id, TaskFileDTO taskFileDTO)
         {
@@ -123,6 +182,25 @@ namespace lvtn_backend.Controllers
 
                 _context.TaskFiles.Update(taskFile);
                 _context.SaveChanges();
+
+                var task = _context.Tasks.Where(t => t.Id == taskFile.TaskId)
+                    .Include(t => t.TaskHistories)
+                    .Single();
+
+                var taskHistory = _taskHistoryService.BuildTaskHistoryFromTaskFileAndTaskId(
+                    task.Id,
+                    taskFile,
+                    TaskHistoryAction.UpdateFile);
+
+                if (task.TaskHistories == null)
+                {
+                    throw new Exception();
+                }
+
+                task.TaskHistories.Add(taskHistory);
+                _context.Tasks.Update(task);
+                _context.SaveChanges();
+
                 return Ok();
             }
             catch (Exception)
@@ -230,7 +308,7 @@ namespace lvtn_backend.Controllers
 
                 System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(actualFile));
 
-                var task = new TaskFile()
+                var taskFile = new TaskFile()
                 {
                     DisplayFileName = taskFileDTO.DisplayName + "." + taskFileDTO.Extension,
                     Name = filename,
@@ -238,7 +316,22 @@ namespace lvtn_backend.Controllers
                     TaskId = id,
                 };
 
-                _context.TaskFiles.Add(task);
+                _context.TaskFiles.Add(taskFile);
+                _context.SaveChanges();
+
+                var task = _context.Tasks.Where(t => t.Id == taskFile.TaskId)
+                    .Include(t => t.TaskHistories)
+                    .Single();
+
+                var taskHistory = _taskHistoryService.BuildTaskHistoryFromTaskFileAndTaskId(task.Id, taskFile, TaskHistoryAction.AddFile);
+                if (task.TaskHistories == null)
+                {
+                    throw new Exception();
+                }
+
+                task.TaskHistories.Add(taskHistory);
+
+                _context.Tasks.Update(task);
                 _context.SaveChanges();
 
                 return Ok(new { filePath });
@@ -295,6 +388,22 @@ namespace lvtn_backend.Controllers
                 _context.TaskFiles.Remove(taskFile);
                 _context.SaveChanges();
 
+                var task = _context.Tasks.Where(t => t.Id == taskFile.TaskId)
+                    .Include(t => t.TaskHistories)
+                    .Single();
+
+                var taskHistory = _taskHistoryService.BuildTaskHistoryFromTaskFileAndTaskId(
+                    task.Id, taskFile, TaskHistoryAction.DeleteFile);
+
+                if (task.TaskHistories == null)
+                {
+                    throw new Exception();
+                }
+
+                task.TaskHistories.Add(taskHistory);
+
+                _context.Tasks.Update(task);
+                _context.SaveChanges();
                 return Ok();
 
             }
@@ -319,6 +428,7 @@ namespace lvtn_backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("/api/taskfile/{id}/download")]
         public IActionResult DownloadTaskFile(int id)
         {
@@ -343,7 +453,6 @@ namespace lvtn_backend.Controllers
                 return BadRequest();
             }
         }
-
 
     }
 }

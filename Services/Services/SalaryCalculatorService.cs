@@ -39,6 +39,8 @@ namespace Services.Services
 
                 payslip.Name = payrollDTO.Name;
                 payslip.Description = payrollDTO.Description;
+                payslip.Month = payrollDTO.Month;
+                payslip.Year = payrollDTO.Year;
                 result.PayslipList.Add(payslip);
             }
             

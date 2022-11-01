@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
+using Models.DTO.Response;
+using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
 using Task = Models.Models.Task;
@@ -11,11 +14,16 @@ namespace Services.Services
     {
         private readonly IMapper _mapper;
         private readonly EmsContext _context;
+        private readonly TaskHistoryService _taskHistoryService;
 
-        public TaskService(IMapper mapper, EmsContext context)
+        public TaskService(
+            IMapper mapper, 
+            EmsContext context, 
+            TaskHistoryService taskHistoryService)
         {
             _mapper = mapper;
             _context = context;
+            _taskHistoryService = taskHistoryService;
         }
 
         public Task GetTaskById(int id)
@@ -26,18 +34,77 @@ namespace Services.Services
                 throw new Exception("Task cannot be null");
             }
 
-            _context.Entry(task).Reference(t => t.InCharge).Load();
-            _context.Entry(task).Reference(t => t.ReportTo).Load();
 
             var column = _context.TaskColumns.Find(task.ColumnId);
             if (column == null)
             {
                 throw new Exception("Column not found");
             }
+            var inCharge = _context.Users.Find(task.InChargeId);
+            var reportTo = _context.Users.Find(task.ReportToId);
 
+            if (task.InChargeId != null && inCharge == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            if (task.ReportTo != null && reportTo == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            task.InCharge = inCharge;
+            task.ReportTo = reportTo;
             task.Column = column;
 
             return task;
+        }
+
+        public void AddTaskLabel(int taskId, int taskLabelId)
+        {
+            var task = _context.Tasks.Where(task => task.Id == taskId)
+                .Include(task => task.Labels)
+                .Single();
+
+            var taskLabel = _context.TaskLabels.Find(taskLabelId);
+
+            if (task == null || task.Labels == null)
+            {
+                throw new Exception("Task not init properly");
+            }
+
+            if (taskLabel == null)
+            {
+                throw new Exception("Task label not found");
+            }
+
+            task.Labels.Add(taskLabel);
+            _context.Tasks.Update(task);
+            _context.SaveChanges();
+        }
+
+        public void RemoveTaskLabelFromTask(int taskId, int taskLabelId)
+        {
+            var task = _context.Tasks.Where(task => task.Id == taskId)
+                .Include(task => task.Labels)
+                .Single();
+
+            var taskLabel = _context.TaskLabels.Find(taskLabelId);
+
+            if (task == null || task.Labels == null)
+            {
+                throw new Exception("Task not init properly");
+            }
+
+            if (taskLabel == null)
+            {
+                throw new Exception("Task label not found");
+            }
+
+            task.Labels = task.Labels.Where(label => label.Id != taskLabelId).ToList();
+
+            _context.Tasks.Update(task);
+            _context.SaveChanges();
         }
 
         public void CreateTask(TaskDTO taskDTO)
@@ -53,15 +120,17 @@ namespace Services.Services
             task.InChargeId = taskDTO.InChargeId;
             task.ReportToId = taskDTO.ReportToId;
 
-            if (taskDTO.TaskLabelIds != null)
+            _context.Tasks.Add(task);
+            _context.SaveChanges();
+
+            var taskHistory = _taskHistoryService.BuildTaskHistoryFromTaskFieldsAndTaskId(task.Id, TaskHistoryAction.CreateTask);
+
+            if (task.TaskHistories == null)
             {
-                var labels = _context.TaskLabels.Where(taskLabel => taskDTO.TaskLabelIds.Contains(taskLabel.Id)).ToList();
-
-                task.Labels = labels;
-
+                task.TaskHistories = new List<TaskHistory> { taskHistory };
             }
 
-            _context.Tasks.Add(task);
+            _context.Tasks.Update(task);
             _context.SaveChanges();
         }
 
@@ -90,20 +159,29 @@ namespace Services.Services
             task.InChargeId = taskDTO.InChargeId;
             task.ReportToId = taskDTO.ReportToId;
             task.ColumnId = taskDTO.ColumnId;
-            task.Description = taskDTO.Description;
             task.Point = taskDTO.Point;
             task.FromDate = taskDTO.FromDate;
             task.ToDate = taskDTO.ToDate;
 
-            if (taskDTO.TaskLabelIds != null)
-            {
-                var labels = _context.TaskLabels.Where(taskLabel => taskDTO.TaskLabelIds.Contains(taskLabel.Id)).ToList();
+            _context.Tasks.Update(task);
+            _context.SaveChanges();
 
-                task.Labels = labels;
+            var taskHistory = _taskHistoryService.BuildTaskHistoryFromTaskFieldsAndTaskId(id, TaskHistoryAction.CreateTask);
+
+            _context.Entry(task)
+                .Collection(t => t.TaskHistories)
+                .Load();
+
+            taskHistory.Action = TaskHistoryAction.UpdateFields;
+
+            if (task.TaskHistories == null)
+            {
+                throw new Exception("Task History not found");
             }
 
-            _context.Tasks.Update(task);
+            task.TaskHistories.Add(taskHistory);
 
+            _context.Tasks.Update(task);
             _context.SaveChanges();
         }
 
@@ -187,8 +265,24 @@ namespace Services.Services
                 throw new Exception("Task not found");
             }
 
+            _context.Entry(task)
+                .Collection(t => t.TaskHistories)
+                .Load();
+
             task.Description = description;
 
+            _context.Tasks.Update(task);
+            _context.SaveChanges();
+
+            var taskHistory = _taskHistoryService.BuildTaskHistoryFromTaskFieldsAndTaskId(
+                taskId, TaskHistoryAction.UpdateDescription);
+
+            if (task.TaskHistories == null)
+            {
+                throw new Exception();
+            }
+
+            task.TaskHistories.Add(taskHistory);
             _context.Tasks.Update(task);
             _context.SaveChanges();
         }
@@ -208,6 +302,7 @@ namespace Services.Services
                 throw new Exception("Task board is null");
             }
             _context.Entry(taskBoard).Collection(tb => tb.TaskColumns).Load();
+            _context.Entry(task).Collection(t => t.TaskHistories).Load();
 
             if (taskBoard.TaskColumns == null)
             {
@@ -220,7 +315,16 @@ namespace Services.Services
             task.ColumnId = destColumn.Id;
 
             _context.Tasks.Update(task);
-            _context.SaveChanges();            
+            _context.SaveChanges();
+
+            if (task.TaskHistories == null)
+            {
+                throw new Exception("Task not init properly");
+            }
+            var taskHistory = _taskHistoryService.BuildTaskHistoryFromTaskFieldsAndTaskId(
+                taskId, TaskHistoryAction.MoveTask);
+            task.TaskHistories.Add(taskHistory);
+            _context.SaveChanges();
         }
 
         public void AddTaskComment(int taskId, TaskCommentDTO taskCommentDTO)
@@ -237,6 +341,22 @@ namespace Services.Services
 
             task.Comments.Add(taskComment);
 
+            _context.Tasks.Update(task);
+            _context.SaveChanges();
+
+            _context.Entry(task).Collection(t => t.TaskHistories).Load();
+
+            var taskHistory = _taskHistoryService.BuildTaskHistoryFromTaskCommentAndTaskId(
+                taskId, taskComment, TaskHistoryAction.AddComment);
+
+            taskHistory.Action = TaskHistoryAction.AddComment;
+
+            if (task.TaskHistories == null)
+            {
+                throw new Exception();
+            }
+
+            task.TaskHistories.Add(taskHistory);
             _context.Tasks.Update(task);
             _context.SaveChanges();
         }

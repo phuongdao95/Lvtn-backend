@@ -82,13 +82,19 @@ namespace Repositories.DataContext.DataSeeder
 
             foreach (var board in _taskBoards)
             {
-                result.AddRange(_taskColumnNames.Select(name =>  new TaskColumn
+                int order = 0;
+                result.AddRange(_taskColumnNames.Select(name =>
                 {
-                    Id= ++index,
-                    Name= name,
-                    Description = name,
-                    BoardId = board.Id,
-                }));
+                    return new TaskColumn
+                    {
+                        Id = ++index,
+                        Name = name,
+                        Order = name == "Todo" ? int.MinValue : name == "Done" ? int.MaxValue : ++order,
+                        Description = name,
+                        BoardId = board.Id,
+                    };
+                }
+                ));
             }
 
             return result;
@@ -121,10 +127,12 @@ namespace Repositories.DataContext.DataSeeder
 
             foreach (var taskColumn in _taskColumns)
             {
+                int order = 0;
                 result.AddRange(Enumerable.Range(0, count).Select(i => new Task
                 {
                     Id = ++index,
                     ColumnId = taskColumn.Id,
+                    Order = ++order, 
                     FromDate = new DateTime(2022, 10, 12),
                     ToDate = new DateTime(2022, 10, 17),
                     Point = new Random().Next(5, 20),

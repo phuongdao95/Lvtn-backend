@@ -48,5 +48,6 @@ namespace Models.Models
         public List<WorkingShiftEvent>? WorkingShiftEvents { get; set; }
         public List<SalaryDelta>? SalaryDeltaList { get; set; }
         public List<Payslip>? Payslips { get; set; }
+        public List<Notification>? Notifications { get; set; }
     }
 }

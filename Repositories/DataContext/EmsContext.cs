@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Repositories.DataContext.DataSeeder;
 using Task = Models.Models.Task;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Models.Repositories.DataContext
 {
     public class EmsContext : DbContext
     {
+        public DbSet<Notification> Notifications { get; set; }
         /** Administration Module */
         public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
@@ -34,8 +36,7 @@ namespace Models.Repositories.DataContext
         public DbSet<TaskComment> TaskComments { get; set; }
         public DbSet<TaskFile> TaskFiles { get; set; }
         public DbSet<TaskLabel> TaskLabels { get; set; }
-
-        /***/
+        
         public EmsContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -135,6 +136,22 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey(p => p.PayrollId)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
+            modelBuilder.Entity<User>()
+                .HasMany(p => p.Notifications)
+                .WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "UserNotification",
+                    left => left.HasOne<Notification>()
+                        .WithMany()
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    right => right.HasOne<User>()
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientCascade),
+                    je => je.HasKey("NotificationId", "UserId")
+                );
+
             modelBuilder.Entity<Payslip>()
                 .HasMany(p => p.SalaryDeltas)
                 .WithOne(p => p.Payslip)
@@ -178,10 +195,39 @@ namespace Models.Repositories.DataContext
                 .WithMany(p => p.Tasks)
                 .UsingEntity<Dictionary<string, object>>(
                     "TaskTaskLabel",
-                    right => right.HasOne<TaskLabel>().WithMany().HasForeignKey("TaskLabelId").OnDelete(DeleteBehavior.Cascade),
-                    left => left.HasOne<Task>().WithMany().HasForeignKey("TaskId").OnDelete(DeleteBehavior.ClientCascade),
+                    right => right.HasOne<TaskLabel>()
+                        .WithMany()
+                        .HasForeignKey("TaskLabelId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    left => left.HasOne<Task>().WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.ClientCascade),
                     je => je.HasKey("TaskId", "TaskLabelId")
                 );
+
+            modelBuilder.Entity<Task>()
+                .HasMany(p => p.TaskHistories)
+                .WithOne()
+                .HasForeignKey(p => p.TaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskHistory>()
+                .HasOne(p => p.TaskFileHistory)
+                .WithOne()
+                .HasForeignKey<TaskFileHistory>(p => p.TaskHistoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskHistory>()
+                .HasOne(p => p.TaskCommentHistory)
+                .WithOne()
+                .HasForeignKey<TaskCommentHistory>(p => p.TaskHistoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskHistory>()
+                .HasOne(p => p.TaskLabelHistory)
+                .WithOne()
+                .HasForeignKey<TaskLabelHistory>(p => p.TaskHistoryId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Task>()
                 .HasMany(p => p.Comments)
