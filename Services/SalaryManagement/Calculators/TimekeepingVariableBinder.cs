@@ -85,7 +85,7 @@ namespace Services.SalaryManagement.Calculators
         private EmsContext _context;
         private WorkingShiftTimekeeping _timekeeping;
         private User _user;
-        private WorkingShiftEvent _event;
+        private WorkingShift _event;
         public TimekeepingVariableBinder(
             EmsContext context,
             User user,
@@ -97,7 +97,7 @@ namespace Services.SalaryManagement.Calculators
             _event = initializeWorkingShiftEvent();
         }
 
-        private WorkingShiftEvent initializeWorkingShiftEvent()
+        private WorkingShift initializeWorkingShiftEvent()
         {
             _context.Entry(_timekeeping).Reference(r => r.WorkingShiftEvent).Load();
 
@@ -222,7 +222,7 @@ namespace Services.SalaryManagement.Calculators
             var endOfMonth = new DateTime(year, month, lastDayOfMonth, 23, 59, 59);
 
             var numberOfShifts = _context.WorkingShiftEvents
-                .Where(evt => evt.Type == WorkingShiftEventType.FIXED_SHIFT)
+                .Where(evt => evt.Type == WorkingShiftType.FIXED_SHIFT)
                 .Where(evt => evt.StartTime >= startOfMonth &&
                     evt.EndTime <= endOfMonth)
                 .Count();

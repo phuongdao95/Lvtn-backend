@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Services.Services;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace lvtn_backend.Hubs
 {

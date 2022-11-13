@@ -26,9 +26,10 @@ namespace Models.Repositories.DataContext
         public DbSet<Payslip> Payslips { get; set; }
 
         /** Timekeeping */
-        public DbSet<WorkingShiftEvent> WorkingShiftEvents { get; set; }
+        public DbSet<WorkingShift> WorkingShiftEvents { get; set; }
         public DbSet<WorkingShiftTimekeeping> WorkingShiftTimekeepings { get; set; }
-
+        public DbSet<WorkingShiftRegistration> WorkingShiftRegistrations { get; set; }
+        public DbSet<WorkingShiftRegistrationUser> WorkingShiftRegistrationUsers { get; set; }
         /** Virtual Space */
         public DbSet<TaskBoard> TaskBoards { get; set; }
         public DbSet<TaskColumn> TaskColumns { get; set; }
@@ -138,19 +139,9 @@ namespace Models.Repositories.DataContext
 
             modelBuilder.Entity<User>()
                 .HasMany(p => p.Notifications)
-                .WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserNotification",
-                    left => left.HasOne<Notification>()
-                        .WithMany()
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade),
-                    right => right.HasOne<User>()
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade),
-                    je => je.HasKey("NotificationId", "UserId")
-                );
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Payslip>()
                 .HasMany(p => p.SalaryDeltas)
@@ -248,7 +239,7 @@ namespace Models.Repositories.DataContext
                .WithMany(p => p.Users)
                .UsingEntity<Dictionary<string, object>>(
                    "WorkingShiftEventUser",
-                   left => left.HasOne<WorkingShiftEvent>().WithMany().HasForeignKey("WorkingShiftEventId"),
+                   left => left.HasOne<WorkingShift>().WithMany().HasForeignKey("WorkingShiftEventId"),
                    right => right.HasOne<User>().WithMany().HasForeignKey("UserId")
                );
 
@@ -263,8 +254,25 @@ namespace Models.Repositories.DataContext
                 .HasOne(p => p.WorkingShiftEvent)
                 .WithMany(p => p.Timekeepings)
                 .HasForeignKey(p => p.WorkingShiftEventId)
-                .OnDelete(DeleteBehavior.Cascade)
-                ;
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkingShiftRegistration>()
+                .HasOne(p => p.WorkingShift)
+                .WithOne(p => p.WorkingShiftRegistration)
+                .HasForeignKey<WorkingShiftRegistration>(p => p.WorkingShiftId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkingShiftRegistrationUser>()
+                .HasOne(p => p.User)
+                .WithMany(p => p.WorkingShiftRegistrationUsers)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkingShiftRegistrationUser>()
+                .HasOne(p => p.WorkingShiftRegistration)
+                .WithMany(p => p.WorkingShiftRegistrationUsers)
+                .HasForeignKey(p => p.WorkingShiftRegistrationId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             seedData(modelBuilder);
         }

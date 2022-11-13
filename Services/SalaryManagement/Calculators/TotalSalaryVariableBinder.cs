@@ -123,7 +123,7 @@ namespace Services.SalaryManagement.Calculators
             }
 
             return _payslip.Timekeepings
-                .Where(x => x.Type == WorkingShiftEventType.FIXED_SHIFT)
+                .Where(x => x.Type == WorkingShiftType.FIXED_SHIFT)
                 .Count();
         }
 

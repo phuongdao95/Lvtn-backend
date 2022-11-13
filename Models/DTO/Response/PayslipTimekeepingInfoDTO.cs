@@ -16,7 +16,7 @@ namespace Models.DTO.Response
         public string? Formula { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public WorkingShiftEventType Type { get; set; }
+        public WorkingShiftType Type { get; set; }
         public int PayslipId { get; set; }
         public string? PayslipName { get; set; }
     }

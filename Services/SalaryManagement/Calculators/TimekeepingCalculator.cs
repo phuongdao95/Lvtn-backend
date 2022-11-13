@@ -9,7 +9,7 @@ namespace Services.SalaryManagement.Calculators
         private readonly EmsContext _context;
         private readonly User _user;
         private readonly WorkingShiftTimekeeping _timekeeping;
-        private readonly WorkingShiftEvent _workingShift;
+        private readonly WorkingShift _workingShift;
         private readonly UserVariableBinder _userVariableBinder;
         private readonly SalaryVariableBinder _salaryVariableBinder;
         public TimekeepingCalculator(
@@ -30,7 +30,7 @@ namespace Services.SalaryManagement.Calculators
             _salaryVariableBinder = new SalaryVariableBinder(context);
         }
 
-        private WorkingShiftEvent initializeWorkingShift()
+        private WorkingShift initializeWorkingShift()
         {
             _context.Entry(_timekeeping)
                 .Reference(tk => tk.WorkingShiftEvent)

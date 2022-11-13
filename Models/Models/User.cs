@@ -45,9 +45,12 @@ namespace Models.Models
         public BankInfo? BankInfo { get; set; }
         public List<Group>? Groups { get; set; }
         public List<WorkingShiftTimekeeping>? Timekeepings { get; set; }
-        public List<WorkingShiftEvent>? WorkingShiftEvents { get; set; }
+        public List<WorkingShift>? WorkingShiftEvents { get; set; }
+        public List<WorkingShiftRegistration>? WorkingShiftRegistrationList { get; set; }
         public List<SalaryDelta>? SalaryDeltaList { get; set; }
         public List<Payslip>? Payslips { get; set; }
         public List<Notification>? Notifications { get; set; }
+        public List<WorkingShiftRegistrationUser>? WorkingShiftRegistrationUsers { get; set; }
+
     }
 }

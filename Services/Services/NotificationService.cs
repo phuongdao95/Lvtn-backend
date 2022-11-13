@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Models.Models;
 using Models.Repositories.DataContext;
 
@@ -7,9 +8,13 @@ namespace Services.Services
     public class NotificationService
     {
         private EmsContext _dbContext;
-        public NotificationService(EmsContext context)
+        private IMapper _mapper;
+        public NotificationService(
+            EmsContext context,
+            IMapper mapper)
         {
             _dbContext = context;
+            _mapper = mapper;
         } 
 
         public List<Notification> GetNotificationsForUser(int userId)
@@ -19,47 +24,82 @@ namespace Services.Services
                 .Include(user => user.Notifications)
                 .Single();
 
-            if (user.Notifications == null)
-            {
-                throw new Exception("User not init properly");
+            if (user == null)
+            {   
+                throw new Exception("User not found");
             }
-            
-            return user.Notifications;
+
+            var userNotification = user.Notifications
+                .OrderByDescending(p => p.DateTime)
+                .ToList();
+
+            return userNotification;
+        }
+
+        public void AddNotificationForAllUser(
+            Notification notification)
+        {
+            var userList = _dbContext.Users.ToList();
+
+            var notificationList = new List<Notification>();
+
+            foreach (var user in userList)
+            {
+                var userNotification = new Notification
+                {
+                    DateTime = notification.DateTime,
+                    IsGlobal = true,
+                    IsRead = false,
+                    Message = notification.Message,
+                    Title = notification.Title,
+                    UserId = user.Id
+                };
+
+                notificationList.Add(userNotification);
+            }
+
+            _dbContext.Notifications.AddRange(notificationList);
+            _dbContext.SaveChanges();
         }
 
         public void AddNotificationForUsers(
             Notification notification, 
             List<User> users)
         {
-            _dbContext.Notifications.Add(notification);
             
             foreach (var user in users) 
             {
-                notification.Users.Add(user);
+                var userNotification = _mapper.Map<Notification>(notification);
+                userNotification.UserId = user.Id;
+                _dbContext.Notifications.Add(notification);
             }
 
-            _dbContext.Notifications.Add(notification);
             _dbContext.SaveChanges();
         }
 
-        public void RemoveNotificationOfUser(
-            int notificationId, 
-            int userId)
+        public void RemoveNotification(
+            int notificationId)
         {
-            var user = _dbContext.Users.Find(userId);
             var notification = _dbContext.Notifications.Find(notificationId);
 
-            if (user == null || notification == null)
+            if (notification == null)
             {
                 throw new Exception("User or notification not found");
             }
 
-            notification.Users.Remove(user);
-
-            _dbContext.Notifications.Update(notification);
+            _dbContext.Notifications.Remove(notification);
             _dbContext.SaveChanges();
         }
 
+        public void DeleteAllNotificationOfUser(int userId)
+        {
+            var notification = _dbContext.Notifications
+                .Where(notification => notification.UserId == userId)
+                .ToList();
+
+            _dbContext.Notifications.RemoveRange(notification);
+            _dbContext.SaveChanges();
+        }
         public void MarkAllNotifiicationsAsReadForUser(int userId)
         {
             var user = _dbContext.Users

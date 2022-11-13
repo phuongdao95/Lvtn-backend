@@ -13,7 +13,7 @@ namespace Models.Models
         public DateTime? CheckoutTime { get; set; }
         public decimal Amount { get; set; }
         public string? FormulaDefine { get; set; }
-        public WorkingShiftEventType Type { get; set; }
+        public WorkingShiftType Type { get; set; }
         public int PayslipId { get; set; }
         public Payslip? Payslip { get; set; }
     }

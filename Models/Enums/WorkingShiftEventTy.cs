@@ -1,6 +1,6 @@
 ﻿namespace Models.Enums
 {
-    public enum WorkingShiftEventType
+    public enum WorkingShiftType
     {
         FIXED_SHIFT,
         OVERTIME_SHIFT,

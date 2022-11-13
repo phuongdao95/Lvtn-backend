@@ -32,7 +32,7 @@ namespace Models
 
             CreateMap<SalaryGroupDTO, SalaryGroup>();
 
-            CreateMap<WorkingShiftEventDTO, WorkingShiftEvent>();
+            CreateMap<WorkingShiftEventDTO, WorkingShift>();
 
             CreateMap<WorkingShiftTimekeepingDTO, WorkingShiftTimekeeping>();
 
@@ -93,8 +93,7 @@ namespace Models
 
             CreateMap<PayslipSalaryDelta, PayslipSalaryDeltaInfoDTO>();
 
-
-            CreateMap<WorkingShiftEvent, WorkingShiftEventResponseDTO>();
+            CreateMap<WorkingShift, WorkingShiftEventResponseDTO>();
             CreateMap<WorkingShiftTimekeeping, WorkingShiftTimekeepingInfo>();
             CreateMap<SalaryGroup, SalaryGroupInfoDTO>()
                 .ForMember(m => m.GroupName, opt => opt.MapFrom(src => src.Group.Name))
@@ -120,6 +119,26 @@ namespace Models
 
             CreateMap<TaskComment, TaskCommentInfoDTO>()
                 .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.Name));
+
+            CreateMap<Notification, NotificationInfoDTO>();
+
+            CreateMap<WorkingShiftRegistration, WorkingShiftRegistrationInfoDTO>()
+                .ForMember(m => m.WorkingShiftStartTime, opt => opt.MapFrom(src => src.WorkingShift.StartTime))
+                .ForMember(m => m.WorkingShiftEndTime, opt => opt.MapFrom(src => src.WorkingShift.EndTime))
+                .ForMember(m => m.WorkingShiftName,opt => opt.MapFrom(src => src.WorkingShift.Name))
+                .ForMember(m => m.WorkingShiftDescription,opt => opt.MapFrom(src => src.WorkingShift.Description))
+                .ForMember(m => m.WorkingShiftFormulaName, opt => opt.MapFrom(src => src.WorkingShift.FormulaName))
+                .ForMember(m => m.WorkingShiftType, opt => opt.MapFrom(src => src.WorkingShift.Type));
+
+            CreateMap<WorkingShiftRegistrationUser, WorkingShiftRegistrationUserInfoDTO>()
+                .ForMember(m => m.RegistrationStartTime, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.StartTime.Date))
+                .ForMember(m => m.RegistrationEndTime, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.EndTime.Date))
+                .ForMember(m => m.WorkingShiftDescription, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.Description))
+                .ForMember(m => m.WorkingShiftType, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.Type))
+                .ForMember(m => m.WorkingShiftName, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.Name))
+                .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.Username));
+
+
         }
 
     }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Models.DTO.Request;
 using Models.DTO.Response;
+using Models.Models;
 using Services.Services;
 
 namespace lvtn_backend.Controllers
@@ -16,24 +17,37 @@ namespace lvtn_backend.Controllers
     {
         private readonly IMapper _mapper;
         private readonly PayrollService _payrollService;
+        private readonly NotificationService _notificationService;
         private readonly IHubContext<NotificationHub> _notificationHubContext;
         public PayrollController(
             IMapper mapper,
             PayrollService payrollService,
+            NotificationService notificationService,
             IHubContext<NotificationHub> notificationHubContext)
         {
             _mapper = mapper;
             _payrollService = payrollService;
             _notificationHubContext = notificationHubContext;
+            _notificationService = notificationService;
         }
+
 
         [HttpPost]
         public IActionResult CreatePayroll(PayrollDTO payrollDTO)
         {
             try
             {
-                _payrollService.CreatePayroll(payrollDTO);
-                _notificationHubContext.Clients.All.SendAsync("receiveMessage", "refreshNotification");
+                //_payrollService.CreatePayroll(payrollDTO);
+                _notificationService.AddNotificationForAllUser(new Notification
+                {
+                    DateTime = DateTime.Now,
+                    IsGlobal = true,
+                    IsRead = false,
+                    Title =  "Payroll được tạo mới",
+                    Message = $"Payroll {payrollDTO.Name} đã được tạo mới."
+                });
+
+                _notificationHubContext.Clients.Group("5").SendAsync("receiveMessage", "refreshNotification");
                 return Ok();
             }
             catch (Exception)
@@ -237,7 +251,16 @@ namespace lvtn_backend.Controllers
         {
             try
             {
+                var payroll = _payrollService.GetPayrollById(id);
                 _payrollService.SendPayroll(id);
+                _notificationService.AddNotificationForAllUser(new Notification
+                {
+                    IsRead = false,
+                    Message = $"Payslip {payroll.Name} đã được gửi",
+                    Title = $"Payslip đã được gửi",
+                    DateTime = DateTime.Now,
+                });
+
                 return Ok();
             }
             catch (Exception)

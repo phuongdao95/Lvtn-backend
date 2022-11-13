@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
@@ -6,7 +7,6 @@ namespace Models.Models
     {
         [Key]
         public int Id { get; set; }
-
         [Required]
         public string? Name { get; set; }
         public string? Description { get; set; }
@@ -18,6 +18,7 @@ namespace Models.Models
         public int? Order { get; set; }
         [Required]
         public int? ColumnId { get; set; }
+        public TaskType Type { get; set; }
         public TaskColumn? Column { get; set; }
         public User? InCharge { get; set; }
         public User? ReportTo { get; set; }

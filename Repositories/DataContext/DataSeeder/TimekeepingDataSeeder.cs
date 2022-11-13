@@ -8,8 +8,9 @@ namespace Repositories.DataContext.DataSeeder
     {
 
         private readonly List<WorkingShiftTimekeeping> _workingShiftTimekeepings;
-        private readonly List<WorkingShiftEvent> _workingShiftEvents;
+        private readonly List<WorkingShift> _workingShiftEvents;
         private readonly List<User> _users;
+        private readonly List<WorkingShiftRegistration> _workingShiftRegistrations;
         private readonly ModelBuilder _modelBuilder;
         public TimekeepingDataSeeder(ModelBuilder modelBuilder,
             List<User> users)
@@ -20,6 +21,35 @@ namespace Repositories.DataContext.DataSeeder
             // Order matters here
             _workingShiftEvents = seedWorkingShiftEvents();
             _workingShiftTimekeepings = seedWorkingShiftTimekeepings();
+            _workingShiftRegistrations = seedWorkingShiftRegistrations();
+        }
+
+        private List<WorkingShiftRegistration> seedWorkingShiftRegistrations()
+        {
+            var result = new List<WorkingShiftRegistration>();
+            var index = 0;
+
+            DateTime startDate = new DateTime(2022, 9, 1);
+            DateTime endDate = new DateTime(2023, 1, 1);
+
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                if (date.DayOfWeek == DayOfWeek.Sunday || date.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    continue;
+                }
+
+                result.Add(new WorkingShiftRegistration
+                {
+                    Id = ++index,
+                    GroupId = 4,
+                    WorkingShiftId = index,
+                    StartDate = date.AddHours(8).AddDays(-30),
+                    EndDate = date.AddHours(17).AddDays(-12),
+                });
+            }
+
+            return result;
         }
 
         private List<WorkingShiftTimekeeping> seedWorkingShiftTimekeepings()
@@ -47,9 +77,9 @@ namespace Repositories.DataContext.DataSeeder
             return result;
         }
 
-        private List<WorkingShiftEvent> seedWorkingShiftEvents()
+        private List<WorkingShift> seedWorkingShiftEvents()
         {
-            var result = new List<WorkingShiftEvent>();
+            var result = new List<WorkingShift>();
             var index = 0;
 
             DateTime startDate = new DateTime(2022, 9, 1);
@@ -62,13 +92,13 @@ namespace Repositories.DataContext.DataSeeder
                     continue;
                 }
 
-                result.Add(new WorkingShiftEvent
+                result.Add(new WorkingShift
                 {
                     Id = ++index,
                     Name = "Normal Working Day",
                     StartTime = date.AddHours(8),
                     EndTime = date.AddHours(17),
-                    Type = WorkingShiftEventType.FIXED_SHIFT,
+                    Type = WorkingShiftType.FIXED_SHIFT,
                     Description = "Normal Working Day",
                     FormulaName = "salary_formula_per_day"
                 });
@@ -80,12 +110,14 @@ namespace Repositories.DataContext.DataSeeder
 
         public void SeedData()
         {
-            _modelBuilder.Entity<WorkingShiftEvent>()
+            _modelBuilder.Entity<WorkingShift>()
                 .HasData(_workingShiftEvents);
 
             _modelBuilder.Entity<WorkingShiftTimekeeping>()
                 .HasData(_workingShiftTimekeepings);
 
+            _modelBuilder.Entity<WorkingShiftRegistration>()
+                .HasData(_workingShiftRegistrations);
         }
     }
 }

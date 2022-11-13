@@ -5,13 +5,10 @@
         public int Id { get; set; }
         public string? Title { get; set; }
         public string? Message { get; set; }
-        public bool? IsRead { get; set; }
+        public bool? IsGlobal { get; set; }
+        public bool? IsRead { get; set; }   
         public DateTime? DateTime { get; set; }
-        public List<User> Users { get; set; }
-
-        public Notification()
-        {
-            Users = new List<User>();
-        }
+        public int UserId { get; set; }
+        public User? User { get; set; }
     }
 }
