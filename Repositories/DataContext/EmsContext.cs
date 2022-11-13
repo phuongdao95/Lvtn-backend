@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Repositories.DataContext.DataSeeder;
 using Task = Models.Models.Task;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Models.Repositories.DataContext
 {
     public class EmsContext : DbContext
     {
+        public DbSet<Notification> Notifications { get; set; }
         /** Administration Module */
         public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
@@ -24,9 +26,10 @@ namespace Models.Repositories.DataContext
         public DbSet<Payslip> Payslips { get; set; }
 
         /** Timekeeping */
-        public DbSet<WorkingShiftEvent> WorkingShiftEvents { get; set; }
+        public DbSet<WorkingShift> WorkingShiftEvents { get; set; }
         public DbSet<WorkingShiftTimekeeping> WorkingShiftTimekeepings { get; set; }
-
+        public DbSet<WorkingShiftRegistration> WorkingShiftRegistrations { get; set; }
+        public DbSet<WorkingShiftRegistrationUser> WorkingShiftRegistrationUsers { get; set; }
         /** Virtual Space */
         public DbSet<TaskBoard> TaskBoards { get; set; }
         public DbSet<TaskColumn> TaskColumns { get; set; }
@@ -34,14 +37,13 @@ namespace Models.Repositories.DataContext
         public DbSet<TaskComment> TaskComments { get; set; }
         public DbSet<TaskFile> TaskFiles { get; set; }
         public DbSet<TaskLabel> TaskLabels { get; set; }
-        /***/
+        
         public EmsContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             /** Administration Mappings*/
-
             // 1-M User-Role
             modelBuilder.Entity<User>()
                 .HasOne(p => p.Role)
@@ -83,6 +85,16 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey<User>(u => u.BankInfoId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Groups)
+                .WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "UserGroup",
+                    left => left.HasOne<Group>().WithMany().HasForeignKey("GroupId"),
+                    right => right.HasOne<User>().WithMany().HasForeignKey("UserId"),
+                    je => je.HasKey("GroupId", "UserId")
+                );
+
             // Self-relation department
             modelBuilder.Entity<Department>()
                 .HasMany(d => d.Departments)
@@ -94,8 +106,8 @@ namespace Models.Repositories.DataContext
             /** Salary Manager Mappings*/
             modelBuilder.Entity<SalaryDelta>()
                 .HasOne(p => p.Group)
-                .WithOne()
-                .HasForeignKey<SalaryDelta>(p => p.GroupId)
+                .WithMany(p => p.SalaryDeltas)
+                .HasForeignKey(p => p.GroupId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             modelBuilder.Entity<SalaryFormula>()
@@ -108,8 +120,8 @@ namespace Models.Repositories.DataContext
 
             modelBuilder.Entity<SalaryGroup>()
                 .HasOne(p => p.Group)
-                .WithOne()
-                .HasForeignKey<SalaryGroup>(p => p.GroupId)
+                .WithMany(p => p.SalaryGroups)
+                .HasForeignKey(p => p.GroupId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             // 1-M User-Payslip
@@ -124,6 +136,12 @@ namespace Models.Repositories.DataContext
                 .WithOne(p => p.Payroll)
                 .HasForeignKey(p => p.PayrollId)
                 .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<User>()
+                .HasMany(p => p.Notifications)
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Payslip>()
                 .HasMany(p => p.SalaryDeltas)
@@ -151,21 +169,56 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey(p => p.BoardId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<TaskBoard>()
+                .HasMany(p => p.TaskLabels)
+                .WithOne(p => p.TaskBoard)
+                .HasForeignKey(p => p.TaskBoardId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<TaskColumn>()
                 .HasMany(p => p.Tasks)
                 .WithOne()
                 .HasForeignKey(p => p.ColumnId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             modelBuilder.Entity<Task>()
                 .HasMany(p => p.Labels)
                 .WithMany(p => p.Tasks)
                 .UsingEntity<Dictionary<string, object>>(
                     "TaskTaskLabel",
-                    right => right.HasOne<TaskLabel>().WithMany().HasForeignKey("TaskLabelId"),
-                    left => left.HasOne<Task>().WithMany().HasForeignKey("TaskId"),
+                    right => right.HasOne<TaskLabel>()
+                        .WithMany()
+                        .HasForeignKey("TaskLabelId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    left => left.HasOne<Task>().WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.ClientCascade),
                     je => je.HasKey("TaskId", "TaskLabelId")
                 );
+
+            modelBuilder.Entity<Task>()
+                .HasMany(p => p.TaskHistories)
+                .WithOne()
+                .HasForeignKey(p => p.TaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskHistory>()
+                .HasOne(p => p.TaskFileHistory)
+                .WithOne()
+                .HasForeignKey<TaskFileHistory>(p => p.TaskHistoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskHistory>()
+                .HasOne(p => p.TaskCommentHistory)
+                .WithOne()
+                .HasForeignKey<TaskCommentHistory>(p => p.TaskHistoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TaskHistory>()
+                .HasOne(p => p.TaskLabelHistory)
+                .WithOne()
+                .HasForeignKey<TaskLabelHistory>(p => p.TaskHistoryId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Task>()
                 .HasMany(p => p.Comments)
@@ -186,7 +239,7 @@ namespace Models.Repositories.DataContext
                .WithMany(p => p.Users)
                .UsingEntity<Dictionary<string, object>>(
                    "WorkingShiftEventUser",
-                   left => left.HasOne<WorkingShiftEvent>().WithMany().HasForeignKey("WorkingShiftEventId"),
+                   left => left.HasOne<WorkingShift>().WithMany().HasForeignKey("WorkingShiftEventId"),
                    right => right.HasOne<User>().WithMany().HasForeignKey("UserId")
                );
 
@@ -201,8 +254,25 @@ namespace Models.Repositories.DataContext
                 .HasOne(p => p.WorkingShiftEvent)
                 .WithMany(p => p.Timekeepings)
                 .HasForeignKey(p => p.WorkingShiftEventId)
-                .OnDelete(DeleteBehavior.Cascade)
-                ;
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkingShiftRegistration>()
+                .HasOne(p => p.WorkingShift)
+                .WithOne(p => p.WorkingShiftRegistration)
+                .HasForeignKey<WorkingShiftRegistration>(p => p.WorkingShiftId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkingShiftRegistrationUser>()
+                .HasOne(p => p.User)
+                .WithMany(p => p.WorkingShiftRegistrationUsers)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkingShiftRegistrationUser>()
+                .HasOne(p => p.WorkingShiftRegistration)
+                .WithMany(p => p.WorkingShiftRegistrationUsers)
+                .HasForeignKey(p => p.WorkingShiftRegistrationId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             seedData(modelBuilder);
         }
@@ -220,6 +290,8 @@ namespace Models.Repositories.DataContext
             new SalaryManagementDataSeeder(modelBuilder)
                 .SeedData();
 
+            new VirtualSpaceDataseeder(modelBuilder)
+                .SeedData();
         }
     }
 }

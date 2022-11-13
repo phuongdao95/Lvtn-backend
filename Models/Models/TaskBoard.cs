@@ -11,8 +11,9 @@ namespace Models.Models
         [Required]
         public string? Description { get; set; }
         [Required]
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
         public Team? Team { get; set; }
         public List<TaskColumn>? TaskColumns { get; set; }
+        public List<TaskLabel>? TaskLabels { get; set; }
     }
 }

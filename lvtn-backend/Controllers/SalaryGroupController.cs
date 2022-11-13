@@ -1,41 +1,42 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
-using Services.Contracts;
+using Services.Services;
 
 namespace lvtn_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class SalaryGroupController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly ISalaryGroupService _groupService;
-        public SalaryGroupController(IMapper mapper, ISalaryGroupService groupService)
+        private readonly SalaryGroupService _groupService;
+        public SalaryGroupController(
+            IMapper mapper,
+            SalaryGroupService groupService)
         {
             _mapper = mapper;
             _groupService = groupService;
         }
 
         [HttpGet]
-        public IActionResult GetGroupList(
-            [FromQuery] int offset = 0,
-            [FromQuery] int limit = 8,
-            [FromQuery] string? query = "",
-            [FromQuery] string? queryType = "name")
+        public IActionResult GetGroupList([FromQuery] string? query = "")
         {
             try
             {
-                var groupList = _groupService.GetSalaryGroupList(offset, limit, query, queryType);
-                var groupListTotal = _groupService.GetSalaryGroupCount(offset, limit, query, queryType);
-                var groupInfoList = _mapper.Map<IEnumerable<SalaryGroupInfoDTO>>(groupList);
+                var groupList = _groupService.GetSalaryGroupList(query);
+                var data = _mapper.Map<IEnumerable<SalaryGroupInfoDTO>>(groupList);
+                var total  = groupList.Count();
+                var count = groupList.Count();
 
                 return Ok(new Dictionary<string, object>()
                 {
-                    {"data", groupInfoList},
-                    {"total", groupListTotal},
-                    {"count", groupInfoList.Count() }
+                    {"data", data},
+                    {"total", total },
+                    {"count", count }
                 });
             }
             catch (Exception)

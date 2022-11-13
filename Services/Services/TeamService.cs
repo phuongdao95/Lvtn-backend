@@ -33,10 +33,30 @@ namespace Services.Services
         {
             var team = _context.Teams.Find(id);
 
+            if (team == null)
+            {
+                throw new Exception("Team not found");
+            }
+
             _context.Entry(team)
                 .Collection(team => team.Members)
                 .Load();
-           
+
+            _context.Entry(team)
+                .Collection(team => team.TaskBoards)
+                .Load();
+
+            foreach (var board in team.TaskBoards)
+            {
+                _context.Entry(board).Collection(c => c.TaskLabels).Load();
+                _context.Entry(board).Collection(c => c.TaskColumns).Load();
+
+                foreach (var taskColumn in board.TaskColumns)
+                {
+                    _context.Entry(taskColumn).Collection(tc => tc.Tasks).Load();
+                }
+            }
+
             _context.Teams.Remove(team);
             _context.SaveChanges();
         }

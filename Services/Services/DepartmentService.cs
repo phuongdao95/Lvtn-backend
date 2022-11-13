@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.Models;
 using Models.Repositories.DataContext;
@@ -62,7 +63,23 @@ namespace Services.Services
                 throw new Exception("department is null");
             }
 
+            _context.Entry(department).Reference(d => d.Manager).Load();
+            _context.Entry(department).Reference(d => d.ParentDepartment).Load();
+
             return department;
+        }
+
+        public List<Team> GetTeamsOfDepartment(int id)
+        {
+            var department = _context.Departments.Find(id);
+            if (department == null)
+            {
+                throw new Exception("Department not found");
+            }
+
+            _context.Entry(department).Collection(d => d.Teams).Load();
+
+            return department.Teams ?? new List<Team>();
         }
 
         public int GetDepartmentCount()
@@ -95,18 +112,16 @@ namespace Services.Services
             var teams = _context.Teams.Where(
            (team) => departmentDTO.TeamIds.Contains(team.Id)).ToList();
 
-            var manager = _context.Users.FirstOrDefault((user) => user.Id ==
-                departmentDTO.ManagerId, null);
+            var manager = _context.Users.Find(departmentDTO.ManagerId);
 
-            var parentDepartment = _context.Departments
-                .FirstOrDefault((department) => department.Id == departmentDTO.ParentDepartmentId, null);
+            var parentDepartment = _context.Departments.Find(departmentDTO.ParentDepartmentId);
 
             var department = _mapper.Map<Department>(departmentDTO);
 
             department.Id = id;
             department.Teams = teams;
-            department.ParentDepartment = parentDepartment;
-            department.Manager = manager;
+            department.ParentDepartmentId = departmentDTO.ParentDepartmentId > 0 ? departmentDTO.ParentDepartmentId : null;
+            department.ManagerId = departmentDTO.ManagerId > 0 ? departmentDTO.ManagerId : null;
 
             _context.Departments.Update(department);
             _context.SaveChanges();

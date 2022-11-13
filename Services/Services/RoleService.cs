@@ -20,7 +20,7 @@ namespace Services.Services
         public void AddRole(RoleDTO roleDTO)
         {
             var permissions = _context.Permissions
-                .Where((permission) => roleDTO.PermissionNames.Contains(permission.Name))
+                .Where((permission) => roleDTO.PermissionIds.Contains(permission.Id))
                 .ToList();
 
             var role = _mapper.Map<Role>(roleDTO);
@@ -39,7 +39,7 @@ namespace Services.Services
             {
                 throw new Exception("Role not found");
             }
-
+                
             _context.Roles.Remove(role);
             _context.SaveChanges();
         }
@@ -83,7 +83,7 @@ namespace Services.Services
                 .Load();
 
             var permissions = _context.Permissions
-                .Where((permission) => roleDTO.PermissionNames.Contains(permission.Name))
+                .Where((permission) => roleDTO.PermissionIds.Contains(permission.Id))
                 .ToList();
 
             role.Id = id;

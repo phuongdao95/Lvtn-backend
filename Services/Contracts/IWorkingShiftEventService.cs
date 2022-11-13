@@ -8,10 +8,10 @@ namespace Services.Contracts
         void Add(WorkingShiftEventDTO dto);
         void Update(int id, WorkingShiftEventDTO dto);
         void Delete(int id);
-        List<WorkingShiftEvent> GetAll(int offset, int limit, string query);
-        WorkingShiftEvent GetById(int id);
+        List<WorkingShift> GetAll(int offset, int limit, string query);
+        WorkingShift GetById(int id);
         int GetCount();
-        List<WorkingShiftEvent> GetByUser(int userId, int offset, int limit, string query);
+        List<WorkingShift> GetByUser(int userId, int offset, int limit, string query);
         void UpdateUserShift(int userId, List<int> shiftIds);
     }
 }

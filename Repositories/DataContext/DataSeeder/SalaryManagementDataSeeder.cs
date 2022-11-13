@@ -14,10 +14,10 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryVariable
                 {
                     Id = 1,
-                    Name = "variable_1",
-                    DisplayName = "Variable One",
-                    Value = "300000",
-                    DataType = VariableDataType.Number,
+                    Name = "tax_1",
+                    DisplayName = "Tax 1",
+                    Value = "0.15",
+                    DataType = VariableDataType.Decimal,
                     Description = "variable 1"
                 }
             },
@@ -26,10 +26,10 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryVariable
                 {
                     Id = 2,
-                    Name = "variable_2",
-                    DisplayName = "Variable Two",
-                    Value = "170000",
-                    DataType = VariableDataType.Number,
+                    Name = "tax_2",
+                    DisplayName = "Tax 2",
+                    Value = "0.12",
+                    DataType = VariableDataType.Decimal,
                     Description = "variable 2"
                 }
             },
@@ -41,7 +41,7 @@ namespace Repositories.DataContext.DataSeeder
                     Name = "variable_3",
                     DisplayName = "Variable Three",  
                     Value = "170000",
-                    DataType = VariableDataType.Number,
+                    DataType = VariableDataType.Decimal,
                     Description = "variable 3"
                 }
             },
@@ -76,8 +76,8 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryFormula
                 {
                     Id = 1,
-                    Name = "formula_1",
-                    Define = "2000000",
+                    Name = "cong_thuc_tang_giam_luong_1",
+                    Define = "200000",
                     Description = "formula_1",
                     DisplayName = "Formula One"
                 }
@@ -88,8 +88,8 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryFormula
                 {
                     Id = 2,
-                    Name = "formula_2",
-                    Define = "200000 + variable_1",
+                    Name = "cong_thuc_tinh_luong_1",
+                    Define = "salary_after_tk_calc - total_deduction + total_allowance + total_bonus",
                     Description = "formula_2",
                     DisplayName = "Formula Two"
                 }
@@ -100,8 +100,8 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryFormula
                 {
                     Id = 3,
-                    Name = "formula_3",
-                    Define = "variable_1 + variable_2",
+                    Name = "cong_thuc_tinh_luong_2",
+                    Define = "(salary_after_tk_calc - total_deduction + total_allowance + total_bonus) * (1 - tax_1)",
                     Description = "formula_3",
                     DisplayName = "Formula Three"
                 }
@@ -112,10 +112,22 @@ namespace Repositories.DataContext.DataSeeder
                 new SalaryFormula
                 {
                     Id = 4,
-                    Name = "formula_4",
+                    Name = "cong_thuc_tang_giam_luong_2",
                     Define = $"IF(variable_4, 400000, 200000)",
                     Description = "formula_4",
                     DisplayName = "Formula Three"
+                }
+            },
+
+            {
+                "salary_formula_per_day",
+                new SalaryFormula
+                {
+                    Id = 5,
+                    Name = "salary_formula_per_day",
+                    Define = "salary_per_day",
+                    Description = "salary_formula_per_day",
+                    DisplayName = "Salary Of Working Shift"
                 }
             }
         };
@@ -129,7 +141,11 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 1,
                     Name = "Salary Delta 1",
                     Description = "Salary Delta 2",
-                    FormulaName = "formula_1"
+                    FormulaName = "formula_1",
+                    Type = SalaryDeltaType.Deduction,
+                    FromMonth = new DateTime(2022, 10, 1),
+                    ToMonth = new DateTime(2024, 10, 1),
+                    GroupId = AdministrationDataSeeder.DefaultGroupMap[AdministrationDataSeeder.GROUP_DEFAULT].Id
                 }
             },
             {
@@ -139,7 +155,11 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 2,
                     Name = "Salary Delta 2",
                     Description = "Salary Delta 2",
-                    FormulaName = "formula_2"
+                    FormulaName = "formula_1",
+                    Type = SalaryDeltaType.Allowance,
+                    FromMonth = new DateTime(2022, 10, 1),
+                    ToMonth = new DateTime(2024, 10, 1),
+                    GroupId = AdministrationDataSeeder.DefaultGroupMap[AdministrationDataSeeder.GROUP_DEFAULT].Id
                 }
             },
             {
@@ -149,7 +169,11 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 3,
                     Name = "Salary Delta 3",
                     Description = "Salary Delta 3",
-                    FormulaName = "formula_3"
+                    FormulaName = "formula_1",
+                    Type = SalaryDeltaType.Bonus,
+                    FromMonth = new DateTime(2022, 10, 1),
+                    ToMonth = new DateTime(2024, 10, 1),
+                    GroupId = AdministrationDataSeeder.DefaultGroupMap[AdministrationDataSeeder.GROUP_DEFAULT].Id
                 }
             }
         };
@@ -225,7 +249,8 @@ namespace Repositories.DataContext.DataSeeder
                     GroupId = groupDefaultId,
                     Name = "Salary Group Default",
                     Description = "Salary config for Group Default",
-                    FormulaName = _defaultSalaryFormulaMap["formula_1"].Name,
+                    FormulaName = _defaultSalaryFormulaMap["formula_2"].Name,
+                    Priority = 1,
                 },
 
                 new SalaryGroup()
@@ -235,6 +260,7 @@ namespace Repositories.DataContext.DataSeeder
                     Name = "Salary Group A",
                     Description = "Salary config for Group A",
                     FormulaName = _defaultSalaryFormulaMap["formula_2"].Name,
+                    Priority = 2,
                 },
 
                 new SalaryGroup()
@@ -244,6 +270,7 @@ namespace Repositories.DataContext.DataSeeder
                     Name = "Salary Group B",
                     Description = "Salary config for Group B",
                     FormulaName = _defaultSalaryFormulaMap["formula_3"].Name,
+                    Priority = 3,
                 },
 
                 new SalaryGroup()
@@ -253,6 +280,7 @@ namespace Repositories.DataContext.DataSeeder
                     Name = "Salary Group C",
                     Description = "Salary config for Group C",
                     FormulaName = _defaultSalaryFormulaMap["formula_3"].Name,
+                    Priority = 4,
                 }
 
             };

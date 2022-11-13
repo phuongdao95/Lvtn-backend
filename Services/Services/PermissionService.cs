@@ -23,7 +23,8 @@ namespace Services.Services
 
         public List<Permission> GetAllPermissions()
         {
-            return _context.Permissions.ToList();
+            var permissions = _context.Permissions.Where(x => true).ToList();
+            return permissions;
         }
 
         public Permission GetPermissionById(int permissionId)

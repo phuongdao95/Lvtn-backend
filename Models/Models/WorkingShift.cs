@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
 {
-    public class WorkingShiftEvent
+    public class WorkingShift
     {
         [Key]
         public int Id { get; set; }
@@ -15,6 +16,10 @@ namespace Models.Models
         public DateTime EndTime { get; set; }
         [Required]
         public string? FormulaName { get; set; }
+        [Required]
+        public WorkingShiftType Type { get; set; }
+        public int? WorkingShiftRegistrationId { get; set; }
+        public WorkingShiftRegistration? WorkingShiftRegistration { get; set; }
         public List<WorkingShiftTimekeeping>? Timekeepings{ get; set; }
         public List<User>? Users { get; set; }
     }

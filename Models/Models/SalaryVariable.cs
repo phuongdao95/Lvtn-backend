@@ -20,7 +20,7 @@ namespace Models.Models
         public string? Value { get; set; }
 
         [Required]
-        [DefaultValue(VariableDataType.Number)]
+        [DefaultValue(VariableDataType.Decimal)]
         public VariableDataType DataType { get; set; }
         public string? Description { get; set; }
     }

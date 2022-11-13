@@ -13,6 +13,6 @@ namespace Models.Models
         public int? WorkingShiftEventId { get; set; }
         public int? EmployeeId { get; set; }
         public User? Employee { get; set; }
-        public WorkingShiftEvent? WorkingShiftEvent { get; set; }
+        public WorkingShift? WorkingShiftEvent { get; set; }
     }
 }

@@ -7,10 +7,10 @@ namespace Models.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string? Name { get; set; }
+        public string? DisplayFileName { get; set; }
         public string? Description { get; set; }
         [Required]
-        public string? Url { get; set; }
+        public string? Name { get; set; }
         [Required]
         public int? TaskId { get; set; }
         public Task? Task { get; set; }
