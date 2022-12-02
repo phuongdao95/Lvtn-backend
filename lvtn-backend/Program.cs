@@ -9,6 +9,7 @@ using System.Text;
 using Models.Helpers;
 using lvtn_backend.Middleware;
 using lvtn_backend.Hubs;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,9 +106,15 @@ builder.Services.AddScoped<IdentityService, IdentityService>();
 builder.Services.AddScoped<IdentityService, IdentityService>();
 builder.Services.AddScoped<NotificationService, NotificationService>();
 builder.Services.AddScoped<WorkingShiftService, WorkingShiftService>();
-builder.Services.AddScoped<IWorkingShiftTimekeepingService, WorkingShiftTimekeepingService>();
+builder.Services.AddScoped<WorkingShiftTimekeepingService, WorkingShiftTimekeepingService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Services.AddSpaStaticFiles(
+    configuration =>
+{
+    configuration.RootPath = "ClientApp/Lvtn-frontend/build";
+});
 
 
 var app = builder.Build();
@@ -126,8 +133,8 @@ else
 
 app.UseRouting();
 app.UseCors();
-
 app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 app.UseMiddleware<ClaimMiddleware>();
@@ -135,5 +142,15 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<NotificationHub>("/notification");
+
+app.UseSpa((spa) =>
+{
+    spa.Options.SourcePath = "ClientApp/Lvtn-frontend/";
+
+    if (app.Environment.IsDevelopment())
+    {
+        spa.UseReactDevelopmentServer(npmScript: "start");
+    }
+});
 
 app.Run();

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Models.Enums;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models.Models
@@ -10,6 +11,8 @@ namespace Models.Models
 
         [Required]
         public string? Name { get; set; }
+
+        public FormulaArea? Area { get; set; }
 
         [Required]
         public string? DisplayName { get; set; }

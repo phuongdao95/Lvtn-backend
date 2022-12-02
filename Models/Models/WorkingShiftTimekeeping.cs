@@ -14,5 +14,11 @@ namespace Models.Models
         public int? EmployeeId { get; set; }
         public User? Employee { get; set; }
         public WorkingShift? WorkingShiftEvent { get; set; }
+        public List<WorkingShiftTimekeepingHistory> TimekeepingHistories { get; set; }
+
+        public WorkingShiftTimekeeping()
+        {
+            TimekeepingHistories = new List<WorkingShiftTimekeepingHistory>();
+        }
     }
 }

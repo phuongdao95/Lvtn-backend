@@ -5,6 +5,7 @@ using Models.Repositories.DataContext;
 using Services.Contracts;
 using Models.DTO.Request;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Services.Services
 {
@@ -71,7 +72,14 @@ namespace Services.Services
 
         public void DeleteUserById(int id)
         {
-            var user = _context.Users.Find(id);
+            var user = _context.Users
+                .Include(user => user.Timekeepings)
+                .Include(user => user.Payslips)
+                .Include(user => user.BankInfo)
+                .Include(user => user.WorkingShiftRegistrationUsers)
+                .Where(user => user.Id == id)
+                .Single();
+
             _context.Users.Remove(user);
             _context.SaveChanges();
         }

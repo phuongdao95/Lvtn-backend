@@ -2,7 +2,7 @@
 {
     public enum TaskType
     {
-        EPIC,
         BASIC,
+        EPIC,
     }
 }

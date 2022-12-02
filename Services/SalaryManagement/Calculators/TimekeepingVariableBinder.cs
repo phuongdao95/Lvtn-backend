@@ -194,7 +194,6 @@ namespace Services.SalaryManagement.Calculators
         {
             return _event.StartTime
                 .Subtract(_event.EndTime).Hours;
-            ;
         }
 
         public int GetCurrentDay()
@@ -221,7 +220,7 @@ namespace Services.SalaryManagement.Calculators
             var startOfMonth = new DateTime(year, month, 1, 0, 0, 1);
             var endOfMonth = new DateTime(year, month, lastDayOfMonth, 23, 59, 59);
 
-            var numberOfShifts = _context.WorkingShiftEvents
+            var numberOfShifts = _context.WorkingShifts
                 .Where(evt => evt.Type == WorkingShiftType.FIXED_SHIFT)
                 .Where(evt => evt.StartTime >= startOfMonth &&
                     evt.EndTime <= endOfMonth)

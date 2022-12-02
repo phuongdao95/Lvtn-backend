@@ -16,7 +16,5 @@ namespace Models.Models
         public string? BankBranch { get; set; }
         [Required]
         public string? AccountName { get; set; }
-        public string? Detail { get; set; }
-
     }
 }
