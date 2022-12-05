@@ -180,6 +180,8 @@ namespace Services.Services
                 TaskFileHistory = taskFileHistory,
                 Action = action,
                 TaskId = taskId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
             };
         }
 
@@ -212,7 +214,9 @@ namespace Services.Services
             {
                 Action = action,
                 TaskCommentHistory = taskCommentHistory,
-                TaskId = taskId
+                TaskId = taskId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
             };
         }
 
@@ -241,6 +245,8 @@ namespace Services.Services
                 TaskId = taskId,
                 TaskLabelHistory = taskLabelHistory,
                 Action = aciton,
+                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.Now
             };
         }
 
@@ -261,6 +267,8 @@ namespace Services.Services
 
             taskHistory.TaskId = taskId;
             taskHistory.Action = action;
+            taskHistory.UpdatedAt = DateTime.Now;
+            taskHistory.CreatedAt = DateTime.Now;
 
             if (action == TaskHistoryAction.MoveTask)
             {

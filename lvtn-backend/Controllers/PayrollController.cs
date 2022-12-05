@@ -3,9 +3,11 @@ using lvtn_backend.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Models.Models;
+using Models.Repositories.DataContext;
 using Services.Services;
 
 namespace lvtn_backend.Controllers
@@ -19,16 +21,20 @@ namespace lvtn_backend.Controllers
         private readonly PayrollService _payrollService;
         private readonly NotificationService _notificationService;
         private readonly IHubContext<NotificationHub> _notificationHubContext;
+        private readonly EmsContext _context;
+
         public PayrollController(
             IMapper mapper,
             PayrollService payrollService,
             NotificationService notificationService,
-            IHubContext<NotificationHub> notificationHubContext)
+            IHubContext<NotificationHub> notificationHubContext,
+            EmsContext context)
         {
             _mapper = mapper;
             _payrollService = payrollService;
             _notificationHubContext = notificationHubContext;
             _notificationService = notificationService;
+            _context = context;
         }
 
 
@@ -37,7 +43,7 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                //_payrollService.CreatePayroll(payrollDTO);
+                _payrollService.CreatePayroll(payrollDTO);
                 _notificationService.AddNotificationForAllUser(new Notification
                 {
                     DateTime = DateTime.Now,
@@ -47,7 +53,7 @@ namespace lvtn_backend.Controllers
                     Message = $"Payroll {payrollDTO.Name} đã được tạo mới."
                 });
 
-                _notificationHubContext.Clients.Group("5").SendAsync("receiveMessage", "refreshNotification");
+                _notificationHubContext.Clients.All.SendAsync("receiveMessage", "refreshNotification");
                 return Ok();
             }
             catch (Exception)
@@ -243,6 +249,63 @@ namespace lvtn_backend.Controllers
             catch (Exception)
             {
                 return BadRequest();
+            }
+        }
+
+        [HttpGet("{id}/report/")]
+        public IActionResult GetPayrollReport(int id)
+        {
+            try
+            {
+                var payslips = _context.Payslips.Where(payslip => payslip.PayrollId == id)
+                    .Include(payslip => payslip.Employee);
+
+                var totalEmployee = payslips.Count();
+
+                decimal totalDeduction = payslips
+                    .Select(payslip => payslip.TotalDeduction ?? decimal.Zero)
+                    .Aggregate((result, item) => result + item);
+
+                decimal totalAllowance = payslips
+                    .Select(payslip => payslip.TotalAllowance ?? decimal.Zero)
+                    .Aggregate((result, item) => result + item);
+
+                decimal totalBonus = payslips
+                    .Select(payslip => payslip.TotalBonus ?? decimal.Zero)
+                    .Aggregate((result, item) => result + item);
+
+
+                var top10PayslipOrderByBonus = payslips
+                    .OrderByDescending(p => p.TotalBonus ?? 0)
+                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, payslip.TotalBonus } );
+
+                var top10PayslipOrderByDeduction = payslips
+                    .OrderByDescending(p => p.TotalBonus ?? 0)
+                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, payslip.TotalDeduction });
+
+                var top10PayslipOrderByAllowance = payslips
+                    .OrderByDescending(p => p.TotalBonus ?? 0)
+                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, payslip.TotalAllowance });
+
+                var top10PayslipOrderByTotalSalary = payslips
+                    .OrderByDescending(p => p.TotalBonus ?? 0)
+                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, payslip.ActualSalary });
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["totalEmployee"] = totalEmployee,
+                    ["totalAllowance"] = totalAllowance,
+                    ["totalDeduction"] = totalDeduction,
+                    ["totalBonus"] = totalBonus,
+                    ["top10Allowance"] = top10PayslipOrderByAllowance,
+                    ["top10Bonus"] = top10PayslipOrderByBonus,
+                    ["top10Deduction"] = top10PayslipOrderByDeduction,
+                    ["top10ActualSalary"] = top10PayslipOrderByTotalSalary
+                });
+            }
+            catch (Exception)
+            {
+                return Ok();
             }
         }
 

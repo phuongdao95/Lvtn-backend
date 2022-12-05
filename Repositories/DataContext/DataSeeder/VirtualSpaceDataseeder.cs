@@ -122,7 +122,7 @@ namespace Repositories.DataContext.DataSeeder
         private List<Task> initializeTasks()
         {
             var result = new List<Task>();
-            var count = 2;
+            var count = 1;
             int index = 0;
 
             foreach (var taskColumn in _taskColumns)

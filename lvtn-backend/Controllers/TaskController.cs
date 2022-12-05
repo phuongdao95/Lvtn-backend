@@ -10,6 +10,7 @@ using Models.Repositories.DataContext;
 using Services.Services;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
+using Task = Models.Models.Task;
 
 namespace lvtn_backend.Controllers
 {
@@ -77,6 +78,57 @@ namespace lvtn_backend.Controllers
             }
         }
 
+        [HttpGet("{id}/parenttask")]
+        public IActionResult GetParentTaskOfTask()
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpGet("{id}/subtask/")]
+        public IActionResult GetSubTasksOfTask(int id)
+        {
+            try
+            {
+                var subTasks = _taskService.GetSubtasksOfTask(id);
+                var data = _mapper.Map<IEnumerable<TaskInfoDTO>>(subTasks);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    { "data", data },
+                    { "count", count },
+                    { "total", total }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{id}/subtasks/")]
+        public IActionResult CreateSubTasksOfTask(int id, TaskDTO taskDTO)
+        {
+            try
+            {
+                _taskService.CreateSubTaskOfTask(id, taskDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetTaskById(int id)
         {
@@ -132,6 +184,7 @@ namespace lvtn_backend.Controllers
             }
         }
 
+
         [HttpDelete("{id}/tasklabel/{tasklabelid}")]
         public IActionResult RemoveTaskLabel(int id, int tasklabelid)
         {
@@ -145,6 +198,7 @@ namespace lvtn_backend.Controllers
                 return BadRequest();
             }
         }
+
 
         [HttpGet("{id}/taskhistory")]
         public IActionResult GetTaskHistoryOfTask(int id)
@@ -454,5 +508,112 @@ namespace lvtn_backend.Controllers
             }
         }
 
+
+        [HttpGet("/api/taskboard/{id}/report")]
+        public IActionResult GetTaskBoardReport(int id)
+        {
+            try
+            {
+                var totalEmployee = _context.Users
+                    .Where(user => user.TeamId == id)
+                    .Count();
+
+                var totalTaskDone = _context.Tasks
+                    .Where(task => task.Column.BoardId == id)
+                    .Where(task => task.Type == TaskType.BASIC && task.Column.Name == "Done")
+                    .Count();
+
+                var totalTaskNew = _context.Tasks
+                    .Where(task => task.Column.BoardId == id)
+                    .Where(task => task.Type == TaskType.BASIC && task.Column.Name == "Todo")
+                    .Count();
+
+                var totalPointFinished = _context.Tasks
+                    .Where(task => task.Column.BoardId == id)
+                    .Where(task => task.Type == TaskType.BASIC)
+                    .Select(task => task.Point ?? 0)
+                    .Aggregate((result, item) => result + item);
+
+
+                var tasksDone = _context.Tasks
+                    .Where(task => task.Column.BoardId == id)
+                    .Where(task => task.Type == TaskType.BASIC && task.Column.Name == "Done")
+                    .ToList();
+
+                var taskDoneByEightDays = getTotalTaskDoneByLastEightDays(tasksDone);
+                var pointFinishedByEightDays = getTotalPointByLastEightDays(tasksDone);
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["totalTaskDone"]=totalTaskDone,
+                    ["totalPointFinished"] = totalPointFinished,
+                    ["totalTaskNew"]=totalTaskNew,
+                    ["totalPointFinished"]=totalPointFinished,
+                    ["taskDoneByEightDays"]=taskDoneByEightDays,
+                    ["pointFinishedByEightDays"]=pointFinishedByEightDays,
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        private List<Dictionary<string, object>> getTotalTaskDoneByLastEightDays(List<Task> tasksDone)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            var now = DateTime.Now.Date;
+            var eightDaysAgo = now.AddDays(-8);
+
+            for (DateTime date = eightDaysAgo;
+                date <= now.Date;
+                date = date.AddDays(1))
+            {
+                result.Add(new Dictionary<string, object>
+                {
+                    ["Date"] = date,
+                    ["TotalPoint"] = getTotalTaskDoneByDate(tasksDone, date),
+                });
+            }
+
+            return result;
+        }
+
+        private List<Dictionary<string, object>> getTotalPointByLastEightDays(List<Task> tasksDone)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            var now = DateTime.Now.Date;
+            var eightDaysAgo = now.AddDays(-8);
+
+            for (DateTime date = eightDaysAgo;
+                date <= now.Date;
+                date = date.AddDays(1))
+            {
+                result.Add(new Dictionary<string, object>
+                {
+                    ["Date"] = date,
+                    ["TotalPoint"] = getTotalPointsOfDate(tasksDone, date),
+                }) ;
+            }
+
+            return result;
+        }
+
+        private int getTotalPointsOfDate(List<Task> tasksDone, DateTime date)
+        {
+            return tasksDone
+                .Where(task => task.CreatedAt.Date == date.Date)
+                .Select(task => task.Point ?? 0)
+                .Aggregate((result, item) => result + item);
+        }
+
+        private int getTotalTaskDoneByDate(List<Task> taskDones, DateTime date)
+        {
+            return taskDones
+                .Where(task => task.CreatedAt.Date == date.Date)
+                .Count();
+        }
     }
 }

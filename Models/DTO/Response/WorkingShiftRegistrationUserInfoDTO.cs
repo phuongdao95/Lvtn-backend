@@ -9,6 +9,7 @@ namespace Models.DTO.Response
         public string? UserName { get; set; }
         public string? WorkingShiftName { get; set; }
         public string? WorkingShiftDescription { get; set; }
+        public string? WorkingShiftFormulaName { get; set; }
         public WorkingShiftType? WorkingShiftType { get; set; }
         public DateTime? RegistrationStartTime { get; set; }
         public DateTime? RegistrationEndTime { get; set; }

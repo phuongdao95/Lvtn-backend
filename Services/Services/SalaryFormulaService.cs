@@ -5,6 +5,7 @@ using Models.Models;
 using Models.Repositories.DataContext;
 using org.matheval;
 using Services.SalaryManagement.Calculators;
+using System.Runtime.InteropServices;
 
 namespace Services.Services
 {
@@ -54,34 +55,61 @@ namespace Services.Services
             return formula;
         }
 
-        public List<SalaryFormula> GetFormulaList(int offset, int limit, string? query = "", string? queryType = "display_name")
+        public List<SalaryFormula> GetFormulaList(string query = "", string queryType = "area")
         {
+            if (queryType != "area")
+            {
+                throw new Exception("Invalid query");
+            }
+
+            FormulaArea area = FormulaArea.SalaryDelta;
+            area = GetAreaFromText(query);
+
             return _context.SalaryFormulas
-                .Where(formula => query.Contains(formula.DisplayName) ||
-                    formula.DisplayName.Contains(query))
-                .Skip(offset)
-                .Take(limit)
+                .Where(formula => formula.Area == area)
                 .ToList();
         }
 
-        public List<SalaryVariable> GetVariableList(int offset, int limit, string? query = "", string? queryType = "display_name")
+        public FormulaArea GetAreaFromText(string text)
         {
+            switch (text)
+            {
+                case "kpi":
+                    return FormulaArea.KPI;
+                case "salaryconfig":
+                    return FormulaArea.SalaryConfig;
+                case "salarydelta":
+                    return FormulaArea.SalaryDelta;
+                case "timekeeping":
+                    return FormulaArea.Timekeeping;
+                default:
+                    return FormulaArea.SalaryConfig;
+            }
+        }
+
+        public List<SalaryVariable> GetVariableList(string? query = "", string? queryType = "area")
+        {
+            if (queryType != "area")
+            {
+                throw new Exception("Invalid query type");
+            }
+
+            FormulaArea area = FormulaArea.SalaryDelta;
+            area = GetAreaFromText(query);
+
             return _context.SalaryVariables
-                .Where(formula => query.Contains(formula.DisplayName) ||
-                    formula.DisplayName.Contains(query))
-                .Skip(offset)
-                .Take(limit)
+                .Where(variable => variable.Area == area)
                 .ToList();
         }
 
-        public int GetFormulaListCount(int offset, int limit, string? query = "", string? queryType = "display_name")
+        public int GetFormulaListCount(string? query = "", string? queryType = "area")
         {
-            return GetFormulaList(offset, int.MaxValue, query, queryType).Count();
+            return GetFormulaList(query, queryType).Count();
         }
 
-        public int GetVariableListCount(int offset, int limit, string? query = "", string? queryType = "display_name")
+        public int GetVariableListCount(string? query = "", string? queryType = "area")
         {
-            return GetFormulaList(offset, int.MaxValue, query, queryType).Count();
+            return GetFormulaList(query, queryType).Count();
         }
 
         public SalaryVariable GetVariableById(int id)
@@ -99,10 +127,10 @@ namespace Services.Services
         {
             var mapped = _mapper.Map<SalaryFormula>(formulaDTO);
             mapped.Id = id;
+            mapped.Area = GetAreaFromText(formulaDTO.FormulaArea);
 
             _context.SalaryFormulas.Update(mapped);
             _context.SaveChanges();
-
         }
 
         private void ensureVariableValid(SalaryVariable variable)
@@ -139,6 +167,7 @@ namespace Services.Services
             var mapped = _mapper.Map<SalaryVariable>(variableDTO);
             mapped.Id = id;
             mapped.DataType = GetVariableDataType(variableDTO.DataType);
+            mapped.Area = GetAreaFromText(variableDTO.FormulaArea);
 
             ensureVariableValid(mapped);
 
@@ -149,6 +178,7 @@ namespace Services.Services
         public void CreateFormula(SalaryFormulaDTO formulaDTO)
         {
             var formula = _mapper.Map<SalaryFormula>(formulaDTO);
+            formula.Area = GetAreaFromText(formulaDTO.FormulaArea);
 
             _context.SalaryFormulas.Add(formula);
             _context.SaveChanges();
@@ -157,16 +187,17 @@ namespace Services.Services
         public void CreateVariable(SalaryVariableDTO variableDTO)
         {
             var dataType = GetVariableDataType(variableDTO.DataType);
-
             var variable =  _mapper.Map<SalaryVariable>(variableDTO);
 
             variable.DataType = dataType;
+            variable.Area = GetAreaFromText(variableDTO.FormulaArea);
 
             ensureVariableValid(variable);
 
             _context.SalaryVariables.Add(variable);
             _context.SaveChanges();
         }
+
 
         private VariableDataType GetVariableDataType(string dataType)
         {

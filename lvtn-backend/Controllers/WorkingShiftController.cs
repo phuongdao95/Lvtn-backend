@@ -114,41 +114,29 @@ namespace Models.Controllers
             }
         }
 
-        [HttpGet("api/user/{id}/workingshift")]
+        [HttpGet("/api/user/{id}/workingshift")]
         public IActionResult GetAllByUser(
             int id,
             [FromQuery] int offset = 0,
             [FromQuery] int limit = 8,
-            [FromQuery] string? query = "")
+            [FromQuery] string? query = "",
+            [FromQuery] string? queryType ="")
         {
             try
             {
-                var shifts = _workingShiftEventService.GetByUser(id, offset, limit, query);
-                var shiftResponse = _mapper.Map<IEnumerable<WorkingShiftEventResponseDTO>>(shifts);
-                foreach (var shift in shiftResponse)
-                {
-                    shift.isCheck = false;
-                    foreach (var user in shift.Users)
-                    {
-                        if (user.Id == id)
-                        {
-                            shift.isCheck = true;
-                            break;
-                        }
-                    }
-                }
-                var total = _workingShiftEventService.GetCount();
+                var decodedQuery = HttpUtility.UrlDecode(query);
+                var shifts = _workingShiftEventService.GetWorkingShiftRegistrationUsersOfUser
+                    (id, decodedQuery, queryType);
+
+                var data = _mapper.Map<IEnumerable<WorkingShiftRegistrationUserInfoDTO>>(shifts);
+                var count = data.Count();
+                var total = data.Count();
+
                 return Ok(new Dictionary<string, object>
                 {
-                    {
-                        "data", shiftResponse
-                    },
-                    {
-                        "count", shiftResponse.Count()
-                    },
-                    {
-                        "total", total
-                    }
+                    { "data", data },
+                    { "count", count },
+                    { "total", total }
                 });
             }
             catch (Exception ex)
@@ -243,9 +231,11 @@ namespace Models.Controllers
             {
                 query = HttpUtility.UrlDecode(query);
                 var registrationUsers = _workingShiftEventService
-                    .GetWorkingShiftRegistrationUsersOfUser(id, query, queryType);
+                    .GetWorkingShiftRegistrationUsersOfUser(id, query, queryType)
+                    .Select(ru => ru.WorkingShiftRegistration)
+                    .ToList();
 
-                var data = _mapper.Map<IEnumerable<WorkingShiftRegistrationUserInfoDTO>>(registrationUsers);
+                var data = _mapper.Map<IEnumerable<WorkingShiftRegistrationInfoDTO>>(registrationUsers);
                 var count = data.Count();
                 var total = data.Count();
 
@@ -280,6 +270,123 @@ namespace Models.Controllers
                     {"count", count },
                     {"total", total }
                 });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("/api/workingshiftdayconfig")]
+        public IActionResult GetWorkingShiftDayConfig(
+            [FromQuery] string? query,
+            [FromQuery] string? queryType)
+        {
+            try
+            {
+                var decodedQuery = HttpUtility.UrlDecode(query);
+                var workingShiftDayConfigs = _workingShiftEventService.GetWorkingShiftDayConfigs(decodedQuery, queryType);
+
+                var data = _mapper.Map<IEnumerable<WorkingShiftDayConfigInfoDTO>>(workingShiftDayConfigs);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    { "data", data },
+                    { "count", count },
+                    { "total", total }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("/api/workingshiftdayconfig")]
+        public IActionResult CreateWorkingShiftDayConfig(
+            [FromBody] WorkingShiftDayConfigDTO configDTO)
+        {
+            try
+            {
+                _workingShiftEventService.CreateWorkingShiftDayConfig(configDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("/api/workingshiftdayconfig/{id}")]
+        public IActionResult UpdateWorkingShiftDayConfig(int id, WorkingShiftDayConfigDTO configDTO)
+        {
+            try
+            {
+                _workingShiftEventService.UpdateWorkingShiftDayConfigs(id, configDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("/api/workingshiftdayconfig/{id}")]
+        public IActionResult DeleteWorkingShiftDayConfig(int id)
+        {
+            try
+            {
+                _workingShiftEventService.DeleteWorkingShiftDayConfig(id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPost("/api/workingshift/overtimeshift")]
+        public IActionResult CreateOverTimeWorkingShift(
+            [FromBody] CreateOrUpdateOverTimeShiftDTO createOverTimeShiftDTO)
+        {
+            try
+            {
+                _workingShiftEventService.CreateWorkingShiftOvertime(createOverTimeShiftDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("/api/workingshift/overtimeshift/{id}")]
+        public IActionResult UpdateOverTimeWorkingShift(
+            CreateOrUpdateOverTimeShiftDTO updateOverTimeShiftDTO)
+        {
+            try
+            {
+                _workingShiftEventService.CreateWorkingShiftOvertime(updateOverTimeShiftDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPost("/api/workingshift/basicshift")]
+        public IActionResult CreateBasicWorkingShift(
+            CreateFixedShiftDTO fixedShiftDTO)
+        {
+            try
+            {
+                _workingShiftEventService.CreateWorkingShiftFixed(fixedShiftDTO);
+                return Ok();
             }
             catch (Exception)
             {

@@ -16,7 +16,9 @@ namespace lvtn_backend.Controllers
         private readonly IMapper _mapper;
         private readonly SalaryFormulaService _formulaService;
 
-        public SalaryFormulaController(IMapper mapper, SalaryFormulaService formulaService)
+        public SalaryFormulaController(
+            IMapper mapper, 
+            SalaryFormulaService formulaService)
         {
             _mapper = mapper;
             _formulaService = formulaService;
@@ -24,17 +26,15 @@ namespace lvtn_backend.Controllers
 
         [HttpGet]
         public IActionResult GetFormulaList(
-            [FromQuery] int offset = 0,
-            [FromQuery] int limit = 8,
             [FromQuery] string? query = "",
-            [FromQuery] string? queryType = "display_name")
+            [FromQuery] string? queryType = "area")
         {
             try
             {
                 var result = new Dictionary<string, object>();
 
-                var formulaList = _formulaService.GetFormulaList(offset, int.MaxValue, query, queryType);
-                var formulaListTotal = _formulaService.GetVariableListCount(offset, int.MaxValue, query, queryType);
+                var formulaList = _formulaService.GetFormulaList(query, queryType);
+                var formulaListTotal = _formulaService.GetFormulaListCount(query, queryType);
                 var formulaInfoList = _mapper.Map<IEnumerable<SalaryFormulaInfoDTO>>(formulaList);
 
                 return Ok(new Dictionary<string, object>
@@ -139,16 +139,14 @@ namespace lvtn_backend.Controllers
 
         [HttpGet("/api/SalaryVariable/")]
         public IActionResult GetVariableList(
-            [FromQuery] int offset = 0,
-            [FromQuery] int limit = 8,
             [FromQuery] string? query = "",
-            [FromQuery] string? queryType = "name")
+            [FromQuery] string? queryType = "area")
         {
             try
             {
-                var variableList = _formulaService.GetVariableList(offset, limit, query, queryType);
+                var variableList = _formulaService.GetVariableList(query, queryType);
+                var total = _formulaService.GetVariableListCount(query, queryType);
                 var data = _mapper.Map<IEnumerable<SalaryVariableInfoDTO>>(variableList);
-                var total = _formulaService.GetVariableListCount(offset, limit, query, queryType);
                 var count = data.Count();
 
                 return Ok(new Dictionary<string, object>

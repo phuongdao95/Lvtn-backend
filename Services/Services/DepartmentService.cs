@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
 using Models.Models;
 using Models.Repositories.DataContext;
@@ -92,6 +93,8 @@ namespace Services.Services
             if (queryType == "")
             {
                 return _context.Departments
+                    .Include(dep => dep.ParentDepartment)
+                    .Include(dep => dep.Manager)
                     .Where((department) => department.Name.Contains(query) || query.Contains(department.Name))
                     .Skip(offset)
                     .Take(limit)
@@ -100,6 +103,8 @@ namespace Services.Services
             else
             {
                 return _context.Departments
+                    .Include(dep => dep.ParentDepartment)
+                    .Include(dep => dep.Manager)
                     .Where((department) => department.Name.Contains(query) || query.Contains(department.Name))
                     .Skip(offset)
                     .Take(limit)
