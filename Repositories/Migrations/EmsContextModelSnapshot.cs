@@ -681,7 +681,8 @@ namespace Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("SalaryFormulas");
 
@@ -748,7 +749,8 @@ namespace Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name");
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("SalaryVariables");
 
@@ -960,6 +962,9 @@ namespace Repositories.Migrations
                     b.Property<string>("InsuranceCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("LeaveBalance")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1020,6 +1025,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "000001",
+                            LeaveBalance = 0m,
                             Name = "Admin User",
                             Password = "admin",
                             RoleId = 1,
@@ -1032,6 +1038,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "000002",
+                            LeaveBalance = 0m,
                             Name = "Manager User",
                             Password = "manager",
                             RoleId = 2,
@@ -1044,6 +1051,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000004",
+                            LeaveBalance = 0m,
                             Name = "User 4",
                             Password = "password4",
                             Sex = false,
@@ -1056,6 +1064,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000005",
+                            LeaveBalance = 0m,
                             Name = "User 5",
                             Password = "password5",
                             Sex = false,
@@ -1068,6 +1077,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000006",
+                            LeaveBalance = 0m,
                             Name = "User 6",
                             Password = "password6",
                             Sex = false,
@@ -1080,6 +1090,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000007",
+                            LeaveBalance = 0m,
                             Name = "User 7",
                             Password = "password7",
                             Sex = false,
@@ -1092,6 +1103,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000008",
+                            LeaveBalance = 0m,
                             Name = "User 8",
                             Password = "password8",
                             Sex = false,
@@ -1104,6 +1116,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "0000009",
+                            LeaveBalance = 0m,
                             Name = "User 9",
                             Password = "password9",
                             Sex = false,
@@ -1116,6 +1129,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000010",
+                            LeaveBalance = 0m,
                             Name = "User 10",
                             Password = "password10",
                             Sex = false,
@@ -1128,6 +1142,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000011",
+                            LeaveBalance = 0m,
                             Name = "User 11",
                             Password = "password11",
                             Sex = false,
@@ -1140,6 +1155,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000012",
+                            LeaveBalance = 0m,
                             Name = "User 12",
                             Password = "password12",
                             Sex = false,
@@ -1152,6 +1168,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000013",
+                            LeaveBalance = 0m,
                             Name = "User 13",
                             Password = "password13",
                             Sex = false,
@@ -1164,6 +1181,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000014",
+                            LeaveBalance = 0m,
                             Name = "User 14",
                             Password = "password14",
                             Sex = false,
@@ -1176,6 +1194,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000015",
+                            LeaveBalance = 0m,
                             Name = "User 15",
                             Password = "password15",
                             Sex = false,
@@ -1188,6 +1207,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000016",
+                            LeaveBalance = 0m,
                             Name = "User 16",
                             Password = "password16",
                             Sex = false,
@@ -1200,6 +1220,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000017",
+                            LeaveBalance = 0m,
                             Name = "User 17",
                             Password = "password17",
                             Sex = false,
@@ -1212,6 +1233,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000018",
+                            LeaveBalance = 0m,
                             Name = "User 18",
                             Password = "password18",
                             Sex = false,
@@ -1224,6 +1246,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000019",
+                            LeaveBalance = 0m,
                             Name = "User 19",
                             Password = "password19",
                             Sex = false,
@@ -1236,6 +1259,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000020",
+                            LeaveBalance = 0m,
                             Name = "User 20",
                             Password = "password20",
                             Sex = false,
@@ -1248,6 +1272,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000021",
+                            LeaveBalance = 0m,
                             Name = "User 21",
                             Password = "password21",
                             Sex = false,
@@ -1260,6 +1285,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000022",
+                            LeaveBalance = 0m,
                             Name = "User 22",
                             Password = "password22",
                             Sex = false,
@@ -1272,6 +1298,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000023",
+                            LeaveBalance = 0m,
                             Name = "User 23",
                             Password = "password23",
                             Sex = false,
@@ -1284,6 +1311,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000024",
+                            LeaveBalance = 0m,
                             Name = "User 24",
                             Password = "password24",
                             Sex = false,
@@ -1296,6 +1324,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000025",
+                            LeaveBalance = 0m,
                             Name = "User 25",
                             Password = "password25",
                             Sex = false,
@@ -1308,6 +1337,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000026",
+                            LeaveBalance = 0m,
                             Name = "User 26",
                             Password = "password26",
                             Sex = false,
@@ -1320,6 +1350,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000027",
+                            LeaveBalance = 0m,
                             Name = "User 27",
                             Password = "password27",
                             Sex = false,
@@ -1332,6 +1363,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000028",
+                            LeaveBalance = 0m,
                             Name = "User 28",
                             Password = "password28",
                             Sex = false,
@@ -1344,6 +1376,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000029",
+                            LeaveBalance = 0m,
                             Name = "User 29",
                             Password = "password29",
                             Sex = false,
@@ -1356,6 +1389,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000030",
+                            LeaveBalance = 0m,
                             Name = "User 30",
                             Password = "password30",
                             Sex = false,
@@ -1368,6 +1402,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000031",
+                            LeaveBalance = 0m,
                             Name = "User 31",
                             Password = "password31",
                             Sex = false,
@@ -1380,6 +1415,7 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000032",
+                            LeaveBalance = 0m,
                             Name = "User 32",
                             Password = "password32",
                             Sex = false,
@@ -1392,2532 +1428,81 @@ namespace Repositories.Migrations
                             BaseSalary = 0m,
                             Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CitizenId = "00000033",
+                            LeaveBalance = 0m,
                             Name = "User 33",
                             Password = "password33",
                             Sex = false,
                             TeamId = 2,
                             Username = "user33"
-                        },
-                        new
-                        {
-                            Id = 34,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000034",
-                            Name = "User 34",
-                            Password = "password34",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user34"
-                        },
-                        new
-                        {
-                            Id = 35,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000035",
-                            Name = "User 35",
-                            Password = "password35",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user35"
-                        },
-                        new
-                        {
-                            Id = 36,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000036",
-                            Name = "User 36",
-                            Password = "password36",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user36"
-                        },
-                        new
-                        {
-                            Id = 37,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000037",
-                            Name = "User 37",
-                            Password = "password37",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user37"
-                        },
-                        new
-                        {
-                            Id = 38,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000038",
-                            Name = "User 38",
-                            Password = "password38",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user38"
-                        },
-                        new
-                        {
-                            Id = 39,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000039",
-                            Name = "User 39",
-                            Password = "password39",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user39"
-                        },
-                        new
-                        {
-                            Id = 40,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000040",
-                            Name = "User 40",
-                            Password = "password40",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user40"
-                        },
-                        new
-                        {
-                            Id = 41,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000041",
-                            Name = "User 41",
-                            Password = "password41",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user41"
-                        },
-                        new
-                        {
-                            Id = 42,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000042",
-                            Name = "User 42",
-                            Password = "password42",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user42"
-                        },
-                        new
-                        {
-                            Id = 43,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000043",
-                            Name = "User 43",
-                            Password = "password43",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user43"
-                        },
-                        new
-                        {
-                            Id = 44,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000044",
-                            Name = "User 44",
-                            Password = "password44",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user44"
-                        },
-                        new
-                        {
-                            Id = 45,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000045",
-                            Name = "User 45",
-                            Password = "password45",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user45"
-                        },
-                        new
-                        {
-                            Id = 46,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000046",
-                            Name = "User 46",
-                            Password = "password46",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user46"
-                        },
-                        new
-                        {
-                            Id = 47,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000047",
-                            Name = "User 47",
-                            Password = "password47",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user47"
-                        },
-                        new
-                        {
-                            Id = 48,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000048",
-                            Name = "User 48",
-                            Password = "password48",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user48"
-                        },
-                        new
-                        {
-                            Id = 49,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000049",
-                            Name = "User 49",
-                            Password = "password49",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user49"
-                        },
-                        new
-                        {
-                            Id = 50,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000050",
-                            Name = "User 50",
-                            Password = "password50",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user50"
-                        },
-                        new
-                        {
-                            Id = 51,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000051",
-                            Name = "User 51",
-                            Password = "password51",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user51"
-                        },
-                        new
-                        {
-                            Id = 52,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000052",
-                            Name = "User 52",
-                            Password = "password52",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user52"
-                        },
-                        new
-                        {
-                            Id = 53,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000053",
-                            Name = "User 53",
-                            Password = "password53",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user53"
-                        },
-                        new
-                        {
-                            Id = 54,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000054",
-                            Name = "User 54",
-                            Password = "password54",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user54"
-                        },
-                        new
-                        {
-                            Id = 55,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000055",
-                            Name = "User 55",
-                            Password = "password55",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user55"
-                        },
-                        new
-                        {
-                            Id = 56,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000056",
-                            Name = "User 56",
-                            Password = "password56",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user56"
-                        },
-                        new
-                        {
-                            Id = 57,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000057",
-                            Name = "User 57",
-                            Password = "password57",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user57"
-                        },
-                        new
-                        {
-                            Id = 58,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000058",
-                            Name = "User 58",
-                            Password = "password58",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user58"
-                        },
-                        new
-                        {
-                            Id = 59,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000059",
-                            Name = "User 59",
-                            Password = "password59",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user59"
-                        },
-                        new
-                        {
-                            Id = 60,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000060",
-                            Name = "User 60",
-                            Password = "password60",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user60"
-                        },
-                        new
-                        {
-                            Id = 61,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000061",
-                            Name = "User 61",
-                            Password = "password61",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user61"
-                        },
-                        new
-                        {
-                            Id = 62,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000062",
-                            Name = "User 62",
-                            Password = "password62",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user62"
-                        },
-                        new
-                        {
-                            Id = 63,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000063",
-                            Name = "User 63",
-                            Password = "password63",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user63"
-                        },
-                        new
-                        {
-                            Id = 64,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000064",
-                            Name = "User 64",
-                            Password = "password64",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user64"
-                        },
-                        new
-                        {
-                            Id = 65,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000065",
-                            Name = "User 65",
-                            Password = "password65",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user65"
-                        },
-                        new
-                        {
-                            Id = 66,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000066",
-                            Name = "User 66",
-                            Password = "password66",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user66"
-                        },
-                        new
-                        {
-                            Id = 67,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000067",
-                            Name = "User 67",
-                            Password = "password67",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user67"
-                        },
-                        new
-                        {
-                            Id = 68,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000068",
-                            Name = "User 68",
-                            Password = "password68",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user68"
-                        },
-                        new
-                        {
-                            Id = 69,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000069",
-                            Name = "User 69",
-                            Password = "password69",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user69"
-                        },
-                        new
-                        {
-                            Id = 70,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000070",
-                            Name = "User 70",
-                            Password = "password70",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user70"
-                        },
-                        new
-                        {
-                            Id = 71,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000071",
-                            Name = "User 71",
-                            Password = "password71",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user71"
-                        },
-                        new
-                        {
-                            Id = 72,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000072",
-                            Name = "User 72",
-                            Password = "password72",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user72"
-                        },
-                        new
-                        {
-                            Id = 73,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000073",
-                            Name = "User 73",
-                            Password = "password73",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user73"
-                        },
-                        new
-                        {
-                            Id = 74,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000074",
-                            Name = "User 74",
-                            Password = "password74",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user74"
-                        },
-                        new
-                        {
-                            Id = 75,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000075",
-                            Name = "User 75",
-                            Password = "password75",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user75"
-                        },
-                        new
-                        {
-                            Id = 76,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000076",
-                            Name = "User 76",
-                            Password = "password76",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user76"
-                        },
-                        new
-                        {
-                            Id = 77,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000077",
-                            Name = "User 77",
-                            Password = "password77",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user77"
-                        },
-                        new
-                        {
-                            Id = 78,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000078",
-                            Name = "User 78",
-                            Password = "password78",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user78"
-                        },
-                        new
-                        {
-                            Id = 79,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000079",
-                            Name = "User 79",
-                            Password = "password79",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user79"
-                        },
-                        new
-                        {
-                            Id = 80,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000080",
-                            Name = "User 80",
-                            Password = "password80",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user80"
-                        },
-                        new
-                        {
-                            Id = 81,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000081",
-                            Name = "User 81",
-                            Password = "password81",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user81"
-                        },
-                        new
-                        {
-                            Id = 82,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000082",
-                            Name = "User 82",
-                            Password = "password82",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user82"
-                        },
-                        new
-                        {
-                            Id = 83,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000083",
-                            Name = "User 83",
-                            Password = "password83",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user83"
-                        },
-                        new
-                        {
-                            Id = 84,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000084",
-                            Name = "User 84",
-                            Password = "password84",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user84"
-                        },
-                        new
-                        {
-                            Id = 85,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000085",
-                            Name = "User 85",
-                            Password = "password85",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user85"
-                        },
-                        new
-                        {
-                            Id = 86,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000086",
-                            Name = "User 86",
-                            Password = "password86",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user86"
-                        },
-                        new
-                        {
-                            Id = 87,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000087",
-                            Name = "User 87",
-                            Password = "password87",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user87"
-                        },
-                        new
-                        {
-                            Id = 88,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000088",
-                            Name = "User 88",
-                            Password = "password88",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user88"
-                        },
-                        new
-                        {
-                            Id = 89,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000089",
-                            Name = "User 89",
-                            Password = "password89",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user89"
-                        },
-                        new
-                        {
-                            Id = 90,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000090",
-                            Name = "User 90",
-                            Password = "password90",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user90"
-                        },
-                        new
-                        {
-                            Id = 91,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000091",
-                            Name = "User 91",
-                            Password = "password91",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user91"
-                        },
-                        new
-                        {
-                            Id = 92,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000092",
-                            Name = "User 92",
-                            Password = "password92",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user92"
-                        },
-                        new
-                        {
-                            Id = 93,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000093",
-                            Name = "User 93",
-                            Password = "password93",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user93"
-                        },
-                        new
-                        {
-                            Id = 94,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000094",
-                            Name = "User 94",
-                            Password = "password94",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user94"
-                        },
-                        new
-                        {
-                            Id = 95,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000095",
-                            Name = "User 95",
-                            Password = "password95",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user95"
-                        },
-                        new
-                        {
-                            Id = 96,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000096",
-                            Name = "User 96",
-                            Password = "password96",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user96"
-                        },
-                        new
-                        {
-                            Id = 97,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000097",
-                            Name = "User 97",
-                            Password = "password97",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user97"
-                        },
-                        new
-                        {
-                            Id = 98,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000098",
-                            Name = "User 98",
-                            Password = "password98",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user98"
-                        },
-                        new
-                        {
-                            Id = 99,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "00000099",
-                            Name = "User 99",
-                            Password = "password99",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user99"
-                        },
-                        new
-                        {
-                            Id = 100,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000100",
-                            Name = "User 100",
-                            Password = "password100",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user100"
-                        },
-                        new
-                        {
-                            Id = 101,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000101",
-                            Name = "User 101",
-                            Password = "password101",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user101"
-                        },
-                        new
-                        {
-                            Id = 102,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000102",
-                            Name = "User 102",
-                            Password = "password102",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user102"
-                        },
-                        new
-                        {
-                            Id = 103,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000103",
-                            Name = "User 103",
-                            Password = "password103",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user103"
-                        },
-                        new
-                        {
-                            Id = 104,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000104",
-                            Name = "User 104",
-                            Password = "password104",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user104"
-                        },
-                        new
-                        {
-                            Id = 105,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000105",
-                            Name = "User 105",
-                            Password = "password105",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user105"
-                        },
-                        new
-                        {
-                            Id = 106,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000106",
-                            Name = "User 106",
-                            Password = "password106",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user106"
-                        },
-                        new
-                        {
-                            Id = 107,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000107",
-                            Name = "User 107",
-                            Password = "password107",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user107"
-                        },
-                        new
-                        {
-                            Id = 108,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000108",
-                            Name = "User 108",
-                            Password = "password108",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user108"
-                        },
-                        new
-                        {
-                            Id = 109,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000109",
-                            Name = "User 109",
-                            Password = "password109",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user109"
-                        },
-                        new
-                        {
-                            Id = 110,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000110",
-                            Name = "User 110",
-                            Password = "password110",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user110"
-                        },
-                        new
-                        {
-                            Id = 111,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000111",
-                            Name = "User 111",
-                            Password = "password111",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user111"
-                        },
-                        new
-                        {
-                            Id = 112,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000112",
-                            Name = "User 112",
-                            Password = "password112",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user112"
-                        },
-                        new
-                        {
-                            Id = 113,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000113",
-                            Name = "User 113",
-                            Password = "password113",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user113"
-                        },
-                        new
-                        {
-                            Id = 114,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000114",
-                            Name = "User 114",
-                            Password = "password114",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user114"
-                        },
-                        new
-                        {
-                            Id = 115,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000115",
-                            Name = "User 115",
-                            Password = "password115",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user115"
-                        },
-                        new
-                        {
-                            Id = 116,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000116",
-                            Name = "User 116",
-                            Password = "password116",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user116"
-                        },
-                        new
-                        {
-                            Id = 117,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000117",
-                            Name = "User 117",
-                            Password = "password117",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user117"
-                        },
-                        new
-                        {
-                            Id = 118,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000118",
-                            Name = "User 118",
-                            Password = "password118",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user118"
-                        },
-                        new
-                        {
-                            Id = 119,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000119",
-                            Name = "User 119",
-                            Password = "password119",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user119"
-                        },
-                        new
-                        {
-                            Id = 120,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000120",
-                            Name = "User 120",
-                            Password = "password120",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user120"
-                        },
-                        new
-                        {
-                            Id = 121,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000121",
-                            Name = "User 121",
-                            Password = "password121",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user121"
-                        },
-                        new
-                        {
-                            Id = 122,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000122",
-                            Name = "User 122",
-                            Password = "password122",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user122"
-                        },
-                        new
-                        {
-                            Id = 123,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000123",
-                            Name = "User 123",
-                            Password = "password123",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user123"
-                        },
-                        new
-                        {
-                            Id = 124,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000124",
-                            Name = "User 124",
-                            Password = "password124",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user124"
-                        },
-                        new
-                        {
-                            Id = 125,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000125",
-                            Name = "User 125",
-                            Password = "password125",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user125"
-                        },
-                        new
-                        {
-                            Id = 126,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000126",
-                            Name = "User 126",
-                            Password = "password126",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user126"
-                        },
-                        new
-                        {
-                            Id = 127,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000127",
-                            Name = "User 127",
-                            Password = "password127",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user127"
-                        },
-                        new
-                        {
-                            Id = 128,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000128",
-                            Name = "User 128",
-                            Password = "password128",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user128"
-                        },
-                        new
-                        {
-                            Id = 129,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000129",
-                            Name = "User 129",
-                            Password = "password129",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user129"
-                        },
-                        new
-                        {
-                            Id = 130,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000130",
-                            Name = "User 130",
-                            Password = "password130",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user130"
-                        },
-                        new
-                        {
-                            Id = 131,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000131",
-                            Name = "User 131",
-                            Password = "password131",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user131"
-                        },
-                        new
-                        {
-                            Id = 132,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000132",
-                            Name = "User 132",
-                            Password = "password132",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user132"
-                        },
-                        new
-                        {
-                            Id = 133,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000133",
-                            Name = "User 133",
-                            Password = "password133",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user133"
-                        },
-                        new
-                        {
-                            Id = 134,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000134",
-                            Name = "User 134",
-                            Password = "password134",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user134"
-                        },
-                        new
-                        {
-                            Id = 135,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000135",
-                            Name = "User 135",
-                            Password = "password135",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user135"
-                        },
-                        new
-                        {
-                            Id = 136,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000136",
-                            Name = "User 136",
-                            Password = "password136",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user136"
-                        },
-                        new
-                        {
-                            Id = 137,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000137",
-                            Name = "User 137",
-                            Password = "password137",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user137"
-                        },
-                        new
-                        {
-                            Id = 138,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000138",
-                            Name = "User 138",
-                            Password = "password138",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user138"
-                        },
-                        new
-                        {
-                            Id = 139,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000139",
-                            Name = "User 139",
-                            Password = "password139",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user139"
-                        },
-                        new
-                        {
-                            Id = 140,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000140",
-                            Name = "User 140",
-                            Password = "password140",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user140"
-                        },
-                        new
-                        {
-                            Id = 141,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000141",
-                            Name = "User 141",
-                            Password = "password141",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user141"
-                        },
-                        new
-                        {
-                            Id = 142,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000142",
-                            Name = "User 142",
-                            Password = "password142",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user142"
-                        },
-                        new
-                        {
-                            Id = 143,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000143",
-                            Name = "User 143",
-                            Password = "password143",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user143"
-                        },
-                        new
-                        {
-                            Id = 144,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000144",
-                            Name = "User 144",
-                            Password = "password144",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user144"
-                        },
-                        new
-                        {
-                            Id = 145,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000145",
-                            Name = "User 145",
-                            Password = "password145",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user145"
-                        },
-                        new
-                        {
-                            Id = 146,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000146",
-                            Name = "User 146",
-                            Password = "password146",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user146"
-                        },
-                        new
-                        {
-                            Id = 147,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000147",
-                            Name = "User 147",
-                            Password = "password147",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user147"
-                        },
-                        new
-                        {
-                            Id = 148,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000148",
-                            Name = "User 148",
-                            Password = "password148",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user148"
-                        },
-                        new
-                        {
-                            Id = 149,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000149",
-                            Name = "User 149",
-                            Password = "password149",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user149"
-                        },
-                        new
-                        {
-                            Id = 150,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000150",
-                            Name = "User 150",
-                            Password = "password150",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user150"
-                        },
-                        new
-                        {
-                            Id = 151,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000151",
-                            Name = "User 151",
-                            Password = "password151",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user151"
-                        },
-                        new
-                        {
-                            Id = 152,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000152",
-                            Name = "User 152",
-                            Password = "password152",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user152"
-                        },
-                        new
-                        {
-                            Id = 153,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000153",
-                            Name = "User 153",
-                            Password = "password153",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user153"
-                        },
-                        new
-                        {
-                            Id = 154,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000154",
-                            Name = "User 154",
-                            Password = "password154",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user154"
-                        },
-                        new
-                        {
-                            Id = 155,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000155",
-                            Name = "User 155",
-                            Password = "password155",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user155"
-                        },
-                        new
-                        {
-                            Id = 156,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000156",
-                            Name = "User 156",
-                            Password = "password156",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user156"
-                        },
-                        new
-                        {
-                            Id = 157,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000157",
-                            Name = "User 157",
-                            Password = "password157",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user157"
-                        },
-                        new
-                        {
-                            Id = 158,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000158",
-                            Name = "User 158",
-                            Password = "password158",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user158"
-                        },
-                        new
-                        {
-                            Id = 159,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000159",
-                            Name = "User 159",
-                            Password = "password159",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user159"
-                        },
-                        new
-                        {
-                            Id = 160,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000160",
-                            Name = "User 160",
-                            Password = "password160",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user160"
-                        },
-                        new
-                        {
-                            Id = 161,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000161",
-                            Name = "User 161",
-                            Password = "password161",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user161"
-                        },
-                        new
-                        {
-                            Id = 162,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000162",
-                            Name = "User 162",
-                            Password = "password162",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user162"
-                        },
-                        new
-                        {
-                            Id = 163,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000163",
-                            Name = "User 163",
-                            Password = "password163",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user163"
-                        },
-                        new
-                        {
-                            Id = 164,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000164",
-                            Name = "User 164",
-                            Password = "password164",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user164"
-                        },
-                        new
-                        {
-                            Id = 165,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000165",
-                            Name = "User 165",
-                            Password = "password165",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user165"
-                        },
-                        new
-                        {
-                            Id = 166,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000166",
-                            Name = "User 166",
-                            Password = "password166",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user166"
-                        },
-                        new
-                        {
-                            Id = 167,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000167",
-                            Name = "User 167",
-                            Password = "password167",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user167"
-                        },
-                        new
-                        {
-                            Id = 168,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000168",
-                            Name = "User 168",
-                            Password = "password168",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user168"
-                        },
-                        new
-                        {
-                            Id = 169,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000169",
-                            Name = "User 169",
-                            Password = "password169",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user169"
-                        },
-                        new
-                        {
-                            Id = 170,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000170",
-                            Name = "User 170",
-                            Password = "password170",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user170"
-                        },
-                        new
-                        {
-                            Id = 171,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000171",
-                            Name = "User 171",
-                            Password = "password171",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user171"
-                        },
-                        new
-                        {
-                            Id = 172,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000172",
-                            Name = "User 172",
-                            Password = "password172",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user172"
-                        },
-                        new
-                        {
-                            Id = 173,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000173",
-                            Name = "User 173",
-                            Password = "password173",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user173"
-                        },
-                        new
-                        {
-                            Id = 174,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000174",
-                            Name = "User 174",
-                            Password = "password174",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user174"
-                        },
-                        new
-                        {
-                            Id = 175,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000175",
-                            Name = "User 175",
-                            Password = "password175",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user175"
-                        },
-                        new
-                        {
-                            Id = 176,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000176",
-                            Name = "User 176",
-                            Password = "password176",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user176"
-                        },
-                        new
-                        {
-                            Id = 177,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000177",
-                            Name = "User 177",
-                            Password = "password177",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user177"
-                        },
-                        new
-                        {
-                            Id = 178,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000178",
-                            Name = "User 178",
-                            Password = "password178",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user178"
-                        },
-                        new
-                        {
-                            Id = 179,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000179",
-                            Name = "User 179",
-                            Password = "password179",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user179"
-                        },
-                        new
-                        {
-                            Id = 180,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000180",
-                            Name = "User 180",
-                            Password = "password180",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user180"
-                        },
-                        new
-                        {
-                            Id = 181,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000181",
-                            Name = "User 181",
-                            Password = "password181",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user181"
-                        },
-                        new
-                        {
-                            Id = 182,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000182",
-                            Name = "User 182",
-                            Password = "password182",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user182"
-                        },
-                        new
-                        {
-                            Id = 183,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000183",
-                            Name = "User 183",
-                            Password = "password183",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user183"
-                        },
-                        new
-                        {
-                            Id = 184,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000184",
-                            Name = "User 184",
-                            Password = "password184",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user184"
-                        },
-                        new
-                        {
-                            Id = 185,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000185",
-                            Name = "User 185",
-                            Password = "password185",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user185"
-                        },
-                        new
-                        {
-                            Id = 186,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000186",
-                            Name = "User 186",
-                            Password = "password186",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user186"
-                        },
-                        new
-                        {
-                            Id = 187,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000187",
-                            Name = "User 187",
-                            Password = "password187",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user187"
-                        },
-                        new
-                        {
-                            Id = 188,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000188",
-                            Name = "User 188",
-                            Password = "password188",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user188"
-                        },
-                        new
-                        {
-                            Id = 189,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000189",
-                            Name = "User 189",
-                            Password = "password189",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user189"
-                        },
-                        new
-                        {
-                            Id = 190,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000190",
-                            Name = "User 190",
-                            Password = "password190",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user190"
-                        },
-                        new
-                        {
-                            Id = 191,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000191",
-                            Name = "User 191",
-                            Password = "password191",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user191"
-                        },
-                        new
-                        {
-                            Id = 192,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000192",
-                            Name = "User 192",
-                            Password = "password192",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user192"
-                        },
-                        new
-                        {
-                            Id = 193,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000193",
-                            Name = "User 193",
-                            Password = "password193",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user193"
-                        },
-                        new
-                        {
-                            Id = 194,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000194",
-                            Name = "User 194",
-                            Password = "password194",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user194"
-                        },
-                        new
-                        {
-                            Id = 195,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000195",
-                            Name = "User 195",
-                            Password = "password195",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user195"
-                        },
-                        new
-                        {
-                            Id = 196,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000196",
-                            Name = "User 196",
-                            Password = "password196",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user196"
-                        },
-                        new
-                        {
-                            Id = 197,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000197",
-                            Name = "User 197",
-                            Password = "password197",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user197"
-                        },
-                        new
-                        {
-                            Id = 198,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000198",
-                            Name = "User 198",
-                            Password = "password198",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user198"
-                        },
-                        new
-                        {
-                            Id = 199,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000199",
-                            Name = "User 199",
-                            Password = "password199",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user199"
-                        },
-                        new
-                        {
-                            Id = 200,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000200",
-                            Name = "User 200",
-                            Password = "password200",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user200"
-                        },
-                        new
-                        {
-                            Id = 201,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000201",
-                            Name = "User 201",
-                            Password = "password201",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user201"
-                        },
-                        new
-                        {
-                            Id = 202,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000202",
-                            Name = "User 202",
-                            Password = "password202",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user202"
-                        },
-                        new
-                        {
-                            Id = 203,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000203",
-                            Name = "User 203",
-                            Password = "password203",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user203"
-                        },
-                        new
-                        {
-                            Id = 204,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000204",
-                            Name = "User 204",
-                            Password = "password204",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user204"
-                        },
-                        new
-                        {
-                            Id = 205,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000205",
-                            Name = "User 205",
-                            Password = "password205",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user205"
-                        },
-                        new
-                        {
-                            Id = 206,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000206",
-                            Name = "User 206",
-                            Password = "password206",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user206"
-                        },
-                        new
-                        {
-                            Id = 207,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000207",
-                            Name = "User 207",
-                            Password = "password207",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user207"
-                        },
-                        new
-                        {
-                            Id = 208,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000208",
-                            Name = "User 208",
-                            Password = "password208",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user208"
-                        },
-                        new
-                        {
-                            Id = 209,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000209",
-                            Name = "User 209",
-                            Password = "password209",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user209"
-                        },
-                        new
-                        {
-                            Id = 210,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000210",
-                            Name = "User 210",
-                            Password = "password210",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user210"
-                        },
-                        new
-                        {
-                            Id = 211,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000211",
-                            Name = "User 211",
-                            Password = "password211",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user211"
-                        },
-                        new
-                        {
-                            Id = 212,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000212",
-                            Name = "User 212",
-                            Password = "password212",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user212"
-                        },
-                        new
-                        {
-                            Id = 213,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000213",
-                            Name = "User 213",
-                            Password = "password213",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user213"
-                        },
-                        new
-                        {
-                            Id = 214,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000214",
-                            Name = "User 214",
-                            Password = "password214",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user214"
-                        },
-                        new
-                        {
-                            Id = 215,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000215",
-                            Name = "User 215",
-                            Password = "password215",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user215"
-                        },
-                        new
-                        {
-                            Id = 216,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000216",
-                            Name = "User 216",
-                            Password = "password216",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user216"
-                        },
-                        new
-                        {
-                            Id = 217,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000217",
-                            Name = "User 217",
-                            Password = "password217",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user217"
-                        },
-                        new
-                        {
-                            Id = 218,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000218",
-                            Name = "User 218",
-                            Password = "password218",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user218"
-                        },
-                        new
-                        {
-                            Id = 219,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000219",
-                            Name = "User 219",
-                            Password = "password219",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user219"
-                        },
-                        new
-                        {
-                            Id = 220,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000220",
-                            Name = "User 220",
-                            Password = "password220",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user220"
-                        },
-                        new
-                        {
-                            Id = 221,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000221",
-                            Name = "User 221",
-                            Password = "password221",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user221"
-                        },
-                        new
-                        {
-                            Id = 222,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000222",
-                            Name = "User 222",
-                            Password = "password222",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user222"
-                        },
-                        new
-                        {
-                            Id = 223,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000223",
-                            Name = "User 223",
-                            Password = "password223",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user223"
-                        },
-                        new
-                        {
-                            Id = 224,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000224",
-                            Name = "User 224",
-                            Password = "password224",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user224"
-                        },
-                        new
-                        {
-                            Id = 225,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000225",
-                            Name = "User 225",
-                            Password = "password225",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user225"
-                        },
-                        new
-                        {
-                            Id = 226,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000226",
-                            Name = "User 226",
-                            Password = "password226",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user226"
-                        },
-                        new
-                        {
-                            Id = 227,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000227",
-                            Name = "User 227",
-                            Password = "password227",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user227"
-                        },
-                        new
-                        {
-                            Id = 228,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000228",
-                            Name = "User 228",
-                            Password = "password228",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user228"
-                        },
-                        new
-                        {
-                            Id = 229,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000229",
-                            Name = "User 229",
-                            Password = "password229",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user229"
-                        },
-                        new
-                        {
-                            Id = 230,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000230",
-                            Name = "User 230",
-                            Password = "password230",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user230"
-                        },
-                        new
-                        {
-                            Id = 231,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000231",
-                            Name = "User 231",
-                            Password = "password231",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user231"
-                        },
-                        new
-                        {
-                            Id = 232,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000232",
-                            Name = "User 232",
-                            Password = "password232",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user232"
-                        },
-                        new
-                        {
-                            Id = 233,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000233",
-                            Name = "User 233",
-                            Password = "password233",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user233"
-                        },
-                        new
-                        {
-                            Id = 234,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000234",
-                            Name = "User 234",
-                            Password = "password234",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user234"
-                        },
-                        new
-                        {
-                            Id = 235,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000235",
-                            Name = "User 235",
-                            Password = "password235",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user235"
-                        },
-                        new
-                        {
-                            Id = 236,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000236",
-                            Name = "User 236",
-                            Password = "password236",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user236"
-                        },
-                        new
-                        {
-                            Id = 237,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000237",
-                            Name = "User 237",
-                            Password = "password237",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user237"
-                        },
-                        new
-                        {
-                            Id = 238,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000238",
-                            Name = "User 238",
-                            Password = "password238",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user238"
-                        },
-                        new
-                        {
-                            Id = 239,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000239",
-                            Name = "User 239",
-                            Password = "password239",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user239"
-                        },
-                        new
-                        {
-                            Id = 240,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000240",
-                            Name = "User 240",
-                            Password = "password240",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user240"
-                        },
-                        new
-                        {
-                            Id = 241,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000241",
-                            Name = "User 241",
-                            Password = "password241",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user241"
-                        },
-                        new
-                        {
-                            Id = 242,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000242",
-                            Name = "User 242",
-                            Password = "password242",
-                            Sex = false,
-                            TeamId = 1,
-                            Username = "user242"
-                        },
-                        new
-                        {
-                            Id = 243,
-                            BaseSalary = 0m,
-                            Birthday = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CitizenId = "000000243",
-                            Name = "User 243",
-                            Password = "password243",
-                            Sex = false,
-                            TeamId = 2,
-                            Username = "user243"
                         });
+                });
+
+            modelBuilder.Entity("Models.Models.Workflow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserCreatedId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserCreatedId");
+
+                    b.ToTable("Workflows");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Workflow");
+                });
+
+            modelBuilder.Entity("Models.Models.WorkflowComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("Action")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("RegularComment")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkflowId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkflowId");
+
+                    b.ToTable("WorkflowComments");
                 });
 
             modelBuilder.Entity("Models.Models.WorkingShift", b =>
@@ -5094,6 +2679,50 @@ namespace Repositories.Migrations
                     b.ToTable("UserSalaryDelta");
                 });
 
+            modelBuilder.Entity("Models.Models.CheckInOutManualWorkflow", b =>
+                {
+                    b.HasBaseType("Models.Models.Workflow");
+
+                    b.Property<DateTime>("CheckedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsIn")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("CheckInOutManualWorkflow");
+                });
+
+            modelBuilder.Entity("Models.Models.NghiPhepWorkflow", b =>
+                {
+                    b.HasBaseType("Models.Models.Workflow");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("NghiPhepWorkflow_StartDate");
+
+                    b.HasDiscriminator().HasValue("NghiPhepWorkflow");
+                });
+
+            modelBuilder.Entity("Models.Models.NghiThaiSanWorkflow", b =>
+                {
+                    b.HasBaseType("Models.Models.Workflow");
+
+                    b.Property<bool>("IsHusband")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasDiscriminator().HasValue("NghiThaiSanWorkflow");
+                });
+
             modelBuilder.Entity("Models.Models.Department", b =>
                 {
                     b.HasOne("Models.Models.User", "Manager")
@@ -5166,6 +2795,36 @@ namespace Repositories.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("TeamBelong");
+                });
+
+            modelBuilder.Entity("Models.Models.Workflow", b =>
+                {
+                    b.HasOne("Models.Models.User", "UserCreated")
+                        .WithMany()
+                        .HasForeignKey("UserCreatedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserCreated");
+                });
+
+            modelBuilder.Entity("Models.Models.WorkflowComment", b =>
+                {
+                    b.HasOne("Models.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.Models.Workflow", "Workflow")
+                        .WithMany("WorkflowComments")
+                        .HasForeignKey("WorkflowId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Workflow");
                 });
 
             modelBuilder.Entity("Models.Models.WorkingShift", b =>
@@ -5253,6 +2912,11 @@ namespace Repositories.Migrations
                     b.Navigation("TeamManage");
 
                     b.Navigation("WorkingShifts");
+                });
+
+            modelBuilder.Entity("Models.Models.Workflow", b =>
+                {
+                    b.Navigation("WorkflowComments");
                 });
 
             modelBuilder.Entity("Models.Models.WorkingShiftType", b =>

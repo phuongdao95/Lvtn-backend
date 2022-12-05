@@ -285,7 +285,7 @@ namespace Repositories.DataContext.DataSeeder
 
             result.AddRange(DefaultUserMap.Values);
 
-            result.AddRange(Enumerable.Range(startIndex + 1, 240).Select((index) => new User()
+            result.AddRange(Enumerable.Range(startIndex + 1, 30).Select((index) => new User()
             {
                 Id = index,
                 Name = $"User {index}",

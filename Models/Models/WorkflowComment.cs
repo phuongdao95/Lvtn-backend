@@ -8,7 +8,8 @@ namespace Models.Models
         public int UserId { get; set; }
         public int WorkflowId { get; set; }
         public string? Comment { get; set; }
-        public CommentStatus Status { get; set; } = CommentStatus.None;
+        public CommentStatus? Status { get; set; } = CommentStatus.None;
+        public WorkflowActionType? Action { get; set; }
         public bool RegularComment { get; set; }
         public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
 

@@ -65,7 +65,13 @@ namespace Models
             CreateMap<Group, GroupInfoDTO>();
 
             CreateMap<Workflow, WorkflowInformationDTO>()
-                .ForMember(des => des.Name, opt => opt.MapFrom(src => src is NghiPhepWorkflow ? "Nghi phep" : "Not nghi phep"))
+                .ForMember(des => des.Name, opt => opt.MapFrom((src, _) => src switch
+                {
+                    _ when src is NghiPhepWorkflow => "nghi-phep",
+                    _ when src is NghiThaiSanWorkflow => "nghi-thai-san",
+                    _ when src is CheckInOutManualWorkflow => "check-in-out",
+                    _ => "unknown"
+                }))
                 .ForMember(des => des.CreatedDate, opt => opt.MapFrom(src => src.TimeStamp.ToShortDateString()))
                 .ForMember(des => des.Status, opt => opt.MapFrom(src => src.Status));
         }

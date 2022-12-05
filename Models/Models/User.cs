@@ -16,6 +16,8 @@ namespace Models.Models
         public string? Password { get; set; }
         public string? UrlImage { get; set; }
         public decimal BaseSalary { get; set; }
+        
+        public decimal LeaveBalance { get; set; }
 
         public string? Address { get; set; }
         public string? PhoneNumber { get; set; }

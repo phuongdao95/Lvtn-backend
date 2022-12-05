@@ -25,6 +25,7 @@ namespace Models.Repositories.DataContext
         public DbSet<Workflow> Workflows { get; set; }
         public DbSet<NghiPhepWorkflow> NghiPhepWorkflows { get; set; }
         public DbSet<NghiThaiSanWorkflow> NghiThaiSanWorkflows { get; set; }
+        public DbSet<CheckInOutManualWorkflow> CheckInOutManualWorkflows { get; set; }
         public DbSet<WorkflowComment> WorkflowComments { get; set; }
 
 

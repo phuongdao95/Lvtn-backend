@@ -9,7 +9,9 @@ namespace Models.DTO.Response
     public class WorkflowInformationDTO
     {
         public string Name { get; set; }
+        public int Id { get; set; }
         public string CreatedDate { get; set; }
         public int Status { get; set; }
+        public int ApproverStatus { get; set; }
     }
 }

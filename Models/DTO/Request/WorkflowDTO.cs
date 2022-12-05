@@ -17,8 +17,16 @@ namespace Models.DTO.Request
 
     public class NghiThaiSanDTO
     {
+        public int Id { get; set; }
         public int UserId { get; set; }
         public bool IsHusband { get; set; }
         public DateTime StartDate { get; set; }
+    }
+
+    public class CheckInOutDTO
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public DateTime CheckedTime { get; set; }
     }
 }
