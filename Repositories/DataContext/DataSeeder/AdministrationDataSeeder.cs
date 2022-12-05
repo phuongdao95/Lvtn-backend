@@ -405,6 +405,7 @@ public class AdministrationDataSeeder : DataSeeder
             result.AddRange(DefaultUserMap.Values);
 
             result.AddRange(Enumerable.Range(startIndex + 1, 40).Select((index) => new User()
+
             {
                 Id = index,
                 Name = $"User {index}",

@@ -25,6 +25,16 @@ namespace Models.Repositories.DataContext
         public DbSet<Payroll> Payrolls { get; set; }
         public DbSet<Payslip> Payslips { get; set; }
 
+        /** Workflow */
+        public DbSet<Workflow> Workflows { get; set; }
+        public DbSet<NghiPhepWorkflow> NghiPhepWorkflows { get; set; }
+        public DbSet<NghiThaiSanWorkflow> NghiThaiSanWorkflows { get; set; }
+        public DbSet<CheckInOutManualWorkflow> CheckInOutManualWorkflows { get; set; }
+        public DbSet<WorkflowComment> WorkflowComments { get; set; }
+
+
+        /***/
+
         /** Timekeeping */
         public DbSet<WorkingShift> WorkingShifts { get; set; }
         public DbSet<WorkingShiftTimekeeping> WorkingShiftTimekeepings { get; set; }
@@ -302,6 +312,16 @@ namespace Models.Repositories.DataContext
 
             new SalaryManagementDataSeeder(modelBuilder)
                 .SeedData();
+
+            // 1-M Workflow WorkflowComment
+            modelBuilder.Entity<Workflow>()
+                .HasMany(wl => wl.WorkflowComments)
+                .WithOne(wc => wc.Workflow)
+                .HasForeignKey(wc => wc.WorkflowId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            new AdministrationDataSeeder(modelBuilder).SeedData();
+            new SalaryManagementDataSeeder(modelBuilder).SeedData();
 
             new VirtualSpaceDataseeder(modelBuilder)
                 .SeedData();

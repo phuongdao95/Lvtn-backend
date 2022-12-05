@@ -1,0 +1,90 @@
+{
+  "NghiPhepConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 0,
+      "DepartmentIds": [
+        5,
+        8,
+        7
+      ],
+      "CustomApprovers": [
+        8,
+        29,
+        20
+      ]
+    },
+    "LongHolidaySet": 7,
+    "OverDay": 7
+  },
+  "NghiThaiSanConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 0,
+      "DepartmentIds": [
+        1,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67,
+        15
+      ]
+    },
+    "Primary": 7,
+    "Secondary": 0
+  },
+  "WfhConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67
+      ]
+    },
+    "MaxDayInWeek": 2
+  },
+  "CheckInOutManualConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        4,
+        6
+      ]
+    }
+  },
+  "OverTimeConfig": {
+    "ApproveInfo": {
+      "Sequence": false,
+      "Minimum": 3,
+      "DepartmentIds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "CustomApprovers": [
+        23,
+        45,
+        67
+      ]
+    },
+    "MaxHourInWeek": 5
+  }
+}
