@@ -247,7 +247,7 @@ namespace Services.Services
             var nghiThaiSanWorkflow = new NghiThaiSanWorkflow()
             {
                 UserCreatedId = nghiThaiSanDTO.UserId,
-                IsHusband = user?.Sex ?? false,
+                IsHusband = user?.Gender == "male",
                 StartDate = nghiThaiSanDTO.StartDate
             };
             var nghiThaiSanConfig = _workflowConfigs.NghiThaiSanConfig;
