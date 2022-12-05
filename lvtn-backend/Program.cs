@@ -109,11 +109,11 @@ builder.Services.AddScoped<WorkingShiftTimekeepingService, WorkingShiftTimekeepi
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.AddSpaStaticFiles(
-    configuration =>
-{
-    configuration.RootPath = "ClientApp/Lvtn-frontend/build";
-});
+//builder.Services.AddSpaStaticFiles(
+//    configuration =>
+//{
+//    configuration.RootPath = "ClientApp/Lvtn-frontend/build";
+//});
 
 
 var app = builder.Build();
@@ -140,14 +140,14 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<NotificationHub>("/notification");
 
-app.UseSpa((spa) =>
-{
-    spa.Options.SourcePath = "ClientApp/Lvtn-frontend/";
+//app.UseSpa((spa) =>
+//{
+//    spa.Options.SourcePath = "ClientApp/Lvtn-frontend/";
 
-    if (app.Environment.IsDevelopment())
-    {
-        spa.UseReactDevelopmentServer(npmScript: "start");
-    }
-});
+//    if (app.Environment.IsDevelopment())
+//    {
+//        spa.UseReactDevelopmentServer(npmScript: "start");
+//    }
+//});
 
 app.Run();
