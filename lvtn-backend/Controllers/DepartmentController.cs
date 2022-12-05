@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Services.Contracts;
-using System.ComponentModel;
 
 namespace lvtn_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DepartmentController : ControllerBase
@@ -27,7 +27,7 @@ namespace lvtn_backend.Controllers
             {
                 var department = _departmentService.GetDepartmentById(id);
                 var departmentInfo = _mapper.Map<DepartmentInfoDTO>(department);
-                return Ok(department);
+                return Ok(departmentInfo);
             }
             catch (Exception)
             {
@@ -85,7 +85,7 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                _departmentService.GetDepartmentById(id);
+                _departmentService.DeleteDepartmentById(id);
                 return Ok();
             }
             catch (Exception)
@@ -105,6 +105,29 @@ namespace lvtn_backend.Controllers
             catch (Exception)
             {
                 return BadRequest(); 
+            }
+        }
+
+        [HttpGet("{id}/team")]
+        public IActionResult GetTeamsOfDepartment(int id)
+        {
+            try
+            {
+                var teams = _departmentService.GetTeamsOfDepartment(id);
+
+                var data = _mapper.Map<IEnumerable<TeamInfoDTO>>(teams);
+                var count = data.Count();
+                var total = data.Count();
+                return Ok(new Dictionary<string, object>
+                {
+                    {"data", data },
+                    {"count", count },
+                    {"total", total }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
             }
         }
     }

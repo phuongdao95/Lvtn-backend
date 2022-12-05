@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 using Models.Helpers;
 using Models.Models;
+using System.Security;
 
 namespace Repositories.DataContext.DataSeeder
 {
-    public class AdministrationDataSeeder : DataSeeder
+public class AdministrationDataSeeder : DataSeeder
     {
         public static readonly string ADMIN_ROLE = "ADMIN_USER";
         public static readonly string MANAGER_ROLE = "MANAGER_USER";
@@ -17,10 +16,11 @@ namespace Repositories.DataContext.DataSeeder
 
         public static readonly string HEAD_DEPARTMENT = "HEAD_DEPARTMENT";
 
-        public static readonly string A_TEAM = "A_TEAM";
-        public static readonly string B_TEAM = "B_TEAM";
-        public static readonly string C_TEAM = "C_TEAM";
+        public static readonly string TEAM_A = "TEAM_A";
+        public static readonly string TEAM_B = "TEAM_B";
+        public static readonly string TEAM_C = "TEAM_C";
 
+        public static readonly string GROUP_DEFAULT = "GROUP_DEFAULT";
         public static readonly string GROUP_A = "GROUP_A";
         public static readonly string GROUP_B = "GROUP_B";
         public static readonly string GROUP_C = "GROUP_C";
@@ -52,7 +52,7 @@ namespace Repositories.DataContext.DataSeeder
                     Name = "Employee",
                     Description = "Employee Role"
                 }
-            }
+            },
         };
 
         public static readonly Dictionary<string, User> DefaultUserMap = new Dictionary<string, User>
@@ -66,7 +66,8 @@ namespace Repositories.DataContext.DataSeeder
                     Username = "admin",
                     Password = "admin",
                     RoleId = DefaultRoleMap[ADMIN_ROLE].Id,
-                    CitizenId = "000001"
+                    CitizenId = "000001",
+                    Gender = "male",
                 }
             },
             {
@@ -78,7 +79,8 @@ namespace Repositories.DataContext.DataSeeder
                     Username = "manager",
                     Password = "manager",
                     RoleId = DefaultRoleMap[MANAGER_ROLE].Id,
-                    CitizenId = "000002"
+                    CitizenId = "000002",
+                    Gender = "male",
                 }
             },
         };
@@ -100,7 +102,7 @@ namespace Repositories.DataContext.DataSeeder
         public static readonly Dictionary<string, Team> DefaultTeamMap = new Dictionary<string, Team>
         {
             {
-                A_TEAM,
+                TEAM_A,
                 new Team()
                 {
                     Id = 1,
@@ -111,7 +113,7 @@ namespace Repositories.DataContext.DataSeeder
                 }
             },
             {
-                B_TEAM,
+                TEAM_B,
                 new Team()
                 {
                     Id = 2,
@@ -123,7 +125,7 @@ namespace Repositories.DataContext.DataSeeder
                 }
             },
             {
-                C_TEAM,
+                TEAM_C,
                 new Team()
                 {
                     Id = 3,
@@ -144,7 +146,6 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 1,
                     Name = "Group A",
                     Description = "Group A",
-                    FormulaName = "formula_1",
                 }
             },
             {
@@ -153,8 +154,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 2,
                     Name = "Group B",
-                    Description  = "Group B",
-                    FormulaName = "formula_2",
+                    Description = "Group B",
                 }
             },
             {
@@ -163,47 +163,98 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 3,
                     Name = "Group C",
-                    Description = "Group C",
-                    FormulaName = "formula_3"
+                    Description = "Group C"
+                }
+            },
+            {
+                GROUP_DEFAULT,
+                new Group
+                {
+                    Id = 4,
+                    Name = "Group Default",
+                    Description = "Group Default"
                 }
             }
         };
 
-        private List<Permission> _permissions { get; set; }
-        private List<Role> _roles { get; set; }
-        private List<Dictionary<string, object>> _rolePermissions { get; set; }
-        private List<Department> _departments { get; set; }
-        private List<Team> _teams { get; set; }
-        private List<User> _users { get; set; }
-        private List<Group> _groups { get; set; }
+
+        public List<Permission> Permissions { get; set; }
+        public List<Role> Roles { get; set; }
+        public List<Dictionary<string, object>> RolePermission { get; set; }
+        public List<Department> Departments { get; set; }
+        public List<Team> Teams { get; set; }
+        public List<User> Users { get; set; }
+        public List<Group> Groups { get; set; }
+        private List<Dictionary<string,object>> UserGroups { get; set; }
+        private (int, int) pageAccessPermissionForAdminIdRange { get; set; }
+        private (int, int) pageAccessPermissionForNormalUserIdRange { get; set; }
+        private (int, int) resourceAccessPermissionIdRange { get; set; }
 
         private readonly ModelBuilder _modelBuilder;
 
         public AdministrationDataSeeder(ModelBuilder modelBuilder)
         {
             _modelBuilder = modelBuilder;
-            _permissions = initializePermissions();
-            _roles = initializeRoles();
-            _rolePermissions = initializeRolePermissions();
-            _departments = initializeDepartments();
-            _teams = initializeTeams();
-            _users = initializeUsers();
-            _groups = initializeGroups();
+            Permissions = initializePermissions();
+            Roles = initializeRoles();
+            RolePermission = initializeRolePermissions();
+            Departments = initializeDepartments();
+            Teams = initializeTeams();
+            Groups = initializeGroups();
+            Users = initializeUsers();
+            UserGroups = initializeUserGroups();
         }
 
         private List<Permission> initializePermissions()
         {
-            var index = 0;
-            var permissionTextList = ClaimGenerator.GenerateClaims();
+            var result = new List<Permission>();
 
-            var permissionList = permissionTextList.Select((permission) => new Permission()
+            int index = 0; 
+            int startIndex = index; 
+            var resourceAccessPermission = ClaimGenerator.GenerateResourceAccessClaims();
+
+            var resourceAccessPermissionList = resourceAccessPermission.Select((permission) => new Permission()
             {
                 Id = ++index,
+                Module = permission.Split(".")[1],
+                Name = permission.Split(".")[2],
+                Description = permission
+            }).ToList();
+            int endIndex = index;
+            resourceAccessPermissionIdRange = (startIndex, endIndex);
+
+
+            startIndex = index + 1;
+            var pageAccessPermissionForAdmin = ClaimGenerator.GeneratePageAccessClaimsForAdminUser();
+            var pageAccessPermissionListForAdminUser= pageAccessPermissionForAdmin.Select((permission) => new Permission()
+            {
+                Id = ++index,
+                Module = permission.Split(".")[0],
                 Name = permission,
                 Description = permission
             }).ToList();
 
-            return permissionList;
+            endIndex = index;
+            pageAccessPermissionForAdminIdRange = (startIndex, endIndex);
+
+            startIndex = index + 1;
+            var pageAccessForNormalUser = ClaimGenerator.GeneratePageAccessClaimsForNormalUser();
+            var pageAccessPermissionListForNormalUser = pageAccessForNormalUser.Select((permission) => new Permission()
+            {
+                Id = ++index,
+                Module = permission.Split(".")[0],
+                Name = permission,
+                Description = permission
+            }).ToList();
+            endIndex = index;
+            pageAccessPermissionForNormalUserIdRange = (startIndex, endIndex);
+
+
+            result.AddRange(pageAccessPermissionListForNormalUser);
+            result.AddRange(pageAccessPermissionListForAdminUser);
+            result.AddRange(resourceAccessPermissionList);
+
+            return result;
         }
 
         private List<Role> initializeRoles()
@@ -213,13 +264,24 @@ namespace Repositories.DataContext.DataSeeder
 
             result.AddRange(DefaultRoleMap.Values.ToList());
 
-            result.AddRange(
-                Enumerable.Range(startIndex + 1, result.Count()).Select((id) => new Role()
+            return result;
+        }
+
+        private List<Dictionary<string, object>> initializeUserGroups()
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            Users.ForEach((user) =>
+            {
+                Groups.ForEach((group) =>
                 {
-                    Id = id,
-                    Name = $"Role {id}",
-                    Description = $"Description for role Role {id}",
-                }).ToList());
+                    result.Add(new Dictionary<string, object>
+                    {
+                        ["UserId"]= user.Id,
+                        ["GroupId"]= group.Id,
+                    });
+                });
+            });
 
             return result;
         }
@@ -227,20 +289,58 @@ namespace Repositories.DataContext.DataSeeder
         private List<Dictionary<string, object>> initializeRolePermissions()
         {
             var result = new List<Dictionary<string, object>>();
-            _roles.ForEach((role) =>
+            Roles.ForEach((role) =>
             {
-                _permissions.ForEach((permission) =>
+                Permissions.ForEach((permission) =>
                 {
-                    result.Add(new Dictionary<string, object>
+                    // Generate permissions for admin, manager
+                    if ((role.Id == 1 || role.Id == 2) && 
+                        (
+                            (
+                                permission.Id >= pageAccessPermissionForAdminIdRange.Item1 && 
+                                permission.Id <= pageAccessPermissionForAdminIdRange.Item2
+                            ) ||
+                            (
+
+                                permission.Id >= resourceAccessPermissionIdRange.Item1 &&
+                                permission.Id <= resourceAccessPermissionIdRange.Item2
+                            )
+                         )
+                    )
                     {
-                        ["RoleId"] = role.Id,
-                        ["PermissionId"] = permission.Id,
-                    });
+                        result.Add(new Dictionary<string, object>
+                        {
+                            ["RoleId"] = role.Id,
+                            ["PermissionId"] = permission.Id,
+                        });
+                    }
+                    // Generate permissions for normal user
+                    else if (
+                        (role.Id != 1 && role.Id != 2) &&
+                        (
+                            (
+                                permission.Id >= pageAccessPermissionForNormalUserIdRange.Item1 &&
+                                permission.Id <= pageAccessPermissionForNormalUserIdRange.Item2
+                            ) ||
+                            (
+                                permission.Id >= resourceAccessPermissionIdRange.Item1 &&
+                                permission.Id <= resourceAccessPermissionIdRange.Item2
+                            )
+                        )
+                    )
+                    {
+                        result.Add(new Dictionary<string, object>
+                        {
+                            ["RoleId"] = role.Id,
+                            ["PermissionId"] = permission.Id,
+                        });
+                    }
                 });
             });
 
             return result;
         }
+
 
         private List<Department> initializeDepartments()
         {
@@ -286,13 +386,17 @@ namespace Repositories.DataContext.DataSeeder
             result.AddRange(DefaultUserMap.Values);
 
             result.AddRange(Enumerable.Range(startIndex + 1, 30).Select((index) => new User()
+
             {
                 Id = index,
                 Name = $"User {index}",
                 Username = $"user{index}",
                 Password = $"password{index}",
                 CitizenId = $"000000{index}",
-                TeamId = index % 2 == 0 ? DefaultTeamMap[A_TEAM].Id : DefaultTeamMap[B_TEAM].Id
+                RoleId = DefaultRoleMap[EMPLOYEE_ROLE].Id ,
+                TeamId = Teams[index % Teams.Count()].Id,
+                BaseSalary = new Random().Next(100, 220) * 100_000,
+                Gender = new Random().Next(0, 4) % 2 == 0 ? "male" : "female",
             }));
 
             return result;
@@ -311,25 +415,28 @@ namespace Repositories.DataContext.DataSeeder
         public void SeedData()
         {
             _modelBuilder.Entity<Permission>()
-                .HasData(_permissions);
+                .HasData(Permissions);
 
             _modelBuilder.Entity<Role>()
-                .HasData(_roles);
+                .HasData(Roles);
 
             _modelBuilder.Entity("RolePermission")
-                .HasData(_rolePermissions);
+                .HasData(RolePermission);
 
             _modelBuilder.Entity<Department>()
-                .HasData(_departments);
+                .HasData(Departments);
 
             _modelBuilder.Entity<Team>()
-                .HasData(_teams);
-
-            _modelBuilder.Entity<User>()
-                .HasData(_users);
+                .HasData(Teams);
 
             _modelBuilder.Entity<Group>()
-                .HasData(_groups);
+                .HasData(Groups);
+
+            _modelBuilder.Entity<User>()
+                .HasData(Users);
+
+            _modelBuilder.Entity("UserGroup")
+                .HasData(UserGroups);
         }
     }
 }

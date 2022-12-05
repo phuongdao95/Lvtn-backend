@@ -8,22 +8,24 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Models.Helpers;
 using lvtn_backend.Middleware;
+using lvtn_backend.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.AllowAnyOrigin();
-        builder.AllowAnyHeader();
-        builder.AllowAnyMethod();
+        builder.AllowAnyMethod()
+            .SetIsOriginAllowed(origin => true) // allow any origin
+            .AllowAnyHeader()
+            .AllowCredentials();
     });
 });
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -54,11 +56,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
+
+        options.Events = new JwtBearerEvents()
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                context.Token = accessToken;
+
+                return Task.CompletedTask;
+            }
+
+        };
     });
 
 builder.Services.AddAuthorization((options) =>
 {
-    var claimNames = ClaimGenerator.GenerateClaims();
+    var claimNames = ClaimGenerator.GenerateResourceAccessClaims();
 
     claimNames.ForEach((name) =>
     {
@@ -77,13 +92,24 @@ builder.Services.AddScoped<IAiService, AiService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<ISalaryDeltaService, SalaryDeltaService>();
-builder.Services.AddScoped<ISalaryFormulaService, SalaryFormulaService>();
-builder.Services.AddScoped<IPayrollService, PayrollService>();
 builder.Services.AddScoped<IWorkflowService, WorkflowService>();
+builder.Services.AddScoped<PayrollService, PayrollService>();
+builder.Services.AddScoped<SalaryFormulaService, SalaryFormulaService>();
+builder.Services.AddScoped<GroupService, GroupService>();
+builder.Services.AddScoped<SalaryGroupService, SalaryGroupService>();
+builder.Services.AddScoped<SalaryCalculatorService, SalaryCalculatorService>();
+builder.Services.AddScoped<TaskService, TaskService>();
+builder.Services.AddScoped<TaskBoardService, TaskBoardService>();
+builder.Services.AddScoped<TaskHistoryService, TaskHistoryService>();
+builder.Services.AddScoped<IdentityService, IdentityService>();
+builder.Services.AddScoped<IdentityService, IdentityService>();
+builder.Services.AddScoped<NotificationService, NotificationService>();
+builder.Services.AddScoped<WorkingShiftService, WorkingShiftService>();
+builder.Services.AddScoped<IWorkingShiftTimekeepingService, WorkingShiftTimekeepingService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
+
 
 var app = builder.Build();
 
@@ -99,6 +125,7 @@ else
     app.UseMigrationsEndPoint();
 }
 
+app.UseRouting();
 app.UseCors();
 
 app.UseHttpsRedirection();
@@ -108,5 +135,6 @@ app.UseMiddleware<ClaimMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<NotificationHub>("/notification");
 
 app.Run();

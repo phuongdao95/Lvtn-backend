@@ -1,0 +1,30 @@
+VPN setup on Ubuntu
+https://dev.azure.com/sphera/Sphera%20Cloud%20Corporate%20Sustainability/_wiki/wikis/Sphera-Cloud-Corporate-Sustainability.wiki/14236/Setup-SSH-Connection
+
+Setup DNS SCCS
+add sofi.docker to your local /etc/hosts file
+10.0.10.5 sofi.local sofi.docker
+
+Adjustments for Windows
+https://dev.azure.com/sphera/Sphera%20Cloud%20Corporate%20Sustainability/_wiki/wikis/Sphera-Cloud-Corporate-Sustainability.wiki/9806/Adjustments-for-Windows
+
+Deposit of the certification Unit
+https://dev.azure.com/sphera/Sphera%20Cloud%20Corporate%20Sustainability/_wiki/wikis/Sphera-Cloud-Corporate-Sustainability.wiki/6312/Setup-SCCS?anchor=deposit-of-the-certification-unit
+
+Mail in SoFi
+use mailhog docker container
+http://127.0.0.1:8025
+
+PHP Storm for debugging
+* the password for sofi-docker is also sofi-docker
+
+1. Add SSH configuration
+https://dev.azure.com/sphera/Sphera%20Cloud%20Corporate%20Sustainability/_wiki/wikis/Sphera-Cloud-Corporate-Sustainability.wiki/4063/Configure-PHPStorm-for-debugging
+
+2. Deployment settings
+https://dev.azure.com/sphera/Sphera%20Cloud%20Corporate%20Sustainability/_wiki/wikis/Sphera-Cloud-Corporate-Sustainability.wiki/4071/Deployment-settings
+
+3. Put break point and check
+
+
+

@@ -5,19 +5,25 @@ using AutoMapper;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
+using Services.Services;
 
 namespace Models.Controllers
 {
-    [ApiController]
     [Authorize]
+    [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
+        private IdentityService _identityService;
         private IEmployeeService _employeeService;
         private IMapper _mapper;
 
-        public UserController(IEmployeeService employeeService, IMapper mapper)
+        public UserController(
+            IEmployeeService employeeService, 
+            IMapper mapper,
+            IdentityService identityService)
         {
+            _identityService = identityService;
             _employeeService = employeeService;
             _mapper = mapper;
         }
@@ -36,12 +42,42 @@ namespace Models.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public IActionResult UpdateUser(int id, UserDTO userDTO)
+        {
+            try
+            {
+                _employeeService.UpdateUser(id, userDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                _employeeService.DeleteUserById(id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetUserById(int id)
         {
             try
             {
-                return Ok(_employeeService.GetUserById(id));
+                var user = _employeeService.GetUserById(id);
+
+                return Ok(_mapper.Map<UserInfoDTO>(user));
             }
             catch (Exception ex)
             {
@@ -58,7 +94,7 @@ namespace Models.Controllers
         {
             try
             {
-                var user = _employeeService.GetUserList(offset, limit, query, queryType);
+                var user = _employeeService.GetUserList(offset, int.MaxValue, query, queryType);
 
                 var userInfo = _mapper.Map<IEnumerable<UserInfoDTO>>(user);
 

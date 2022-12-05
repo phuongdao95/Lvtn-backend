@@ -13,14 +13,10 @@ namespace Services.Contracts
         public List<SalaryDelta> GetSalaryDeltaList(
             int offset, 
             int limit, 
-            SalaryDeltaType type,
             string? query, 
             string? queryType);
 
         public int GetSalaryDeltaListCount(
-            int offset, 
-            int limit, 
-            SalaryDeltaType type,
             string? query = "", 
             string? queryType = "name"
           );

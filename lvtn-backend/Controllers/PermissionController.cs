@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Response;
 using Services.Contracts;
 
 namespace lvtn_backend.Controllers
 {
+    [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
     public class PermissionController : ControllerBase
     {
         private readonly IPermissionService _permissionService;

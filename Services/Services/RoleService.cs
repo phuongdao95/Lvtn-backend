@@ -34,19 +34,19 @@ namespace Services.Services
 
         public void DeleteRoleById(int id)
         {
-            var role = _context.Roles.FirstOrDefault(x => x.Id == id, null);
+            var role = _context.Roles.Find(id);
             if (role == null)
             {
                 throw new Exception("Role not found");
             }
-
+                
             _context.Roles.Remove(role);
             _context.SaveChanges();
         }
 
         public Role GetRoleById(int id)
         {
-            var role = _context.Roles.FirstOrDefault((x) => x.Id == id, null);
+            var role = _context.Roles.Find(id);
             if (role == null)
             {
                 throw new Exception("Role not found");
@@ -68,18 +68,28 @@ namespace Services.Services
                 .ToList();
         }
 
+
         public void UpdateRole(int id, RoleDTO roleDTO)
         {
+            var role = _context.Roles.Find(id);
+
+            if (role == null)
+            {
+                throw new Exception("Role not found");
+            }
+
+            _context.Entry(role)
+                .Collection(r => r.Permissions)
+                .Load();
+
             var permissions = _context.Permissions
                 .Where((permission) => roleDTO.PermissionIds.Contains(permission.Id))
                 .ToList();
 
-            var role = _mapper.Map<Role>(roleDTO);
-
             role.Id = id;
             role.Permissions = permissions;
 
-            _context.Roles.Update( role);
+            _context.Roles.Update(role);
             _context.SaveChanges();
         }
     }

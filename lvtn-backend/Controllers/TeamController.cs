@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Models.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TeamController : ControllerBase
@@ -20,8 +21,6 @@ namespace Models.Controllers
             _mapper = mapper;
         }
 
-
-        [Authorize(Policy = "team.retrieve")]
         [HttpGet]
         public IActionResult GetTeamList(
             [FromQuery] int offset = 0,
@@ -50,7 +49,6 @@ namespace Models.Controllers
             }
         }
 
-        [Authorize(Policy = "team.create")]
         [HttpPost]
         public IActionResult AddTeam(TeamDTO teamDTO)
         {
@@ -65,7 +63,6 @@ namespace Models.Controllers
             }
         }
 
-        [Authorize(Policy = "team.update")]
         [HttpPut("{id}")]
         public IActionResult UpdateTeam(int id, TeamDTO teamDTO)
         {
@@ -80,7 +77,6 @@ namespace Models.Controllers
             }
         }
 
-        [Authorize(Policy = "team.delete")]
         [HttpDelete("{id}")]
         public IActionResult DeleteTeam(int id)
         {
@@ -96,7 +92,6 @@ namespace Models.Controllers
         }
 
 
-        [Authorize(Policy = "team.retrieve")]
         [HttpGet("{id}")]
         public IActionResult GetTeamById(int id)
         {

@@ -5,6 +5,7 @@ using Emgu.CV.Structure;
 using Emgu.CV.Face;
 using Emgu.CV.CvEnum;
 using System.Diagnostics;
+using System.IO;
 
 namespace Services.Services
 {
@@ -49,6 +50,7 @@ namespace Services.Services
                 image.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
             }
             DetectFace(name, listFilename, localPath);
+            Directory.Delete(localPath + "/Images/" + name, true);
             return RecognizeFace(name);
         }
 
@@ -101,6 +103,7 @@ namespace Services.Services
                 Image<Bgr, Byte> resultImage = currentFrame.Convert<Bgr, Byte>();
                 if (faces.Length > 0)
                 {
+                    var j = 0;
                     foreach (var face in faces)
                     {
                         //We will create a directory if does not exists!
@@ -109,8 +112,9 @@ namespace Services.Services
                             Directory.CreateDirectory(path);
                         resultImage.ROI = face;
                         //resize the image then saving it
-                        resultImage.Resize(200, 200, Inter.Cubic).Save(path + @"\" + name + i
+                        resultImage.Resize(100, 100, Inter.Cubic).Save(path + @"\" + name + i.ToString()
                                 + "_" + DateTime.Now.ToString("dd-mm-yyyy-hh-mm-ss") + ".png");
+                        j++;
                     }
                 }
             }
@@ -120,13 +124,15 @@ namespace Services.Services
         private bool TrainImagesFromDir(string name)
         {
             int ImagesCount = 0;
-            double Threshold = 2000;
+            double Threshold = 20000000;
             TrainedFaces.Clear();
             PersonsLabes.Clear();
             PersonsNames.Clear();
             // load recognizer from file if has file
-            string recognizerFilePath = Directory.GetCurrentDirectory() + @"\recognizer";
-            if (Directory.Exists(recognizerFilePath))
+            string recognizerFilePath = Directory.GetCurrentDirectory() + @"\recognizer\" + name;
+            Directory.CreateDirectory(recognizerFilePath);
+            recognizerFilePath = recognizerFilePath + @"\recognizer.yml";
+            if (File.Exists(recognizerFilePath))
             {
                 recognizer = new EigenFaceRecognizer();
                 recognizer.Read(recognizerFilePath);
@@ -135,16 +141,17 @@ namespace Services.Services
             {
                 recognizer = new EigenFaceRecognizer(ImagesCount, Threshold);
             }
+
+            string path = Directory.GetCurrentDirectory() + @"\TrainedImages\" + name;
             try
             {
                 // get all images files
-                string path = Directory.GetCurrentDirectory() + @"\TrainedImages\" + name;
                 string[] files = Directory.GetFiles(path, "*.png", SearchOption.AllDirectories);
 
                 foreach (var file in files)
                 {
                     Image<Gray, byte> trainedImage = new Image<Gray, byte>(file)
-                        .Resize(200, 200, Inter.Cubic);
+                        .Resize(100, 100, Inter.Cubic);
                     CvInvoke.EqualizeHist(trainedImage, trainedImage);
                     TrainedFaces.Add(trainedImage);
                     PersonsLabes.Add(ImagesCount);
@@ -172,12 +179,14 @@ namespace Services.Services
                 }
                 else
                 {
+                    Directory.Delete(path, true);
                     return false;
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Error in Train Images: " + ex.Message);
+                Directory.Delete(path, true);
                 return false;
             }
 
@@ -190,31 +199,30 @@ namespace Services.Services
             // get all images files
             string path = Directory.GetCurrentDirectory() + @"\TrainedImages\" + name;
             string[] files = Directory.GetFiles(path, "*.png", SearchOption.AllDirectories);
-            
-            Image<Gray, Byte> grayFaceResult = new Image<Gray, byte>(files.Last())
-                .Convert<Gray, Byte>().Resize(200, 200, Inter.Cubic);
+            foreach (string file in files)
+            {
+                Image<Gray, Byte> grayFaceResult = new Image<Gray, byte>(file)
+                    .Convert<Gray, Byte>().Resize(100, 100, Inter.Cubic);
 
-            CvInvoke.EqualizeHist(grayFaceResult, grayFaceResult);
+                CvInvoke.EqualizeHist(grayFaceResult, grayFaceResult);
 
-            EigenFaceRecognizer recognizer = new EigenFaceRecognizer();
-            string recognizerFilePath = Directory.GetCurrentDirectory() + @"\recognizer";
-            recognizer.Read(recognizerFilePath);
-            var result = recognizer.Predict(grayFaceResult);
+                EigenFaceRecognizer recognizer = new EigenFaceRecognizer();
+                string recognizerFilePath = Directory.GetCurrentDirectory()
+                        + @"\recognizer\" + name + @"\recognizer.yml";
+                recognizer.Read(recognizerFilePath);
+                var result = recognizer.Predict(grayFaceResult);
 
-            Debug.WriteLine("recognize " + result.Label + ". " + result.Distance);
+                Debug.WriteLine("recognize " + result.Label + ". " + result.Distance);
+                if (result.Label != -1 && result.Distance < 2000)
+                {
+                    Debug.WriteLine("found face");
+                    Directory.Delete(path, true);
+                    return true;
+                }
+            }
             Directory.Delete(path, true);
-            //Here results found known faces
-            if (result.Label != -1 && result.Distance < 2000)
-            {
-                Debug.WriteLine("found face");
-                return true;
-            }
-            //here results did not found any know faces
-            else
-            {
-                Debug.WriteLine("not found face");
-                return false;
-            }
+            Debug.WriteLine("not found face");
+            return false;
         }
     }
 }

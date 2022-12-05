@@ -16,8 +16,7 @@ namespace Models.Models
         public string? Description { get; set; }
 
         [Required]
-        [DefaultValue("0")]
-        public string? Formula { get; set; }
+        public string? FormulaName { get; set; }
 
         [Required]
         public SalaryDeltaType Type { get; set; }
@@ -27,7 +26,7 @@ namespace Models.Models
 
         [Required]
         public DateTime ToMonth { get; set; }
-
-        public List<User>? Users { get; set; }
+        public int GroupId { get; set; }
+        public Group? Group { get; set; }
     }
 }

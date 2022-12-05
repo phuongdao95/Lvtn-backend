@@ -3,17 +3,17 @@ using Models.DTO.Request;
 using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
-using Services.Contracts;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
+using org.matheval;
+using Services.SalaryManagement.Calculators;
 
 namespace Services.Services
 {
-    public class SalaryFormulaService : ISalaryFormulaService
+    public class SalaryFormulaService
     {
         private readonly IMapper _mapper;
         private readonly EmsContext _context;
-        public SalaryFormulaService(IMapper mapper, EmsContext context)
+        public SalaryFormulaService(IMapper mapper, 
+            EmsContext context)
         {
             _mapper = mapper;
             _context = context;
@@ -22,6 +22,11 @@ namespace Services.Services
         public void DeleteFormula(int id)
         {
             var formula = _context.SalaryFormulas.Find(id);
+            if (formula == null)
+            {
+                throw new Exception("Formula not found");
+            }
+
             _context.SalaryFormulas.Remove(formula);
             _context.SaveChanges();
         }
@@ -92,12 +97,6 @@ namespace Services.Services
 
         public void UpdateFormula(int id, SalaryFormulaDTO formulaDTO)
         {
-            var formula = _context.SalaryFormulas.Find(id);
-            if (formula == null)
-            {
-                throw new Exception("");
-            }
-
             var mapped = _mapper.Map<SalaryFormula>(formulaDTO);
             mapped.Id = id;
 
@@ -106,17 +105,42 @@ namespace Services.Services
 
         }
 
+        private void ensureVariableValid(SalaryVariable variable)
+        {
+            try
+            {
+                var expression = new Expression(variable.Value);
+
+                if (variable.DataType == VariableDataType.Text)
+                {
+                    expression.Eval<string>();   
+                }
+                else if (variable.DataType == VariableDataType.Decimal)
+                {
+                    expression.Eval<decimal>();
+                }
+                else if (variable.DataType == VariableDataType.Integer)
+                {
+                    expression.Eval<int>();
+                }
+                else if (variable.DataType == VariableDataType.Boolean)
+                {
+                    expression.Eval<bool>();
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Variable is invalid");
+            }
+        }
+
         public void UpdateVariable(int id, SalaryVariableDTO variableDTO)
         {
-            var variable = _context.SalaryVariables.Find(id);
-            if (variable == null)
-            {
-                throw new Exception("variable not found");
-            }
-
             var mapped = _mapper.Map<SalaryVariable>(variableDTO);
-            mapped.DataType = GetVariableDataType(variableDTO.DataType);
             mapped.Id = id;
+            mapped.DataType = GetVariableDataType(variableDTO.DataType);
+
+            ensureVariableValid(mapped);
 
             _context.SalaryVariables.Update(mapped);
             _context.SaveChanges();
@@ -133,9 +157,12 @@ namespace Services.Services
         public void CreateVariable(SalaryVariableDTO variableDTO)
         {
             var dataType = GetVariableDataType(variableDTO.DataType);
+
             var variable =  _mapper.Map<SalaryVariable>(variableDTO);
 
             variable.DataType = dataType;
+
+            ensureVariableValid(variable);
 
             _context.SalaryVariables.Add(variable);
             _context.SaveChanges();
@@ -144,21 +171,21 @@ namespace Services.Services
         private VariableDataType GetVariableDataType(string dataType)
         {
             VariableDataType type;
-            if (dataType == "number")
+            if (dataType == "Decimal")
             {
-                type = VariableDataType.Number;
+                type = VariableDataType.Decimal;
             }
-            else if (dataType == "text")
+            else if (dataType == "Text")
             {
                 type = VariableDataType.Text;
             }
-            else if (dataType == "boolean")
+            else if (dataType == "Boolean")
             {
                 type = VariableDataType.Boolean;
             }
-            else if (dataType == "datetime")
+            else if (dataType == "Integer")
             {
-                type = VariableDataType.DateTime;
+                type = VariableDataType.Integer;
             }
             else
             {
@@ -166,6 +193,38 @@ namespace Services.Services
             }
 
             return type;
+        }
+
+        public List<SalarySystemVariable> GetSystemVariables(SalarySystemVariableKind kind)
+        {
+            var result = new List<SalarySystemVariable>();
+            switch (kind)
+            {
+                case SalarySystemVariableKind.SalaryDelta:
+                    result = SalaryDeltaVariableBinder.GetSystemVariables();
+                    break;
+                case SalarySystemVariableKind.SalaryGroup:
+                    result = TotalSalaryVariableBinder.GetSystemVariables();
+                    break;
+                case SalarySystemVariableKind.Timekeeping:
+                    result = TimekeepingVariableBinder.GetSystemVariables();
+                    break;
+                case SalarySystemVariableKind.KPI:
+                    result = KPIVariableBinder.GetSystemVariables();
+                    break;
+                default:
+                    throw new Exception("VariableKind not found");
+            }
+
+            int index = 0;
+
+            result.ForEach(systemVariable =>
+            {
+                systemVariable.Id = ++index;
+                systemVariable.IsUsedFor = kind;
+            });
+
+            return result;
         }
     }
 }

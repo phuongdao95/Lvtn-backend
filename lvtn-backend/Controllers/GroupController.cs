@@ -1,61 +1,23 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
-using Services.Contracts;
+using Services.Services;
 
 namespace lvtn_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class GroupController : Controller
+    public class GroupController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IGroupService _groupService;
-        public GroupController(IMapper mapper, IGroupService groupService)
+        private readonly GroupService _groupService;
+        private IMapper _mapper;
+        public GroupController(IMapper mapper, GroupService groupService)
         {
             _mapper = mapper;
             _groupService = groupService;
-        }
-
-        [HttpGet]
-        public IActionResult GetGroupList(
-            [FromQuery] int offset = 0,
-            [FromQuery] int limit = 8,
-            [FromQuery] string? query = "",
-            [FromQuery] string? queryType = "name")
-        {
-            try
-            {
-                var groupList = _groupService.GetGroupList(offset, limit, query, queryType);
-                var groupListTotal = _groupService.GetGroupListCount(offset, limit, query, queryType);
-                var groupInfoList = _mapper.Map<IEnumerable<GroupInfoDTO>>(groupList);
-
-                return Ok(new Dictionary<string, object>()
-                {
-                    {"data", groupInfoList},
-                    {"total", groupListTotal},
-                    {"count", groupInfoList.Count() }
-                });
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpPost]
-        public IActionResult CreateGroup([FromBody] GroupDTO groupDTO)
-        {
-            try
-            {
-                _groupService.CreateGroup(groupDTO);
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
         }
 
         [HttpGet("{id}")]
@@ -63,9 +25,9 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                var group = _groupService.GetGroupById(id);
-                return Ok(
-                 _mapper.Map<GroupInfoDTO>(group));
+                var group = _groupService.GetGroupById(id, true);
+                var groupInfo = _mapper.Map<GroupInfoDTO>(group);
+                return Ok(groupInfo);
             }
             catch (Exception)
             {
@@ -73,13 +35,27 @@ namespace lvtn_backend.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateGroup(int id, GroupDTO groupDTO)
+        [HttpGet]
+        public IActionResult GetGroupList(
+             [FromQuery] int offset = 0,
+             [FromQuery] int limit = 8,
+             [FromQuery] string? query = "",
+             [FromQuery] string? queryType = "name")
         {
             try
             {
-                _groupService.UpdateGroup(id, groupDTO);
-                return Ok();
+                var group = _groupService.GetGroupList(offset, limit, query, queryType);
+                var data = _mapper.Map<IEnumerable<GroupInfoDTO>>(group);
+                var total = _groupService.GetGroupListCount(query, queryType);
+                var count = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    {"data", data },
+                    {"count", count},
+                    {"total", total},
+                });
+
             }
             catch (Exception)
             {
@@ -101,5 +77,57 @@ namespace lvtn_backend.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult CreateGroup(GroupDTO groupDTO)
+        {
+            try
+            {
+                _groupService.CreateGroup(groupDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpGet("{id}/user")]
+        public IActionResult GetUsersOfGroup(int id)
+        {
+            try
+            {
+                var users = _groupService.GetUsersOfGroup(id);
+
+                var data = _mapper.Map<IEnumerable<UserInfoDTO>>(users);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    {"data", data},
+                    {"count", count},
+                    {"total", total }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateGroup(int id, GroupDTO groupDTO)
+        {
+            try
+            {
+                _groupService.UpdateGroup(id, groupDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
     }
 }
