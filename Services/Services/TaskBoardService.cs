@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
 using Models.Models;
 using Models.Repositories.DataContext;
@@ -195,15 +196,14 @@ namespace Services.Services
             _context.SaveChanges();
         }
 
-        public List<Task> GetTasksOfTaskColumn(int taskColumnId )
+        public List<Task> GetTasksOfTaskColumn(int id,
+            TaskFilterDTO taskFilterDTO)
         {
-            var taskColumn = _context.TaskColumns.Find(taskColumnId);
-            if (taskColumn == null)
-            {
-                throw new Exception("task column is null");
-            }
+            var taskColumn = _context.TaskColumns
+                .Where(column => column.Id == id)
+                .Include(column => column.Tasks)
+                .Single();
 
-            _context.Entry(taskColumn).Collection(c => c.Tasks).Load();
             if (taskColumn.Tasks == null)
             {
                 return new List<Task>();
@@ -213,9 +213,49 @@ namespace Services.Services
             {
                 _context.Entry(task).Reference(t => t.InCharge).Load();
                 _context.Entry(task).Reference(t => t.ReportTo).Load();
+                _context.Entry(task).Collection(t => t.Labels).Load();
             }
 
-            return taskColumn.Tasks;
+            var tasks = taskColumn.Tasks;
+
+            if (taskFilterDTO.InchargeIds != null)
+            {
+                tasks = tasks
+                    .Where(task => task.InChargeId.HasValue ? 
+                        taskFilterDTO.InchargeIds.Contains(task.InChargeId.Value) : false)
+                    .ToList();
+            }
+
+            if (taskFilterDTO.ReportToIds != null)
+            {
+                tasks = tasks
+                    .Where(task => task.ReportToId.HasValue ?
+                        taskFilterDTO.ReportToIds.Contains(task.ReportToId.Value) : false)
+                    .ToList();
+            }
+
+            if (taskFilterDTO.LabelIds != null)
+            {
+                tasks = tasks
+                    .Where(task => task.Labels.Any(label => taskFilterDTO.LabelIds.Contains(label.Id)))
+                    .ToList();
+            }
+
+            if (taskFilterDTO.StartDate != null)
+            {
+                tasks = tasks
+                    .Where(task => task.FromDate > taskFilterDTO.StartDate)
+                    .ToList();
+            }
+
+            if (taskFilterDTO.EndDate != null)
+            {
+                tasks = tasks
+                    .Where(task => task.FromDate <= taskFilterDTO.EndDate)
+                    .ToList();
+            }
+
+            return tasks;
         }
 
         public List<User> GetUsersOfBoard(int boardId)

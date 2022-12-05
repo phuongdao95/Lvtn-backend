@@ -28,7 +28,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -133,8 +132,6 @@ else
 
 app.UseRouting();
 app.UseCors();
-app.UseHttpsRedirection();
-
 
 app.UseAuthentication();
 app.UseMiddleware<ClaimMiddleware>();

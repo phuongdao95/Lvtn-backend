@@ -101,6 +101,16 @@ namespace Services.Services
             return shifts;
         }
 
+        public List<WorkingShiftTimekeeping> GetWorkingShiftTimekeepingOfUser(int employeeId, DateTime startDate, DateTime endDate)
+        {
+            return _context.WorkingShiftTimekeepings
+                .Where(timekeeping => timekeeping.EmployeeId == employeeId)
+                .Where(timekeeping => timekeeping.WorkingShiftEvent.StartTime.Date >= startDate.Date &&
+                    timekeeping.WorkingShiftEvent.EndTime.Date <= endDate.Date)
+                .ToList();
+        }
+
+
         public List<WorkingShiftTimekeeping> GetWorkingShiftTimekeepingOfUser(int employeeId, string query, string queryType)
         {
             if (!(queryType == "date" ||
