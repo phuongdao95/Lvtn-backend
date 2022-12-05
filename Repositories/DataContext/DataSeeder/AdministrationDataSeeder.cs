@@ -231,7 +231,7 @@ public class AdministrationDataSeeder : DataSeeder
                 Id = ++index,
                 Module = permission.Split(".")[0],
                 Name = permission,
-                Description = permission
+                Description = generatePermissionDescriptionPrefix(permission.Split(".")[1]) + permission.Split(".")[0],
             }).ToList();
 
             endIndex = index;
@@ -244,7 +244,7 @@ public class AdministrationDataSeeder : DataSeeder
                 Id = ++index,
                 Module = permission.Split(".")[0],
                 Name = permission,
-                Description = permission
+                Description = generatePermissionDescriptionPrefix(permission.Split(".")[0]) + permission.Split(".")[1]
             }).ToList();
             endIndex = index;
             pageAccessPermissionForNormalUserIdRange = (startIndex, endIndex);
@@ -255,6 +255,25 @@ public class AdministrationDataSeeder : DataSeeder
             result.AddRange(resourceAccessPermissionList);
 
             return result;
+        }
+
+        private string generatePermissionDescriptionPrefix(string permissionName)
+        {
+            switch (permissionName)
+            {
+                case "create":
+                    return "Tạo mới ";
+                case "update":
+                    return "Cập nhật ";
+                case "delete":
+                    return "Xóa ";
+                case "retrieve":
+                    return "Xem ";
+                case "page_access":
+                    return "Truy cập trang ";
+                default:
+                    return "";
+            }
         }
 
         private List<Role> initializeRoles()
@@ -385,7 +404,7 @@ public class AdministrationDataSeeder : DataSeeder
 
             result.AddRange(DefaultUserMap.Values);
 
-            result.AddRange(Enumerable.Range(startIndex + 1, 30).Select((index) => new User()
+            result.AddRange(Enumerable.Range(startIndex + 1, 40).Select((index) => new User()
 
             {
                 Id = index,

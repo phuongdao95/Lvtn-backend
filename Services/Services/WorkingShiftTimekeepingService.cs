@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
 using Models.Models;
-using Models.Repositories;
 using Models.Repositories.DataContext;
-using Services.Contracts;
-using System.Diagnostics;
 
 namespace Services.Services
 {
-    public class WorkingShiftTimekeepingService : IWorkingShiftTimekeepingService
+    public class WorkingShiftTimekeepingService
     {
-        private readonly IWorkingShiftTimekeepingService _workShiftTimekeepingService;
         private IMapper _mapper;
         private EmsContext _context;
 
-        public WorkingShiftTimekeepingService(IMapper mapper, EmsContext context)
+        public WorkingShiftTimekeepingService(
+            IMapper mapper, 
+            EmsContext context)
         {
             _mapper = mapper;
             _context = context;
@@ -100,6 +99,47 @@ namespace Services.Services
             // xu ly xem ngay do duoc tinh cong k?
             // TODO
             return shifts;
+        }
+
+        public List<WorkingShiftTimekeeping> GetWorkingShiftTimekeepingOfUser(int employeeId, DateTime startDate, DateTime endDate)
+        {
+            return _context.WorkingShiftTimekeepings
+                .Where(timekeeping => timekeeping.EmployeeId == employeeId)
+                .Where(timekeeping => timekeeping.WorkingShiftEvent.StartTime.Date >= startDate.Date &&
+                    timekeeping.WorkingShiftEvent.EndTime.Date <= endDate.Date)
+                .ToList();
+        }
+
+
+        public List<WorkingShiftTimekeeping> GetWorkingShiftTimekeepingOfUser(int employeeId, string query, string queryType)
+        {
+            if (!(queryType == "date" ||
+                queryType == "all"))
+            {
+                throw new Exception("Invalid queryType");
+            }
+
+            if (queryType == "all")
+            {
+                return _context.WorkingShiftTimekeepings
+                    .Include(timekeeping => timekeeping.TimekeepingHistories)
+                    .Where(timekeeping => timekeeping.EmployeeId == employeeId)
+                    .ToList();
+            }
+
+            var queryParts = query.Split("/");
+            var day = int.Parse(queryParts[0]);
+            var month = int.Parse(queryParts[1]);
+            var year = int.Parse(queryParts[2]);
+
+            var date = new DateTime(year, month, day);
+
+            return _context.WorkingShiftTimekeepings
+                    .Include(timekeeping => timekeeping.TimekeepingHistories)
+                    .Include(timekeeping => timekeeping.WorkingShiftEvent)
+                    .Where(timekeeping => timekeeping.EmployeeId == employeeId)
+                    .Where(timekeeping => timekeeping.WorkingShiftEvent.StartTime.Date == date.Date)
+                    .ToList();
         }
     }
 }

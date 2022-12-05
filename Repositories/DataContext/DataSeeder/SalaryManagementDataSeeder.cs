@@ -16,6 +16,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 1,
                     Name = "tax_1",
                     DisplayName = "Tax 1",
+                    Area = FormulaArea.SalaryConfig,
                     Value = "0.15",
                     DataType = VariableDataType.Decimal,
                     Description = "variable 1"
@@ -28,6 +29,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 2,
                     Name = "tax_2",
                     DisplayName = "Tax 2",
+                    Area = FormulaArea.SalaryConfig,
                     Value = "0.12",
                     DataType = VariableDataType.Decimal,
                     Description = "variable 2"
@@ -40,6 +42,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 3,
                     Name = "variable_3",
                     DisplayName = "Variable Three",  
+                    Area = FormulaArea.SalaryConfig,
                     Value = "170000",
                     DataType = VariableDataType.Decimal,
                     Description = "variable 3"
@@ -51,6 +54,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 4,
                     Name = "variable_4",
+                    Area = FormulaArea.SalaryConfig,
                     DisplayName = "Variable Four",
                     Value = "TRUE",
                     DataType = VariableDataType.Boolean
@@ -62,6 +66,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 5,
                     Name = "variable_5",
+                    Area = FormulaArea.SalaryConfig,
                     DisplayName = "Variable Five",
                     Value = "FALSE",
                     DataType = VariableDataType.Boolean
@@ -77,6 +82,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 1,
                     Name = "cong_thuc_tang_giam_luong_1",
+                    Area = FormulaArea.SalaryDelta,
                     Define = "200000",
                     Description = "formula_1",
                     DisplayName = "Formula One"
@@ -89,6 +95,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 2,
                     Name = "cong_thuc_tinh_luong_1",
+                    Area = FormulaArea.SalaryDelta,
                     Define = "salary_after_tk_calc - total_deduction + total_allowance + total_bonus",
                     Description = "formula_2",
                     DisplayName = "Formula Two"
@@ -101,6 +108,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 3,
                     Name = "cong_thuc_tinh_luong_2",
+                    Area = FormulaArea.SalaryDelta,
                     Define = "(salary_after_tk_calc - total_deduction + total_allowance + total_bonus) * (1 - tax_1)",
                     Description = "formula_3",
                     DisplayName = "Formula Three"
@@ -113,6 +121,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 4,
                     Name = "cong_thuc_tang_giam_luong_2",
+                    Area = FormulaArea.SalaryDelta,
                     Define = $"IF(variable_4, 400000, 200000)",
                     Description = "formula_4",
                     DisplayName = "Formula Three"
@@ -125,6 +134,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 5,
                     Name = "salary_formula_per_day",
+                    Area = FormulaArea.SalaryConfig,
                     Define = "salary_per_day",
                     Description = "salary_formula_per_day",
                     DisplayName = "Salary Of Working Shift"

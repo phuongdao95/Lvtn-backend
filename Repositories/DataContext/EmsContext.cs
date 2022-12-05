@@ -36,10 +36,11 @@ namespace Models.Repositories.DataContext
         /***/
 
         /** Timekeeping */
-        public DbSet<WorkingShift> WorkingShiftEvents { get; set; }
+        public DbSet<WorkingShift> WorkingShifts { get; set; }
         public DbSet<WorkingShiftTimekeeping> WorkingShiftTimekeepings { get; set; }
         public DbSet<WorkingShiftRegistration> WorkingShiftRegistrations { get; set; }
         public DbSet<WorkingShiftRegistrationUser> WorkingShiftRegistrationUsers { get; set; }
+        public DbSet<WorkingShiftDayConfig> WorkingShiftDayConfigs { get; set; }
         /** Virtual Space */
         public DbSet<TaskBoard> TaskBoards { get; set; }
         public DbSet<TaskColumn> TaskColumns { get; set; }
@@ -212,6 +213,12 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey(p => p.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Task>()
+                .HasMany(p => p.SubTasks)
+                .WithOne(p => p.ParentTask)
+                .HasForeignKey(p => p.ParentTaskId)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
             modelBuilder.Entity<TaskHistory>()
                 .HasOne(p => p.TaskFileHistory)
                 .WithOne()
@@ -243,27 +250,24 @@ namespace Models.Repositories.DataContext
                 .OnDelete(DeleteBehavior.Cascade);
 
             /** Timekeepings Mappings */
-            // Many to many User - WorkingShiftEvent
-            modelBuilder.Entity<User>()
-               .HasMany(p => p.WorkingShiftEvents)
-               .WithMany(p => p.Users)
-               .UsingEntity<Dictionary<string, object>>(
-                   "WorkingShiftEventUser",
-                   left => left.HasOne<WorkingShift>().WithMany().HasForeignKey("WorkingShiftEventId"),
-                   right => right.HasOne<User>().WithMany().HasForeignKey("UserId")
-               );
-
             // One to many User - WorkingShift
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Timekeepings)
                 .WithOne(p => p.Employee)
-                .HasForeignKey(p => p.EmployeeId);
+                .HasForeignKey(p => p.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // One to many WorkingShiftTimekeeping - WorkingShiftEvent
             modelBuilder.Entity<WorkingShiftTimekeeping>()
                 .HasOne(p => p.WorkingShiftEvent)
                 .WithMany(p => p.Timekeepings)
                 .HasForeignKey(p => p.WorkingShiftEventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkingShiftTimekeeping>()
+                .HasMany(p => p.TimekeepingHistories)
+                .WithOne(p => p.Timekeeping)
+                .HasForeignKey(p => p.TimekeepingId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<WorkingShiftRegistration>()
@@ -281,8 +285,18 @@ namespace Models.Repositories.DataContext
             modelBuilder.Entity<WorkingShiftRegistrationUser>()
                 .HasOne(p => p.WorkingShiftRegistration)
                 .WithMany(p => p.WorkingShiftRegistrationUsers)
-                .HasForeignKey(p => p.WorkingShiftRegistrationId)
+                .HasForeignKey(p => p.WorkingShiftRegistrationId);
+
+            modelBuilder.Entity<User>()
+                .HasMany<WorkingShiftRegistrationUser>()
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WorkingShiftDayConfig>();
+
+            modelBuilder.Entity<WorkingShiftRegistrationUser>()
+                .HasKey(e => new { e.WorkingShiftRegistrationId, e.UserId });
 
             seedData(modelBuilder);
         }
@@ -290,11 +304,10 @@ namespace Models.Repositories.DataContext
         private void seedData(ModelBuilder modelBuilder)
         {
             var administrationDataSeeder = new AdministrationDataSeeder(modelBuilder);
-            var users = administrationDataSeeder.Users;
 
             administrationDataSeeder.SeedData();
 
-            new TimekeepingDataSeeder(modelBuilder, users)
+            new TimekeepingDataSeeder(modelBuilder)
                 .SeedData();
 
             new SalaryManagementDataSeeder(modelBuilder)

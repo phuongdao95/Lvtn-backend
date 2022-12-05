@@ -19,7 +19,7 @@ namespace Models.Controllers
         private IMapper _mapper;
 
         public UserController(
-            IEmployeeService employeeService, 
+            IEmployeeService employeeService,
             IMapper mapper,
             IdentityService identityService)
         {
@@ -117,6 +117,38 @@ namespace Models.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [HttpGet("/api/user/{id}/avatar")]
+        public IActionResult GetAvatar()
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPost("/api/user/{id}/avatar")]
+        public IActionResult UploadAvatar(int id, IFormFile avatar)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        private string uploadFileAndGetImageUrl()
+        {
+            return "";
         }
     }
 }

@@ -48,6 +48,8 @@ namespace Models
 
             CreateMap<TaskCommentDTO, TaskComment>();
 
+            CreateMap<WorkingShiftDayConfigDTO, WorkingShiftDayConfig>();
+
             //Map from internal entities to responses
             CreateMap<User, UserInfoDTO>()
                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Name))
@@ -107,7 +109,7 @@ namespace Models
             CreateMap<PayslipSalaryDelta, PayslipSalaryDeltaInfoDTO>();
 
             CreateMap<WorkingShift, WorkingShiftEventResponseDTO>();
-            CreateMap<WorkingShiftTimekeeping, WorkingShiftTimekeepingInfo>();
+            CreateMap<WorkingShiftTimekeeping, WorkingShiftTimekeepingInfoDTO>();
             CreateMap<SalaryGroup, SalaryGroupInfoDTO>()
                 .ForMember(m => m.GroupName, opt => opt.MapFrom(src => src.Group.Name))
                 ;
@@ -123,8 +125,8 @@ namespace Models
 
             CreateMap<Task, TaskInfoDTO>()
                 .ForMember(m => m.ColumnName, opt => opt.MapFrom(src => src.Column.Name))
-                .ForMember(m => m.ReportToName, opt => opt.MapFrom(src => src.ReportTo != null ? src.ReportTo.Name : "Unassigned"))
-                .ForMember(m => m.InChargeName, opt => opt.MapFrom(src => src.InCharge != null ? src.InCharge.Name : "Unassigned"));
+                .ForMember(m => m.ReportToName, opt => opt.MapFrom(src => src.ReportTo != null ? src.ReportTo.Name : "Chưa được gán"))
+                .ForMember(m => m.InChargeName, opt => opt.MapFrom(src => src.InCharge != null ? src.InCharge.Name : "Chưa được gán"));
 
             CreateMap<TaskFile, TaskFileInfoDTO>()
                 .ForMember(m => m.DisplayName, opt => opt.MapFrom(src => src.DisplayFileName))
@@ -148,8 +150,11 @@ namespace Models
                 .ForMember(m => m.RegistrationEndTime, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.EndTime.Date))
                 .ForMember(m => m.WorkingShiftDescription, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.Description))
                 .ForMember(m => m.WorkingShiftType, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.Type))
+                .ForMember(m => m.WorkingShiftFormulaName, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.FormulaName))
                 .ForMember(m => m.WorkingShiftName, opt => opt.MapFrom(src => src.WorkingShiftRegistration.WorkingShift.Name))
                 .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.Username));
+
+            CreateMap<WorkingShiftDayConfig, WorkingShiftDayConfigInfoDTO>();
         }
 
     }

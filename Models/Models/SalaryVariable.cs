@@ -18,7 +18,7 @@ namespace Models.Models
         [Required]
         [DefaultValue("0")]
         public string? Value { get; set; }
-
+        public FormulaArea? Area { get; set; }
         [Required]
         [DefaultValue(VariableDataType.Decimal)]
         public VariableDataType DataType { get; set; }

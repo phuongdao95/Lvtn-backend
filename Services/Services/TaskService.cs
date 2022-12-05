@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
-using Models.DTO.Response;
 using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
@@ -119,6 +117,7 @@ namespace Services.Services
             task.ColumnId = taskDTO.ColumnId;
             task.InChargeId = taskDTO.InChargeId;
             task.ReportToId = taskDTO.ReportToId;
+            task.Type = getTaskTypeFromText(taskDTO.TaskType);
 
             _context.Tasks.Add(task);
             _context.SaveChanges();
@@ -132,6 +131,19 @@ namespace Services.Services
 
             _context.Tasks.Update(task);
             _context.SaveChanges();
+        }
+
+        private TaskType getTaskTypeFromText(string text)
+        {
+            switch (text)
+            {
+                case "normal":
+                    return TaskType.BASIC;
+                case "epic":
+                    return TaskType.EPIC;
+            }
+
+            return TaskType.BASIC;
         }
 
         public void DeleteTask(int id)
@@ -257,6 +269,40 @@ namespace Services.Services
             return file;
         }
 
+        public void CreateSubTaskOfTask(int taskId, TaskDTO taskDTO)
+        {
+            var task = _context.Tasks.Where(task => task.Id == taskId)
+                .Include(task => task.SubTasks)
+                .Single();
+
+            if (task == null ||
+                task.SubTasks == null)
+            {
+                throw new Exception("task and its subtasks should not be null");
+            }
+
+            var subTask = _mapper.Map<Task>(taskDTO);
+
+            task.SubTasks.Add(subTask);
+
+            _context.Tasks.Update(task);
+            _context.SaveChanges();
+        }
+
+        public List<Task> GetSubtasksOfTask(int taskId)
+        {
+            var task = _context.Tasks.Where(task => task.Id == taskId)
+                .Include(task => task.SubTasks)
+                .Single();
+
+            if (task.SubTasks == null)
+            {
+                throw new Exception("Task not found");
+            }
+
+            return task.SubTasks;
+        }
+
         public void UpdateDescription(int taskId, string description)
         {
             var task = _context.Tasks.Find(taskId);
@@ -337,6 +383,7 @@ namespace Services.Services
 
             var taskComment = _mapper.Map<TaskComment>(taskCommentDTO);
 
+            taskComment.CreatedAt = DateTime.Now;
             _context.Entry(task).Collection(t => t.Comments).Load();
 
             task.Comments.Add(taskComment);
@@ -381,6 +428,10 @@ namespace Services.Services
 
             _context.Entry(task)
                 .Collection(t => t.Comments)
+                .Load();
+
+            _context.Entry(task)
+                .Collection(t => t.SubTasks)
                 .Load();
         }
     }

@@ -3,6 +3,8 @@ using Models.DTO.Request;
 using Models.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Services;
+using System.Web;
 
 namespace Models.Controllers
 {
@@ -10,9 +12,11 @@ namespace Models.Controllers
     [ApiController]
     public class WorkingShiftTimekeepingController : ControllerBase
     {
-        private IWorkingShiftTimekeepingService _workingShiftTimekeepingService;
+        private WorkingShiftTimekeepingService _workingShiftTimekeepingService;
         private IMapper _mapper;
-        public WorkingShiftTimekeepingController(IWorkingShiftTimekeepingService workingShiftTimekeepingService, IMapper mapper)
+        public WorkingShiftTimekeepingController(
+            WorkingShiftTimekeepingService workingShiftTimekeepingService,
+            IMapper mapper)
         {
             _workingShiftTimekeepingService = workingShiftTimekeepingService;
             _mapper = mapper;
@@ -66,7 +70,7 @@ namespace Models.Controllers
             try
             {
                 var shift = _workingShiftTimekeepingService.GetById(id);
-                return Ok(_mapper.Map<WorkingShiftTimekeepingInfo>(shift));
+                return Ok(_mapper.Map<WorkingShiftTimekeepingInfoDTO>(shift));
             }
             catch (Exception ex)
             {
@@ -75,12 +79,15 @@ namespace Models.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll(int userId, DateTime currentDate, int eventId)
+        public IActionResult GetAll(
+            int userId,
+            DateTime currentDate,
+            int eventId)
         {
             try
             {
                 var shifts = _workingShiftTimekeepingService.GetAll(userId, currentDate, eventId);
-                var shiftResponse = _mapper.Map<IEnumerable<WorkingShiftTimekeepingInfo>>(shifts);
+                var shiftResponse = _mapper.Map<IEnumerable<WorkingShiftTimekeepingInfoDTO>>(shifts);
                 return Ok(new Dictionary<string, object>
                 {
                     {
@@ -94,16 +101,59 @@ namespace Models.Controllers
             }
         }
         [HttpGet("getAllByUser/{userId}")]
-        public IActionResult GetAllByUserId(int userId, DateTime selectedDate)
+        public IActionResult GetAllByUserId(
+            int userId,
+            DateTime selectedDate)
         {
             try
             {
                 var shifts = _workingShiftTimekeepingService.GetAllUserId(userId, selectedDate);
-                return Ok(_mapper.Map<IEnumerable<WorkingShiftTimekeepingInfo>>(shifts));
+                return Ok(_mapper.Map<IEnumerable<WorkingShiftTimekeepingInfoDTO>>(shifts));
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("/api/workingshifttimekeeping/{id}/workingshiftimekeepinghistory")]
+        public IActionResult GetTimekeepingHistory()
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("/api/user/{id}/workingshifttimekeeping/")]
+        public IActionResult GetTimekeepingScheduleOfUser(int id,
+            [FromQuery] string? query,
+            [FromQuery] string? queryType)
+        {
+            try
+            {
+                var decodedQuery = HttpUtility.UrlDecode(query);
+                var timekeeping = _workingShiftTimekeepingService
+                    .GetWorkingShiftTimekeepingOfUser(id, decodedQuery, queryType);
+
+                var data = _mapper.Map<IEnumerable<WorkingShiftTimekeepingInfoDTO>>(timekeeping);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    { "data", data },
+                    { "count", count },
+                    { "total", total }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
             }
         }
     }

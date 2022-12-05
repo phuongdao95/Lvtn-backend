@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models.DTO.Response
 {
-    public class WorkingShiftTimekeepingInfo
+    public class WorkingShiftTimekeepingInfoDTO
     {
         public int Id { get; set; }
         public bool DidCheckIn { get; set; }
