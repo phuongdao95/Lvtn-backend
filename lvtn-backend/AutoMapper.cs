@@ -36,6 +36,8 @@ namespace Models
 
             CreateMap<WorkingShiftTimekeepingDTO, WorkingShiftTimekeeping>();
 
+            CreateMap<WorkingShiftTimekeepingHistoryDTO, WorkingShiftTimekeepingHistory>();
+
             CreateMap<TaskDTO, Task>();
 
             CreateMap<TaskBoardDTO, TaskBoard>();
@@ -110,6 +112,7 @@ namespace Models
 
             CreateMap<WorkingShift, WorkingShiftEventResponseDTO>();
             CreateMap<WorkingShiftTimekeeping, WorkingShiftTimekeepingInfoDTO>();
+            CreateMap<WorkingShiftTimekeepingHistory, WorkingShiftTimekeepingHistoryInfoDTO>();
             CreateMap<SalaryGroup, SalaryGroupInfoDTO>()
                 .ForMember(m => m.GroupName, opt => opt.MapFrom(src => src.Group.Name))
                 ;

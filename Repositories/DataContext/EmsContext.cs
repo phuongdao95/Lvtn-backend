@@ -41,6 +41,7 @@ namespace Models.Repositories.DataContext
         public DbSet<WorkingShiftRegistration> WorkingShiftRegistrations { get; set; }
         public DbSet<WorkingShiftRegistrationUser> WorkingShiftRegistrationUsers { get; set; }
         public DbSet<WorkingShiftDayConfig> WorkingShiftDayConfigs { get; set; }
+        public DbSet<WorkingShiftTimekeepingHistory> WorkingShiftTimekeepingHistorys { get; set; }
         /** Virtual Space */
         public DbSet<TaskBoard> TaskBoards { get; set; }
         public DbSet<TaskColumn> TaskColumns { get; set; }
@@ -297,7 +298,12 @@ namespace Models.Repositories.DataContext
 
             modelBuilder.Entity<WorkingShiftRegistrationUser>()
                 .HasKey(e => new { e.WorkingShiftRegistrationId, e.UserId });
-
+            // 1-M Workflow WorkflowComment
+            modelBuilder.Entity<Workflow>()
+                .HasMany(wl => wl.WorkflowComments)
+                .WithOne(wc => wc.Workflow)
+                .HasForeignKey(wc => wc.WorkflowId)
+                .OnDelete(DeleteBehavior.NoAction);
             seedData(modelBuilder);
         }
 
@@ -312,16 +318,6 @@ namespace Models.Repositories.DataContext
 
             new SalaryManagementDataSeeder(modelBuilder)
                 .SeedData();
-
-            // 1-M Workflow WorkflowComment
-            modelBuilder.Entity<Workflow>()
-                .HasMany(wl => wl.WorkflowComments)
-                .WithOne(wc => wc.Workflow)
-                .HasForeignKey(wc => wc.WorkflowId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            new AdministrationDataSeeder(modelBuilder).SeedData();
-            new SalaryManagementDataSeeder(modelBuilder).SeedData();
 
             new VirtualSpaceDataseeder(modelBuilder)
                 .SeedData();

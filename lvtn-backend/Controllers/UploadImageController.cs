@@ -2,6 +2,7 @@
 using Models.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Services;
 
 namespace Models.Controllers
 {
@@ -11,14 +12,18 @@ namespace Models.Controllers
     {
         private IAiService _aiService;
         private IWorkingShiftTimekeepingService _workingShiftTimekeepingService;
+        private WorkingShiftTimekeepingHistoryService _workingShiftTimekeepingHistoryService;
         // get local path
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UploadImageController(IAiService aiService, IWebHostEnvironment webHostEnvironment, IWorkingShiftTimekeepingService workingShiftTimekeepingService)
+        public UploadImageController(IAiService aiService, IWebHostEnvironment webHostEnvironment, 
+            IWorkingShiftTimekeepingService workingShiftTimekeepingService,
+            WorkingShiftTimekeepingHistoryService workingShiftTimekeepingHistoryService)
         {
             _aiService = aiService;
             _webHostEnvironment = webHostEnvironment;
             _workingShiftTimekeepingService = workingShiftTimekeepingService;
+            _workingShiftTimekeepingHistoryService = workingShiftTimekeepingHistoryService;
         }
 
         // upload image
@@ -35,10 +40,21 @@ namespace Models.Controllers
                     if (img.dto.DidCheckout)
                     {
                         _workingShiftTimekeepingService.Update(img.dto.Id, img.dto);
+                        WorkingShiftTimekeepingHistoryDTO obj = new WorkingShiftTimekeepingHistoryDTO();
+                        //obj.Id = img.dto.Id;
+                        obj.IsCheckIn = false;
+                        obj.DateTime = (DateTime)(img.dto.CheckoutTime);
+                        obj.TimekeepingId = img.dto.Id;
+                        _workingShiftTimekeepingHistoryService.Add(obj);
                     }
                     else
                     {
                         _workingShiftTimekeepingService.Add(img.dto);
+                        WorkingShiftTimekeepingHistoryDTO obj = new WorkingShiftTimekeepingHistoryDTO();
+                        obj.IsCheckIn = true;
+                        obj.DateTime = (DateTime)(img.dto.CheckinTime);
+                        obj.TimekeepingId = img.dto.Id;
+                        _workingShiftTimekeepingHistoryService.Add(obj);
                     }
                     return Ok(img.ImageName);
                 }
