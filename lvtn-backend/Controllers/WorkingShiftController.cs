@@ -119,12 +119,13 @@ namespace Models.Controllers
             int id,
             [FromQuery] int offset = 0,
             [FromQuery] int limit = 8,
-            [FromQuery] string? query = "",
-            [FromQuery] string? queryType ="")
+            [FromQuery] string? query = "11/2022",
+            [FromQuery] string? queryType ="month")
         {
             try
             {
-                var decodedQuery = HttpUtility.UrlDecode(query);
+                var decodedQuery = "11/2022";
+
                 var shifts = _workingShiftEventService.GetWorkingShiftRegistrationUsersOfUser
                     (id, decodedQuery, queryType);
 

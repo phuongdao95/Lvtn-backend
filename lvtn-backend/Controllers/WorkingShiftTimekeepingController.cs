@@ -100,15 +100,24 @@ namespace Models.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("getAllByUser/{userId}")]
+
+        [HttpGet("/api/user/{userId}/workingshifttimekeeping/")]
         public IActionResult GetAllByUserId(
-            int userId,
-            DateTime selectedDate)
+            int userId)
         {
             try
             {
-                var shifts = _workingShiftTimekeepingService.GetAllUserId(userId, selectedDate);
-                return Ok(_mapper.Map<IEnumerable<WorkingShiftTimekeepingInfoDTO>>(shifts));
+                var shifts = _workingShiftTimekeepingService.GetAllUserId(userId, DateTime.Now);
+                var data = _mapper.Map<IEnumerable<WorkingShiftTimekeepingInfoDTO>>(shifts);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    {"count", count},
+                    {"data", data },
+                    {"total", total }
+                });
             }
             catch (Exception ex)
             {
@@ -129,7 +138,7 @@ namespace Models.Controllers
             }
         }
 
-        [HttpGet("/api/user/{id}/workingshifttimekeeping/")]
+        [HttpGet("/api/user/{id}/scheduler")]
         public IActionResult GetTimekeepingScheduleOfUser(int id,
             [FromQuery] string? query,
             [FromQuery] string? queryType)
