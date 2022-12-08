@@ -11,5 +11,7 @@
         public UserDTO? Employee { get; set; }
         public int? WorkingShiftEventId { get; set; }
         public WorkingShiftEventDTO? WorkingShiftEvent { get; set; }
+        public bool? isCheckInFirst { get; set; }
+        public bool? isCheckOutLast { get; set; }
     }
 }

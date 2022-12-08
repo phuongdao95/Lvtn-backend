@@ -20,13 +20,13 @@ namespace Services.Services
         }
         public void Add(WorkingShiftTimekeepingHistoryDTO dto)
         {
-            var shifts = _mapper.Map<WorkingShiftTimekeepingHistoryDTO>(dto);
+            var shifts = _mapper.Map<WorkingShiftTimekeepingHistory>(dto);
             _context.Add(shifts);
             _context.SaveChanges();
         }
         public void Update(int id, WorkingShiftTimekeepingHistoryDTO dto)
         {
-            var shift = _context.WorkingShiftTimekeepingHistorys.Find(id);
+            var shift = _context.WorkingShiftTimekeepingHistory.Find(id);
             if (shift == null)
             {
                 throw new Exception("not found working shift");
@@ -34,7 +34,7 @@ namespace Services.Services
             shift.DateTime = dto.DateTime;
             shift.IsCheckIn = dto.IsCheckIn;
             shift.TimekeepingId = dto.TimekeepingId;
-            _context.WorkingShiftTimekeepingHistorys.Update(shift);
+            _context.Update(shift);
             _context.SaveChanges();
         }
         

@@ -41,7 +41,7 @@ namespace Models.Repositories.DataContext
         public DbSet<WorkingShiftRegistration> WorkingShiftRegistrations { get; set; }
         public DbSet<WorkingShiftRegistrationUser> WorkingShiftRegistrationUsers { get; set; }
         public DbSet<WorkingShiftDayConfig> WorkingShiftDayConfigs { get; set; }
-        public DbSet<WorkingShiftTimekeepingHistory> WorkingShiftTimekeepingHistorys { get; set; }
+        public DbSet<WorkingShiftTimekeepingHistory> WorkingShiftTimekeepingHistory { get; set; }
         /** Virtual Space */
         public DbSet<TaskBoard> TaskBoards { get; set; }
         public DbSet<TaskColumn> TaskColumns { get; set; }

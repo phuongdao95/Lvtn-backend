@@ -11,13 +11,13 @@ namespace Models.Controllers
     public class UploadImageController : ControllerBase
     {
         private IAiService _aiService;
-        private IWorkingShiftTimekeepingService _workingShiftTimekeepingService;
+        private WorkingShiftTimekeepingService _workingShiftTimekeepingService;
         private WorkingShiftTimekeepingHistoryService _workingShiftTimekeepingHistoryService;
         // get local path
         private readonly IWebHostEnvironment _webHostEnvironment;
 
         public UploadImageController(IAiService aiService, IWebHostEnvironment webHostEnvironment, 
-            IWorkingShiftTimekeepingService workingShiftTimekeepingService,
+            WorkingShiftTimekeepingService workingShiftTimekeepingService,
             WorkingShiftTimekeepingHistoryService workingShiftTimekeepingHistoryService)
         {
             _aiService = aiService;
@@ -50,6 +50,7 @@ namespace Models.Controllers
                     else
                     {
                         _workingShiftTimekeepingService.Add(img.dto);
+
                         WorkingShiftTimekeepingHistoryDTO obj = new WorkingShiftTimekeepingHistoryDTO();
                         obj.IsCheckIn = true;
                         obj.DateTime = (DateTime)(img.dto.CheckinTime);
