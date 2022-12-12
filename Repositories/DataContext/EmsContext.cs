@@ -294,7 +294,9 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<WorkingShiftDayConfig>();
+            modelBuilder.Entity<WorkingShiftDayConfig>()
+                .HasIndex(p => p.Date)
+                .IsUnique();
 
             modelBuilder.Entity<WorkingShiftRegistrationUser>()
                 .HasKey(e => new { e.WorkingShiftRegistrationId, e.UserId });

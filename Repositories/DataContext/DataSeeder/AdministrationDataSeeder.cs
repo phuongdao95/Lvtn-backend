@@ -90,7 +90,7 @@ public class AdministrationDataSeeder : DataSeeder
             {
                 HEAD_DEPARTMENT, new Department()
                 {
-                    Id = 1,
+                    Id = 100,
                     ManagerId = DefaultUserMap[MANAGER_USER].Id,
                     ParentDepartmentId = null,
                     Name = "Head Department",
@@ -364,11 +364,10 @@ public class AdministrationDataSeeder : DataSeeder
         private List<Department> initializeDepartments()
         {
             var result = new List<Department>();
-            var startIndex = DefaultDepartmentMap.Values.Count() + 1;
 
             result.AddRange(DefaultDepartmentMap.Values);
 
-            result.AddRange(Enumerable.Range(startIndex, 10).Select((index) => new Department()
+            result.AddRange(Enumerable.Range(1, 10).Select((index) => new Department()
             {
                 Id = index,
                 Name = $"Department {index}",

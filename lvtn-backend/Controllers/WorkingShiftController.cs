@@ -16,7 +16,6 @@ namespace Models.Controllers
         private WorkingShiftService _workingShiftEventService;
         private IMapper _mapper;
         public WorkingShiftController(
-            IdentityService identityService,
             WorkingShiftService workingShiftEventService,
             IMapper mapper)
         {
@@ -192,6 +191,8 @@ namespace Models.Controllers
             }
         }
 
+
+
         [HttpGet("/api/workingshiftregistration")]
         public IActionResult GetWorkingShiftRegistration(
             [FromQuery] string? query = "11/2022",
@@ -221,6 +222,21 @@ namespace Models.Controllers
             }
         }
 
+        [HttpDelete("/api/user/{userId}/workingshiftregistration/{id}")]
+        public IActionResult DeleteWorkingShiftRegistrationUser(
+            int userId,
+            int id)
+        {
+            try
+            {
+                _workingShiftEventService.DeleteWorkingShiftRegistrationUser(userId, id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
 
         [HttpGet("/api/user/{id}/workingshiftregistration/")]
         public IActionResult GetRegistrationListOfUser(
@@ -253,15 +269,19 @@ namespace Models.Controllers
             }
         }
 
-        [HttpGet("/api/workingshift/{id}/user")]
-        public IActionResult GetRegisteredUserOfShift(int id)
+        [HttpGet("/api/user/{id}/unregisteredworkingshift/")]
+        public IActionResult GetUnregisteredWorkingShiftOfUser(
+            int id, 
+            [FromQuery] string query,
+            [FromQuery] string queryType)
         {
             try
             {
-                var user = _workingShiftEventService
-                    .GetRegisteredUserOfWorkingShift(id);
+                var decodedQuery = HttpUtility.UrlDecode(query);
+                var workingSHiftRegistration = _workingShiftEventService
+                    .GetUnregistredWorkingShift(id, decodedQuery, queryType);
 
-                var data = _mapper.Map<IEnumerable<UserInfoDTO>>(user);
+                var data = _mapper.Map<IEnumerable<WorkingShiftRegistrationInfoDTO>>(workingSHiftRegistration);
                 var count = data.Count();
                 var total = data.Count();
 
