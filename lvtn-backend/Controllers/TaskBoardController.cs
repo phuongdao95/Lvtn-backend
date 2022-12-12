@@ -130,13 +130,12 @@ namespace lvtn_backend.Controllers
             }
         }
 
-        [HttpGet("/api/taskcolumn/{id}/task")]
-        public IActionResult GetTasksOfTaskColumn(int id,
-            [FromBody] TaskFilterDTO taskFilterDTO)
+        [HttpPost("/api/taskcolumn/{id}/task")]
+        public IActionResult GetTasksOfTaskColumn(int id, [FromBody] TaskFilterDTO? filterDTO)
         {
             try
             {
-                var task = _taskBoardService.GetTasksOfTaskColumn(id, taskFilterDTO);
+                var task = _taskBoardService.GetTasksOfTaskColumn(id, filterDTO);
                 var data = _mapper.Map<IEnumerable<TaskInfoDTO>>(task);
                 var count = data.Count();
                 var total = data.Count();

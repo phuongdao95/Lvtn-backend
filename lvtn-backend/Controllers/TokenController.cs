@@ -23,6 +23,31 @@ namespace lvtn_backend.Controllers
             _context = context;
         }
 
+        [HttpPost("/is-logged-in")]
+        public IActionResult CheckLoggedIn()
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPost("/page-access")]
+        public IActionResult CheckAccessRight()
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Post(LoginDTO loginData)

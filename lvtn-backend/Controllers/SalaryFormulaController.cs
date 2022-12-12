@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Models.Enums;
+using Models.Repositories.DataContext;
 using Services.Services;
 
 namespace lvtn_backend.Controllers
@@ -14,13 +15,16 @@ namespace lvtn_backend.Controllers
     public class SalaryFormulaController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly EmsContext _emsContext;
         private readonly SalaryFormulaService _formulaService;
 
         public SalaryFormulaController(
-            IMapper mapper, 
+            EmsContext emsContext,
+            IMapper mapper,
             SalaryFormulaService formulaService)
         {
             _mapper = mapper;
+            _emsContext = emsContext;
             _formulaService = formulaService;
         }
 
@@ -73,6 +77,135 @@ namespace lvtn_backend.Controllers
             {
                 _formulaService.CreateFormula(formulaDTO);
                 return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("/api/salaryvariable/validation/formulaDefine")]
+        public IActionResult CheckIfVariableDefinitionValid(SalaryVariableDTO salaryFormulaDto)
+        {
+            try
+            {
+                FormulaArea area = new FormulaArea();
+                if (salaryFormulaDto.FormulaArea == "timekeeping")
+                {
+                    area = FormulaArea.Timekeeping;
+                }
+                else if (salaryFormulaDto.FormulaArea == "salarydelta")
+                {
+                    area = FormulaArea.SalaryDelta;
+                }
+                else
+                {
+                    area = FormulaArea.SalaryConfig;
+                }
+
+                var isValid = _formulaService.CheckIfFormulaOrVariableDefineValid(salaryFormulaDto.Value ?? "", area);
+                return Ok(new Dictionary<string, object>
+                {
+                    ["value"] = isValid
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+
+        [HttpPost("/api/salaryformula/validation/formulaDefine")]
+        public IActionResult CheckIfFormulaDefinitionValid(SalaryFormulaDTO salaryFormulaDto)
+        {
+            try
+            {
+                FormulaArea area = new FormulaArea();
+                if (salaryFormulaDto.FormulaArea == "timekeeping")
+                {
+                    area = FormulaArea.Timekeeping;
+                }
+                else if (salaryFormulaDto.FormulaArea == "salarydelta")
+                {
+                    area = FormulaArea.SalaryDelta;
+                }
+                else
+                {
+                    area = FormulaArea.SalaryConfig;
+                }
+
+                var isValid = _formulaService.CheckIfFormulaOrVariableDefineValid(salaryFormulaDto.Define ?? "", area);
+                return Ok(new Dictionary<string, object>
+                {
+                    ["value"] = isValid
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPost("/api/salaryvariable/validation/name")]
+        public IActionResult CheckIfVariableExists(SalaryVariableDTO variableDto)
+        {
+            try
+            {
+                FormulaArea area = new FormulaArea();
+                if (variableDto.FormulaArea == "timekeeping")
+                {
+                    area = FormulaArea.Timekeeping;
+                }
+                else if (variableDto.FormulaArea == "salarydelta")
+                {
+                    area = FormulaArea.SalaryDelta;
+                }
+                else
+                {
+                    area = FormulaArea.SalaryConfig;
+                }
+
+                var doesExist = _formulaService.CheckIfVariableExistsByNameAndArea(variableDto.Name ?? "", area);
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["value"] = doesExist
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("/api/salaryformula/validation/name")]
+        public IActionResult CheckIfFormulaExists(SalaryFormulaDTO formulaDto)
+        {
+            try
+            {
+                FormulaArea area = new FormulaArea();
+                if (formulaDto.FormulaArea == "timekeeping")
+                {
+                    area = FormulaArea.Timekeeping;
+                }
+                else if (formulaDto.FormulaArea == "salarydelta")
+                {
+                    area = FormulaArea.SalaryDelta;
+                }
+                else 
+                {
+                    area = FormulaArea.SalaryConfig;
+                }
+
+                var doesExist = _formulaService.CheckIfFormulaExistsByNameAndArea(formulaDto.Name, area);
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["value"] = doesExist 
+                });
             }
             catch (Exception)
             {

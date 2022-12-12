@@ -125,8 +125,8 @@ namespace Models
 
             CreateMap<Task, TaskInfoDTO>()
                 .ForMember(m => m.ColumnName, opt => opt.MapFrom(src => src.Column.Name))
-                .ForMember(m => m.ReportToName, opt => opt.MapFrom(src => src.ReportTo != null ? src.ReportTo.Name : "Chưa được gán"))
-                .ForMember(m => m.InChargeName, opt => opt.MapFrom(src => src.InCharge != null ? src.InCharge.Name : "Chưa được gán"));
+                .ForMember(m => m.ReportToName, opt => opt.MapFrom(src => src.ReportTo != null ? src.ReportTo.Name : "Chưa gán"))
+                .ForMember(m => m.InChargeName, opt => opt.MapFrom(src => src.InCharge != null ? src.InCharge.Name : "Chưa gán"));
 
             CreateMap<TaskFile, TaskFileInfoDTO>()
                 .ForMember(m => m.DisplayName, opt => opt.MapFrom(src => src.DisplayFileName))

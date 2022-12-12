@@ -293,10 +293,19 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<WorkingShiftDayConfig>();
+            modelBuilder.Entity<WorkingShiftDayConfig>()
+                .HasIndex(p => p.Date)
+                .IsUnique();
 
             modelBuilder.Entity<WorkingShiftRegistrationUser>()
                 .HasKey(e => new { e.WorkingShiftRegistrationId, e.UserId });
+
+            // 1-M Workflow WorkflowComment
+            modelBuilder.Entity<Workflow>()
+                .HasMany(wl => wl.WorkflowComments)
+                .WithOne(wc => wc.Workflow)
+                .HasForeignKey(wc => wc.WorkflowId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             seedData(modelBuilder);
         }
@@ -312,16 +321,6 @@ namespace Models.Repositories.DataContext
 
             new SalaryManagementDataSeeder(modelBuilder)
                 .SeedData();
-
-            // 1-M Workflow WorkflowComment
-            modelBuilder.Entity<Workflow>()
-                .HasMany(wl => wl.WorkflowComments)
-                .WithOne(wc => wc.Workflow)
-                .HasForeignKey(wc => wc.WorkflowId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            new AdministrationDataSeeder(modelBuilder).SeedData();
-            new SalaryManagementDataSeeder(modelBuilder).SeedData();
 
             new VirtualSpaceDataseeder(modelBuilder)
                 .SeedData();

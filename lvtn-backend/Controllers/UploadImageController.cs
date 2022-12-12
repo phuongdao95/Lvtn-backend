@@ -2,6 +2,7 @@
 using Models.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Services;
 
 namespace Models.Controllers
 {
@@ -10,11 +11,13 @@ namespace Models.Controllers
     public class UploadImageController : ControllerBase
     {
         private IAiService _aiService;
-        private IWorkingShiftTimekeepingService _workingShiftTimekeepingService;
+        private WorkingShiftTimekeepingService _workingShiftTimekeepingService;
         // get local path
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UploadImageController(IAiService aiService, IWebHostEnvironment webHostEnvironment, IWorkingShiftTimekeepingService workingShiftTimekeepingService)
+        public UploadImageController(IAiService aiService, 
+            IWebHostEnvironment webHostEnvironment, 
+            WorkingShiftTimekeepingService workingShiftTimekeepingService)
         {
             _aiService = aiService;
             _webHostEnvironment = webHostEnvironment;

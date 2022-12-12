@@ -5,6 +5,7 @@ using Models.DTO.Response;
 using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
+using System.Linq;
 
 namespace Services.Services
 {
@@ -157,6 +158,18 @@ namespace Services.Services
                 throw new Exception("Shift registration not found");
             }
 
+            var timekeeping = new WorkingShiftTimekeeping()
+            {
+                DidCheckIn = false,
+                CheckinTime = null,
+                DidCheckout = false,
+                CheckoutTime = null,
+                EmployeeId = user.Id,
+                WorkingShiftEventId = shiftRegistration.WorkingShiftId,
+            };
+
+            _context.WorkingShiftTimekeepings.Add(timekeeping);
+
             _context.WorkingShiftRegistrationUsers.Add(new WorkingShiftRegistrationUser
             {
                 UserId = registrationDTO.UserId,
@@ -166,10 +179,48 @@ namespace Services.Services
             _context.SaveChanges();
         }
 
+        public void DeleteWorkingShiftRegistrationUser(int userId, int registrationId)
+        {
+            var registrationUser = _context.WorkingShiftRegistrationUsers
+                .Where(p => p.UserId == userId &&
+                    p.WorkingShiftRegistrationId == registrationId)
+                .FirstOrDefault();
+
+            if (registrationUser == null)
+            {
+                throw new Exception("Registration user is not found");
+            }
+
+            var registration = _context.WorkingShiftRegistrations
+                .Include(p => p.WorkingShift)
+                .Where(p => p.Id == registrationId)
+                .FirstOrDefault();
+
+            if (registration != null)
+            {
+                var timekeeping = _context.WorkingShiftTimekeepings
+                    .Include(p => p.WorkingShiftEvent)
+                    .Where(p => p.EmployeeId == userId && p.WorkingShiftEventId == registration.WorkingShiftId)
+                    .FirstOrDefault();
+
+                if (timekeeping != null)
+                {
+                    _context.WorkingShiftTimekeepings
+                        .Remove(timekeeping);
+                }
+            }
+
+            _context.WorkingShiftRegistrationUsers
+                .Remove(registrationUser);
+
+            _context.SaveChanges();
+        }
+
         public void DeleteWorkingShiftRegistration(int id)
         {
             var shiftRegistrationUser = _context.WorkingShiftRegistrationUsers
-                .FirstOrDefault(x => x.Id == id);
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
 
             if (shiftRegistrationUser == null)
             {
@@ -230,6 +281,36 @@ namespace Services.Services
 
         }
 
+        public List<WorkingShiftRegistration> GetUnregistredWorkingShift(
+            int userId,
+            string query = "11/2022",
+            string queryType = "month")
+        {
+            if (queryType != "month")
+            {
+                throw new Exception("Invalid query type");
+            }
+
+            var queryParts = query.Split("/");
+            var month = int.Parse(queryParts[0]);
+            var year = int.Parse(queryParts[1]);
+
+            var registeredIds = _context.WorkingShiftRegistrationUsers
+                .Where(p => p.UserId == userId)
+                .Select(p => p.WorkingShiftRegistrationId)
+                .ToList();
+
+            var allWorkingShift = _context.WorkingShiftRegistrations
+                .Include(registration => registration.WorkingShift)
+                .Where(registration => registration.StartDate > new DateTime(year, month, 1, 0, 0, 0))
+                .Where(registration => registration.EndDate < new DateTime(year, month,
+                    DateTime.DaysInMonth(year, month), 23, 59, 59))
+                .Where(p => !registeredIds.Contains(p.Id))
+                .ToList();
+
+            return allWorkingShift;
+        }
+
         public List<WorkingShiftRegistrationUser> GetWorkingShiftRegistrationUsersOfUser(
             int userId,
             string query = "11/2022",
@@ -256,18 +337,8 @@ namespace Services.Services
 
             var monthOfYear = new DateTime(year, month, day);
 
-            if (queryType == "registered_month")
-            {
-                return _context.WorkingShiftRegistrationUsers
-                    .Include(p => p.User)
-                    .Include(p => p.WorkingShiftRegistration)
-                        .ThenInclude(p => p.WorkingShift)
-                    .Where(p => p.UserId == userId)
-                    .Where(registrationUsers => registrationUsers.WorkingShiftRegistration.StartDate > new DateTime(year, month, 1, 0, 0, 0))
-                    .Where(registrationUsers => registrationUsers.WorkingShiftRegistration.EndDate < new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59))
-                    .ToList();
-            }
-            else if (queryType == "month")
+
+            if (queryType == "month" || queryType == "registered_month")
             {
                 return _context.WorkingShiftRegistrationUsers
                     .Include(p => p.User)
@@ -290,23 +361,6 @@ namespace Services.Services
                     .Where(registrationUsers => registrationUsers.WorkingShiftRegistration.WorkingShift.StartTime.Year == monthOfYear.Year)
                     .ToList();
             }
-        }
-
-        public List<User> GetRegisteredUserOfWorkingShift(int id)
-        {
-            var workingShift = _context.WorkingShifts
-                .Include(workingShift => workingShift.WorkingShiftRegistration)
-                    .ThenInclude(registration => registration.RegisteredUsers)
-                .FirstOrDefault(p => p.Id == id, null);
-
-            if (workingShift == null ||
-                workingShift.WorkingShiftRegistration == null ||
-                workingShift.WorkingShiftRegistration.RegisteredUsers == null)
-            {
-                throw new Exception("Working shift not found");
-            }
-
-            return workingShift.WorkingShiftRegistration.RegisteredUsers;
         }
 
         public List<WorkingShiftDayConfig> GetWorkingShiftDayConfigs(string query, string queryType)
@@ -338,8 +392,11 @@ namespace Services.Services
                 type = WorkingShiftDayConfigType.Holiday;
             }
 
+            var normalizedDate = workingShiftDayConfigDTO.Date.Date;
+
             var workingShiftDayConfig = _mapper.Map<WorkingShiftDayConfig>(workingShiftDayConfigDTO);
             workingShiftDayConfig.Type = type;
+            workingShiftDayConfig.Date = normalizedDate;
 
             _context.WorkingShiftDayConfigs.Add(workingShiftDayConfig);
             _context.SaveChanges();
@@ -392,12 +449,12 @@ namespace Services.Services
 
             List<WorkingShift> workingShifts = new List<WorkingShift>();
 
-            for (var date = startDateOfMonth; 
-                date <= endDateOfMonth; 
+            for (var date = startDateOfMonth;
+                date <= endDateOfMonth;
                 date = date.AddDays(1))
             {
 
-                if (!shiftDTO.WeekDayConfigs[(int) date.DayOfWeek])
+                if (!shiftDTO.WeekDayConfigs[(int)date.DayOfWeek])
                 {
                     continue;
                 }
