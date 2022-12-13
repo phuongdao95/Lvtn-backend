@@ -32,7 +32,13 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\" />
+    <Folder Include="TrainedImages\" />
     <Folder Include="Resources\VirtualSpace\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\7dee1a43-b0eb-465b-b44c-c3b07f64068bchoose_sql_database.png" />
   </ItemGroup>
 
 </Project>

@@ -258,41 +258,58 @@ namespace lvtn_backend.Controllers
             try
             {
                 var payslips = _context.Payslips.Where(payslip => payslip.PayrollId == id)
-                    .Include(payslip => payslip.Employee);
+                    .Include(payslip => payslip.Employee)
+                    .ToList();
 
                 var totalEmployee = payslips.Count();
 
                 decimal totalDeduction = payslips
                     .Select(payslip => payslip.TotalDeduction ?? decimal.Zero)
-                    .Aggregate((result, item) => result + item);
+                    .Aggregate(decimal.Zero, (result, item) => result + item);
 
                 decimal totalAllowance = payslips
                     .Select(payslip => payslip.TotalAllowance ?? decimal.Zero)
-                    .Aggregate((result, item) => result + item);
+                    .Aggregate(decimal.Zero,(result, item) => result + item);
 
                 decimal totalBonus = payslips
                     .Select(payslip => payslip.TotalBonus ?? decimal.Zero)
-                    .Aggregate((result, item) => result + item);
+                    .Aggregate(decimal.Zero, (result, item) => result + item);
 
+                decimal totalActualSalary = payslips
+                    .Select(payslip => payslip.ActualSalary ?? decimal.Zero)
+                    .Aggregate(decimal.Zero, (result, item) => result + item);
 
                 var top10PayslipOrderByBonus = payslips
                     .OrderByDescending(p => p.TotalBonus ?? 0)
-                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, payslip.TotalBonus } );
+                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, Value = payslip.TotalBonus } )
+                    .OrderByDescending(x => x.Value)
+                    .Take(10)
+                    .ToList();
 
                 var top10PayslipOrderByDeduction = payslips
                     .OrderByDescending(p => p.TotalBonus ?? 0)
-                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, payslip.TotalDeduction });
+                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, Value = payslip.TotalDeduction })
+                    .OrderByDescending(x => x.Value)
+                    .Take(10)
+                    .ToList();
 
                 var top10PayslipOrderByAllowance = payslips
                     .OrderByDescending(p => p.TotalBonus ?? 0)
-                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, payslip.TotalAllowance });
+                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, Value = payslip.TotalAllowance })
+                    .OrderByDescending(x => x.Value)
+                    .Take(10)
+                    .ToList();
 
                 var top10PayslipOrderByTotalSalary = payslips
                     .OrderByDescending(p => p.TotalBonus ?? 0)
-                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, payslip.ActualSalary });
+                    .Select(payslip => new { payslip.Employee.Name, payslip.Employee.Username, Value = payslip.ActualSalary })
+                    .OrderByDescending(x => x.Value)
+                    .Take(10)
+                    .ToList();
 
                 return Ok(new Dictionary<string, object>
                 {
+                    ["totalActualSalary"] = totalActualSalary,
                     ["totalEmployee"] = totalEmployee,
                     ["totalAllowance"] = totalAllowance,
                     ["totalDeduction"] = totalDeduction,
@@ -305,7 +322,7 @@ namespace lvtn_backend.Controllers
             }
             catch (Exception)
             {
-                return Ok();
+                return BadRequest();
             }
         }
 

@@ -5,7 +5,6 @@ using Models.Models;
 using Models.Repositories.DataContext;
 using org.matheval;
 using Services.SalaryManagement.Calculators;
-using System.Runtime.InteropServices;
 
 namespace Services.Services
 {
@@ -224,6 +223,100 @@ namespace Services.Services
             }
 
             return type;
+        }
+
+        private SalarySystemVariableKind mapFromFormulaArea(FormulaArea area)
+        {
+            var salarySystemVariableKind= new SalarySystemVariableKind();
+            if (area == FormulaArea.SalaryDelta)
+            {
+                salarySystemVariableKind = SalarySystemVariableKind.SalaryDelta;
+            }
+            else if (area == FormulaArea.Timekeeping)
+            {
+                salarySystemVariableKind = SalarySystemVariableKind.Timekeeping;
+            }
+            else 
+            {
+                salarySystemVariableKind = SalarySystemVariableKind.SalaryGroup;
+            }
+
+            return salarySystemVariableKind;
+        }
+
+        public bool CheckIfFormulaExistsByNameAndArea(string name, FormulaArea area)
+        {
+            var formula = _context.SalaryFormulas
+                .Where((formula) => formula.Name == name)
+                .Where((formula) => formula.Area == area)
+                .ToList();
+
+            var salarySystemVariableKind = mapFromFormulaArea(area);
+            var allFormulas = _context.SalaryFormulas.Where(variable => variable.Area == area);
+
+            if (allFormulas.Any((formula) => formula.Name == name))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool CheckIfVariableExistsByNameAndArea(string name, FormulaArea area)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
+            var variables = _context.SalaryVariables
+                .Where((formula) => formula.Name == name)
+                .Where((formula) => formula.Area == area)
+                .ToList();
+
+            var salarySystemVariableKind = mapFromFormulaArea(area);
+            var systemVariables = GetSystemVariables(salarySystemVariableKind);
+            var allVariables = _context.SalaryVariables.Where(variable => variable.Area == area);
+
+            if (systemVariables.Any((formula) => formula.Name == name) ||
+                allVariables.Any((formula) => formula.Name == name))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool CheckIfFormulaOrVariableDefineValid(string formulaDefine, FormulaArea area)
+        {
+            if (formulaDefine == "")
+            {
+                return false;
+            }
+
+            var salarySystemVariableKind = new SalarySystemVariableKind();
+
+            var expression = new Expression(formulaDefine);
+
+            if (expression.GetError().Any())
+            {
+                return false;
+            }
+
+            var variables = expression.getVariables();
+
+            var systemVariables = GetSystemVariables(salarySystemVariableKind);
+            var allVariables = _context.SalaryVariables.Where(variable => variable.Area == area);
+            foreach (var variable in variables)
+            {
+                if (!allVariables.Any((v) => v.Name == variable) ||
+                    !systemVariables.Any((v) => v.Name == variable))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public List<SalarySystemVariable> GetSystemVariables(SalarySystemVariableKind kind)

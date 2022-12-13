@@ -4,6 +4,6 @@
     {
         public bool IsUser { get; set; }
         public string Name { get; set; }
-        public WorkingShiftTimekeepingInfoDTO? response { get; set; }
+        public WorkingShiftTimekeepingHistoryInfoDTO? response { get; set; }
     }
 }

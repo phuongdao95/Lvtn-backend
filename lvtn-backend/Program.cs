@@ -10,6 +10,7 @@ using Models.Helpers;
 using lvtn_backend.Middleware;
 using lvtn_backend.Hubs;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,7 +94,6 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ISalaryDeltaService, SalaryDeltaService>();
-builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<PayrollService, PayrollService>();
 builder.Services.AddScoped<SalaryFormulaService, SalaryFormulaService>();
 builder.Services.AddScoped<GroupService, GroupService>();
@@ -107,6 +107,7 @@ builder.Services.AddScoped<IdentityService, IdentityService>();
 builder.Services.AddScoped<NotificationService, NotificationService>();
 builder.Services.AddScoped<WorkingShiftService, WorkingShiftService>();
 builder.Services.AddScoped<WorkingShiftTimekeepingService, WorkingShiftTimekeepingService>();
+builder.Services.AddScoped<WorkingShiftTimekeepingHistoryService, WorkingShiftTimekeepingHistoryService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -130,6 +131,8 @@ else
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
+
+app.UseStaticFiles();
 
 app.UseRouting();
 app.UseCors();

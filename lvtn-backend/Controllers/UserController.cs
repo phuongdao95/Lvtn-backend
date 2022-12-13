@@ -6,6 +6,9 @@ using Models.DTO.Request;
 using Models.DTO.Response;
 using Microsoft.AspNetCore.Authorization;
 using Services.Services;
+using System.Net.Http.Headers;
+using Models.Repositories.DataContext;
+using System.Net;
 
 namespace Models.Controllers
 {
@@ -14,18 +17,19 @@ namespace Models.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private IdentityService _identityService;
         private IEmployeeService _employeeService;
+        private EmsContext _emsContext;
         private IMapper _mapper;
 
         public UserController(
+
             IEmployeeService employeeService,
             IMapper mapper,
-            IdentityService identityService)
+            EmsContext emsContext)
         {
-            _identityService = identityService;
             _employeeService = employeeService;
             _mapper = mapper;
+            _emsContext = emsContext;
         }
 
         [HttpPost]
@@ -134,7 +138,35 @@ namespace Models.Controllers
 
 
         [HttpPost("/api/user/{id}/avatar")]
-        public IActionResult UploadAvatar(int id, IFormFile avatar)
+        public IActionResult UploadAvatar(int id, [FromForm] IFormFile file)
+        {
+            if (file.Length > 0)
+            {
+                var uploadFolder = Directory.GetCurrentDirectory() + "/wwwroot/images";
+                var fileName = Guid.NewGuid() + ContentDispositionHeaderValue.Parse(file.ContentDisposition)
+                    .FileName.Trim('"');
+
+                var finalPath = Path.Combine(uploadFolder, fileName);
+                using (var fileStream = new FileStream(finalPath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+
+                var employee = _employeeService.GetUserById(id);
+                employee.UrlImage = getUrlFromFileName(fileName);
+                _emsContext.Users.Update(employee);
+                _emsContext.SaveChanges();
+
+                return Ok($"File is uploaded Successfully");
+            }
+            else
+            {
+                return BadRequest("The File is not received.");
+            }
+        }
+
+        [HttpGet("/api/user/validation/name")]
+        public IActionResult CheckNameValid()
         {
             try
             {
@@ -146,9 +178,25 @@ namespace Models.Controllers
             }
         }
 
-        private string uploadFileAndGetImageUrl()
+        [HttpGet("/api/user/validation/username")]
+        public IActionResult CheckUserNameValid()
         {
-            return "";
+            try
+            {
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
+
+        private string getUrlFromFileName(string fileName)
+        {
+            var location = new Uri($"{Request.Scheme}://{Request.Host}/images/");
+
+            return location + fileName; 
+        }
+
     }
 }

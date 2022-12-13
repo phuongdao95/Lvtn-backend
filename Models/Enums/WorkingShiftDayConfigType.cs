@@ -3,7 +3,5 @@
     public enum WorkingShiftDayConfigType
     {
         Holiday,
-        PaidLeave,
-        UnpaidLeave
     }
 }

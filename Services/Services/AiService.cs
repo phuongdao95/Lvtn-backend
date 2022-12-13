@@ -116,6 +116,10 @@ namespace Services.Services
                                 + "_" + DateTime.Now.ToString("dd-mm-yyyy-hh-mm-ss") + ".png");
                         j++;
                     }
+                } 
+                else
+                {
+                    throw new Exception("Cannot detect face");
                 }
             }
         }

@@ -514,41 +514,47 @@ namespace lvtn_backend.Controllers
         {
             try
             {
+                var taskBoard = _context.TaskBoards.Where(board => board.Id == id)
+                    .Include(taskBoard => taskBoard.TaskColumns)
+                    .ThenInclude(taskColumn => taskColumn.Tasks)
+                    .ThenInclude(task => task.InCharge)
+                    .SingleOrDefault();
+
+                if (taskBoard == null)
+                {
+                    throw new Exception("Cannot find taskboard");
+                }
+
                 var totalEmployee = _context.Users
-                    .Where(user => user.TeamId == id)
+                    .Where(user => user.TeamId == taskBoard.TeamId)
                     .Count();
 
-                var totalTaskDone = _context.Tasks
-                    .Where(task => task.Column.BoardId == id)
-                    .Where(task => task.Type == TaskType.BASIC && task.Column.Name == "Done")
-                    .Count();
+                var taskDoneColumn = taskBoard.TaskColumns
+                    .Where(column => column.Name == "Done")
+                    .Single();
+                
+                var tasksDone = taskDoneColumn.Tasks;
 
-                var totalTaskNew = _context.Tasks
-                    .Where(task => task.Column.BoardId == id)
-                    .Where(task => task.Type == TaskType.BASIC && task.Column.Name == "Todo")
-                    .Count();
+                var totalTaskDone = tasksDone.Count();
 
-                var totalPointFinished = _context.Tasks
-                    .Where(task => task.Column.BoardId == id)
-                    .Where(task => task.Type == TaskType.BASIC)
-                    .Select(task => task.Point ?? 0)
-                    .Aggregate((result, item) => result + item);
+                var taskNewColumn = taskBoard.TaskColumns
+                    .Where(column => column.Name == "Todo")
+                    .Single();
 
+                var totalTaskNew = taskNewColumn.Tasks.Count();
 
-                var tasksDone = _context.Tasks
-                    .Where(task => task.Column.BoardId == id)
-                    .Where(task => task.Type == TaskType.BASIC && task.Column.Name == "Done")
-                    .ToList();
+                var totalPointFinished = tasksDone.Aggregate(0, (acc, item) => acc + (item.Point ?? 0));
 
                 var taskDoneByEightDays = getTotalTaskDoneByLastEightDays(tasksDone);
                 var pointFinishedByEightDays = getTotalPointByLastEightDays(tasksDone);
 
+
                 return Ok(new Dictionary<string, object>
                 {
+                    ["totalEmployeeCount"] =totalEmployee,
                     ["totalTaskDone"]=totalTaskDone,
                     ["totalPointFinished"] = totalPointFinished,
                     ["totalTaskNew"]=totalTaskNew,
-                    ["totalPointFinished"]=totalPointFinished,
                     ["taskDoneByEightDays"]=taskDoneByEightDays,
                     ["pointFinishedByEightDays"]=pointFinishedByEightDays,
                 });
@@ -606,7 +612,7 @@ namespace lvtn_backend.Controllers
             return tasksDone
                 .Where(task => task.CreatedAt.Date == date.Date)
                 .Select(task => task.Point ?? 0)
-                .Aggregate((result, item) => result + item);
+                .Aggregate(0, (result, item) => result + item);
         }
 
         private int getTotalTaskDoneByDate(List<Task> taskDones, DateTime date)
@@ -615,5 +621,7 @@ namespace lvtn_backend.Controllers
                 .Where(task => task.CreatedAt.Date == date.Date)
                 .Count();
         }
+
+
     }
 }
