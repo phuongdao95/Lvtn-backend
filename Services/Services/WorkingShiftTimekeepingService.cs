@@ -89,7 +89,7 @@ namespace Services.Services
             {
                 shifts = _context.WorkingShiftTimekeepings
                     .Where(s => s.EmployeeId == userId
-                        && s.CheckinTime.Value.Date.Equals(selectedDate.Value.Date))
+                        && s.WorkingShiftEvent.StartTime.Date.Equals(selectedDate.Value.Date))
                     .ToList();
             }
             foreach(var shift in shifts)
