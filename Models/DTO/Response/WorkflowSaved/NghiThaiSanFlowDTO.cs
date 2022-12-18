@@ -7,6 +7,8 @@ namespace Models.DTO.Response.WorkflowSaved
     {
         public int FlowId { get; set; }
         public int UserCreatedId { get; set; }
+        public string UserCreatedName { get; set; }
+        public DateTime CreatedTime { get; set; }
         public WorkflowStatus Status { get; set; }
         public DateTime StartDate { get; set; }
         public bool IsHusBand { get; set; }

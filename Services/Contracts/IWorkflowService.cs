@@ -34,5 +34,18 @@ namespace Services.Contracts
         List<Workflow> GetWorkflowRequestsByApproverId(int approverId);
 
         public DepartmentAndUserSelectionDTO GetSelections();
+
+        //
+        //
+        //
+        //
+        /*
+        ** Leave Balance service
+        ** Leave Balance service
+        ** Leave Balance service
+         */
+        List<UserLeaveBalanceDTO>? GetUserFromDepartment(int managerId);
+        UserLeaveBalanceDTO GetUserLeaveBalance(int userId);
+        void AddOrUpdateLeaveBalance(ChangeLeaveBalanceDTO dto);
     }
 }

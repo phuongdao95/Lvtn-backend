@@ -13,8 +13,7 @@ namespace Models.Models
         public string? Password { get; set; }
         public string? UrlImage { get; set; }
         [Required]
-        public decimal BaseSalary { get; set; }      
-        public decimal LeaveBalance { get; set; }
+        public decimal BaseSalary { get; set; }
         public string? Address { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
@@ -28,6 +27,7 @@ namespace Models.Models
         public int? BankInfoId { get; set; }
 
         // Navigation properties
+        public List<LeaveBalance>? LeaveBalances { get; set; }
         public Role? Role { get; set; }
         public Team? TeamManage { get; set; }
         public Department? DepartmentManage { get; set; }

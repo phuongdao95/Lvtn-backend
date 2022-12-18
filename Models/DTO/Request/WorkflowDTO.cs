@@ -27,6 +27,8 @@ namespace Models.DTO.Request
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public DateTime CheckedTime { get; set; }
+        public DateTime CheckedinTime { get; set; }
+        public DateTime CheckedoutTime { get; set; }
+        public int TimekeepingId { get; set; }
     }
 }
