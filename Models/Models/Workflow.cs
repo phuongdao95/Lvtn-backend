@@ -7,7 +7,7 @@ namespace Models.Models
     {
         public int Id { get; set; }
         public WorkflowStatus Status { get; set; } = WorkflowStatus.Submitted;
-        public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
+        public DateTime TimeStamp { get; set; } = DateTime.Now;
         public int UserCreatedId { get; set; }
 
         public User UserCreated { get; set; }
@@ -30,7 +30,8 @@ namespace Models.Models
 
     public class CheckInOutManualWorkflow : Workflow
     {
-        public bool IsIn { get; set; }
-        public DateTime CheckedTime { get; set; }
+        public DateTime CheckinTime { get; set; }
+        public DateTime CheckoutTime { get; set; }
+        public int TimekeepingId { get; set; }
     }
 }

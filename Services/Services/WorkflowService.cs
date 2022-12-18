@@ -106,12 +106,45 @@ namespace Services.Services
         {
             try
             {
-                return _context.Workflows.Include(w => w.WorkflowComments).Where(w => w.WorkflowComments.Select(wc => wc.UserId).Contains(approverId)).ToList();
+                var requestsHaveApproveId = _context.Workflows.Include(w => w.WorkflowComments)
+                    .Where(w => w.WorkflowComments.Select(wc => wc.UserId).Contains(approverId)).ToList();
+                var res = new List<Workflow>();
+                foreach(var workflow in requestsHaveApproveId)
+                {
+                    var listComment = workflow.WorkflowComments.Where(comment => comment.UserId == approverId);
+                    if (CheckIfContainSpecialComment(listComment))
+                    {
+                        res.Add(workflow);
+                    }
+                }
+                return res;
             }
             catch
             {
                 return new List<Workflow>();
             }
+        }
+
+        private bool CheckIfContainSpecialComment(IEnumerable<WorkflowComment>? comments)
+        {
+            if (comments == null || comments.Count() == 0)
+            {
+                return false;
+            }
+            var specialStatuses = new List<CommentStatus>() { CommentStatus.Approved, CommentStatus.Denied, CommentStatus.Pending };
+            foreach(var comment in comments)
+            {
+                if (comment == null)
+                {
+                    continue;
+                }
+                CommentStatus status = comment.Status;
+                if (specialStatuses.Contains(status))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /*
@@ -176,9 +209,9 @@ namespace Services.Services
         {
             try
             {
-                var nghiPhepFlow = _context.NghiPhepWorkflows.Include(f => f.WorkflowComments).ThenInclude(c => c.User).FirstOrDefault(w => w.Id == flowId);
+                var nghiPhepFlow = _context.NghiPhepWorkflows.Include(f => f.UserCreated).Include(f => f.WorkflowComments).ThenInclude(c => c.User).FirstOrDefault(w => w.Id == flowId);
                 var approveCommentList = nghiPhepFlow?.WorkflowComments
-                        .Where(wc => wc.RegularComment == false)
+                        .Where(wc => wc.RegularComment == false && wc.Status != CommentStatus.None)
                         .GroupBy(w => w.UserId)
                         .SelectMany(w => w.OrderByDescending(w => w.TimeStamp).Take(1))
                         .ToList();
@@ -186,6 +219,8 @@ namespace Services.Services
                 {
                     FlowId = flowId,
                     UserCreatedId = nghiPhepFlow?.UserCreatedId ?? 0,
+                    UserCreatedName = nghiPhepFlow.UserCreated.Name,
+                    CreatedTime = nghiPhepFlow.TimeStamp,
                     Reason = nghiPhepFlow.Reason,
                     Status = nghiPhepFlow.Status,
                     StartDate = nghiPhepFlow.StartDate,
@@ -226,7 +261,7 @@ namespace Services.Services
                 var listApprovers = GetApproverList(nghiPhepConfig.ApproveInfo.CustomApprovers, nghiPhepConfig.ApproveInfo.DepartmentIds).Where(a => a != null) ?? new List<User?>();
                 return new InitialWorkflowDTO()
                 {
-                    LeaveBalance = user.LeaveBalance,
+                    LeaveBalance = 0,
                     Approvers = listApprovers.Select(a => new ApproverStatusDTO()
                     {
                         Name = a.Name,
@@ -266,7 +301,7 @@ namespace Services.Services
         }
         public void UpdateNghiThaiSanWorkflow(NghiThaiSanDTO nghiThaiSanDTO)
         {
-            var nghiThaiSan = _context.NghiThaiSanWorkflows.FirstOrDefault(n => n.Id == nghiThaiSanDTO.Id);
+            var nghiThaiSan = _context.NghiThaiSanWorkflows.Include(f => f.WorkflowComments).FirstOrDefault(n => n.Id == nghiThaiSanDTO.Id);
             try
             {
                 if (nghiThaiSan?.Status == WorkflowStatus.Denied)
@@ -292,9 +327,9 @@ namespace Services.Services
         {
             try
             {
-                var nghiThaiSanFlow = _context.NghiThaiSanWorkflows.Include(f => f.WorkflowComments).ThenInclude(c => c.User).FirstOrDefault(w => w.Id == flowId);
+                var nghiThaiSanFlow = _context.NghiThaiSanWorkflows.Include(f => f.UserCreated).Include(f => f.WorkflowComments).ThenInclude(c => c.User).FirstOrDefault(w => w.Id == flowId);
                 var approveCommentList = nghiThaiSanFlow?.WorkflowComments
-                        .Where(wc => wc.RegularComment == false)
+                        .Where(wc => wc.RegularComment == false && wc.Status != CommentStatus.None)
                         .GroupBy(w => w.UserId)
                         .SelectMany(w => w.OrderByDescending(w => w.TimeStamp).Take(1))
                         .ToList();
@@ -302,6 +337,8 @@ namespace Services.Services
                 {
                     FlowId = flowId,
                     UserCreatedId = nghiThaiSanFlow?.UserCreatedId ?? 0,
+                    UserCreatedName = nghiThaiSanFlow.UserCreated.Name,
+                    CreatedTime = nghiThaiSanFlow.TimeStamp,
                     IsHusBand = nghiThaiSanFlow.IsHusband,
                     Status = nghiThaiSanFlow.Status,
                     StartDate = nghiThaiSanFlow.StartDate,
@@ -361,7 +398,9 @@ namespace Services.Services
             var checkInOutWorkflow = new CheckInOutManualWorkflow()
             {
                 UserCreatedId = checkInOutDTO.UserId,
-                CheckedTime = checkInOutDTO.CheckedTime
+                CheckinTime = checkInOutDTO.CheckedinTime,
+                CheckoutTime = checkInOutDTO.CheckedoutTime,
+                TimekeepingId = checkInOutDTO.TimekeepingId
             };
             var checkInOutConfig = _workflowConfigs.CheckInOutManualConfig;
             var listApprovers = GetApproverList(checkInOutConfig.ApproveInfo.CustomApprovers, checkInOutConfig.ApproveInfo.DepartmentIds).Where(a => a != null) ?? new List<User?>();
@@ -381,9 +420,9 @@ namespace Services.Services
         {
             try
             {
-                var checkInOutFlow = _context.CheckInOutManualWorkflows.Include(f => f.WorkflowComments).ThenInclude(c => c.User).FirstOrDefault(w => w.Id == flowId);
+                var checkInOutFlow = _context.CheckInOutManualWorkflows.Include(f => f.UserCreated).Include(f => f.WorkflowComments).ThenInclude(c => c.User).FirstOrDefault(w => w.Id == flowId);
                 var approveCommentList = checkInOutFlow?.WorkflowComments?
-                        .Where(wc => wc.RegularComment == false)
+                        .Where(wc => wc.RegularComment == false && wc.Status != CommentStatus.None)
                         .GroupBy(w => w.UserId)
                         .SelectMany(w => w.OrderByDescending(w => w.TimeStamp).Take(1))
                         .ToList();
@@ -391,8 +430,11 @@ namespace Services.Services
                 {
                     FlowId = flowId,
                     UserCreatedId = checkInOutFlow?.UserCreatedId ?? 0,
+                    UserCreatedName = checkInOutFlow.UserCreated.Name,
+                    CreatedTime = checkInOutFlow.TimeStamp,
                     Status = checkInOutFlow.Status,
-                    CheckedTime = checkInOutFlow.CheckedTime,
+                    CheckinTime = checkInOutFlow.CheckinTime,
+                    CheckoutTime = checkInOutFlow.CheckoutTime,
 
                     Approvers = approveCommentList?.Select(c => new ApproverStatusDTO()
                     {
@@ -475,15 +517,81 @@ namespace Services.Services
             };
         }
 
-        private List<DropdownSelectionDTO> GetDepartmentInfo(List<int> departmentIds)
+        /*
+        ** Leave Balance service
+        ** Leave Balance service
+        ** Leave Balance service
+         */
+
+        public List<UserLeaveBalanceDTO>? GetUserFromDepartment(int managerId)
         {
-            var departmentList = _context.Departments.Where(d => departmentIds.Contains(d.Id));
-            return departmentList.Select(d => new DropdownSelectionDTO() { Id = d.Id, Text = d.Name }).ToList();
+            _context.ChangeTracker.LazyLoadingEnabled = false;
+            var department = _context.Departments.Include("Teams.Members.LeaveBalances").SingleOrDefault(d => d.ManagerId == managerId);
+            var users = department?.Teams?.SelectMany(t => t.Members).ToList();
+            return users?
+                    .Select(u => new UserLeaveBalanceDTO()
+                    {
+                        UserId = u.Id,
+                        Name = u.Name,
+                        LeaveBalances = u.LeaveBalances?.Select(l => new LeaveBalanceDTO()
+                        {
+                            LeaveId = l.Id,
+                            Year = l.Year,
+                            TotalDays = l.TotalDays,
+                            TakenDays = l.TakenDays
+                        }).ToList()
+                    })?.ToList();
         }
-        private List<DropdownSelectionDTO> GetUserInfo(List<int> userIds)
+
+        public UserLeaveBalanceDTO? GetUserLeaveBalance(int userId)
         {
-            var userList = _context.Users.Where(u => userIds.Contains(u.Id));
-            return userList.Select(u => new DropdownSelectionDTO() { Id = u.Id, Text = u.Name }).ToList();
+            var user = _context.Users.Include(u => u.LeaveBalances).SingleOrDefault(u => u.Id == userId);
+            return new UserLeaveBalanceDTO()
+            {
+                UserId = userId,
+                Name = user.Name,
+                LeaveBalances = user.LeaveBalances.Select(l => new LeaveBalanceDTO()
+                {
+                    TotalDays = l.TotalDays,
+                    TakenDays = l.TakenDays,
+                    LeaveId = l.Id,
+                    Year = l.Year
+                }).ToList()
+            };
+        }
+
+        public void AddOrUpdateLeaveBalance(ChangeLeaveBalanceDTO dto)
+        {
+            var user = _context.Users.Include(u => u.LeaveBalances).SingleOrDefault(u => u.Id == dto.UserId);
+            var leaveList = user?.LeaveBalances;
+            var leaveYearList = leaveList?.Select(l => l.Year);
+            if (leaveYearList != null)
+            {
+                if (leaveYearList.Contains(dto.Year))
+                {
+                    var leave = leaveList.SingleOrDefault(l => l.Year == dto.Year);
+                    leave.TotalDays = dto.TotalDays;
+                }
+                else
+                {
+                    user.LeaveBalances.Add(new LeaveBalance()
+                    {
+                        Year = dto.Year,
+                        TotalDays = dto.TotalDays,
+                        TakenDays = 0
+                    });
+                }
+            }
+            else
+            {
+                user.LeaveBalances.Add(new LeaveBalance()
+                {
+                    Year = dto.Year,
+                    TotalDays = dto.TotalDays,
+                    TakenDays = 0
+                });
+            }
+            _context.SaveChanges();
         }
     }
 }

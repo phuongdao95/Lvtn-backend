@@ -2,37 +2,37 @@
   "NghiPhepConfig": {
     "ApproveInfo": {
       "Sequence": false,
-      "Minimum": 0,
+      "Minimum": 2,
       "DepartmentIds": [
-        5,
         8,
         7
       ],
       "CustomApprovers": [
-        8,
         29,
         20
       ]
     },
-    "LongHolidaySet": 7,
-    "OverDay": 7
+    "LongHolidaySet": 0,
+    "OverDay": 0
   },
   "NghiThaiSanConfig": {
     "ApproveInfo": {
       "Sequence": false,
-      "Minimum": 0,
+      "Minimum": 5,
       "DepartmentIds": [
         1,
-        4
+        4,
+        8
       ],
       "CustomApprovers": [
         23,
         45,
         67,
-        15
+        15,
+        16
       ]
     },
-    "Primary": 7,
+    "Primary": 0,
     "Secondary": 0
   },
   "WfhConfig": {
@@ -56,16 +56,14 @@
   "CheckInOutManualConfig": {
     "ApproveInfo": {
       "Sequence": false,
-      "Minimum": 3,
+      "Minimum": 4,
       "DepartmentIds": [
         1,
-        2,
-        3,
-        4
+        2
       ],
       "CustomApprovers": [
-        4,
-        6
+        6,
+        22
       ]
     }
   },

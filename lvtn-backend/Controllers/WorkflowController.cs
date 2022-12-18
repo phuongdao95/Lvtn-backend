@@ -7,6 +7,7 @@ using Models.DTO.WorkflowConfigs;
 using Models.Enums;
 using Models.Models;
 using Services.Contracts;
+using Services.Services;
 using System.Text.Json;
 
 namespace lvtn_backend.Controllers
@@ -19,9 +20,11 @@ namespace lvtn_backend.Controllers
         private readonly IWorkflowService _workflowService;
         private readonly IMapper _mapper;
         private readonly WorkflowConfigs _workflowConfigs;
-        public WorkflowController(IWorkflowService workflowService, IMapper mapper)
+        private readonly WorkingShiftTimekeepingService _workingShiftTimekeepingService;
+        public WorkflowController(IWorkflowService workflowService, WorkingShiftTimekeepingService ws, IMapper mapper)
         {
             _workflowService = workflowService;
+            _workingShiftTimekeepingService = ws;
             _mapper = mapper;
             _workflowConfigs = new WorkflowConfigs();
             using (var r = new StreamReader("../Models/DTO/WorkflowConfigs/workflowconfigs.json"))
@@ -47,12 +50,14 @@ namespace lvtn_backend.Controllers
         {
             var requestList = _workflowService.GetWorkflowRequestsByApproverId(userId);
             var response = _mapper.Map<IEnumerable<Workflow>, IEnumerable<WorkflowInformationDTO>>(requestList);
+            var actions = new List<WorkflowActionType> { WorkflowActionType.NewWorkflow, WorkflowActionType.ApproveWorkflow, WorkflowActionType.DenyWorkflow };
             foreach (var item in response)
             {
                 var commentList = requestList?
                                     .FirstOrDefault(w => w.Id == item.Id)?
                                     .WorkflowComments?.Where(c => c.UserId == userId)?
-                                    .Where(c => c.Status != CommentStatus.None);
+                                    .Where(c => c.Status != CommentStatus.None)
+                                    .Where(c => actions.Contains((WorkflowActionType)c.Action));
                 var lastSpecialComment = commentList?.OrderByDescending(c => c.TimeStamp).FirstOrDefault();
                 item.ApproverStatus = (int)lastSpecialComment?.Status;
             }
@@ -230,6 +235,52 @@ namespace lvtn_backend.Controllers
         public IActionResult PostComment(WorkflowUserCommentDTO comment)
         {
             _workflowService.AddComment(comment);
+            return Ok();
+        }
+
+
+
+        /*
+        ** Leave Balance service
+        ** Leave Balance service
+        ** Leave Balance service
+         */
+
+        [HttpGet("members/leave/{managerId}")]
+        public IActionResult GetLeaveOfMembers(int managerId)
+        {
+            return Ok(_workflowService.GetUserFromDepartment(managerId));
+        }
+
+        [HttpGet("member/leave/{userId}")]
+        public IActionResult GetLeaveOfOneMember(int userId)
+        {
+            return Ok(_workflowService.GetUserLeaveBalance(userId));
+        }
+
+        [HttpPost("member/leave")]
+        public IActionResult AddOrUpdateLeaveBalance(ChangeLeaveBalanceDTO dto)
+        {
+            _workflowService.AddOrUpdateLeaveBalance(dto);
+            return Ok();
+        }
+
+        [HttpGet("get-shifts/{userId}/{day}")]
+        public IActionResult GetShiftsCurrentMonth(int userId, int day)
+        {
+            return Ok(_workingShiftTimekeepingService.GetAllShiftsInAMonth(userId, day));
+        }
+
+        [HttpPost("update-shift")]
+        public IActionResult UpdateManualShift(ManualShiftDTO dto)
+        {
+            _workingShiftTimekeepingService.Update(dto.TimekeepingId, new WorkingShiftTimekeepingDTO()
+            {
+                DidCheckIn = true,
+                DidCheckout = true,
+                CheckinTime = dto.CheckinTime,
+                CheckoutTime = dto.CheckoutTime
+            });
             return Ok();
         }
     }
