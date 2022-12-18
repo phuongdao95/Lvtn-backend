@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Models.DTO.Request;
 using Models.Models;
 using Models.Repositories.DataContext;
+using Services.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,37 +18,76 @@ namespace lvtn_backend.Controllers
     {
         public IConfiguration _configuration;
         private readonly EmsContext _context;
+        private IdentityService _identityService;
 
-        public TokenController(IConfiguration config, EmsContext context)
+        public TokenController(
+            IConfiguration configuration, 
+            EmsContext context,
+            IdentityService identityService)
         {
-            _configuration = config;
+            _configuration = configuration;
             _context = context;
+            _identityService = identityService;
         }
 
-        [HttpPost("/is-logged-in")]
+        [HttpGet("/is-logged-in")]
         public IActionResult CheckLoggedIn()
         {
             try
             {
-                return Ok();
+                return Ok(new Dictionary<string, object>
+                {
+                    ["value"] = true,
+                });
             }
             catch (Exception)
             {
                 return BadRequest();
             }
         }
-        [HttpPost("/page-access")]
-        public IActionResult CheckAccessRight()
+
+        [HttpGet("/page-access")]
+        public IActionResult CheckAccessRight([FromQuery] string pageName)
         {
             try
             {
-                return Ok();
+                var userId = _identityService.GetCurrentUserId();
+                var user = _context.Users.Where(user => user.Id == userId)
+                    .Include(user => user.Role)
+                    .ThenInclude(role => role.Permissions)
+                    .FirstOrDefault();
+
+                if (user == null || user.Role == null)
+                {
+                    throw new Exception("Unauthorized");
+                }
+
+                var permissions = user.Role.Permissions;
+
+                if (permissions == null)
+                {
+                    throw new Exception("Unauthorized");
+                }
+
+                var pageAccessPermissions = permissions
+                    .Where(p => p.Module == "page_access")
+                    .Select(p => p.Name)
+                    .ToList();
+                
+                var isAllowToAccessPage = pageAccessPermissions.Contains("page_access." + pageName);
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["value"] = isAllowToAccessPage
+                });
             }
             catch (Exception)
             {
                 return BadRequest();
             }
         }
+
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -109,9 +150,6 @@ namespace lvtn_backend.Controllers
                         },
                         {
                             "user_role", user.Role.Name
-                        },
-                        {
-                            "page_access_list", pageAccessList  
                         }
                     });
 

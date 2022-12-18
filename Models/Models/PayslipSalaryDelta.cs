@@ -14,6 +14,7 @@ namespace Models.Models
         public DateTime ToMonth { get; set; }
         public decimal Amount { get; set; }
         public string? FormulaDefine { get; set; }
+        public bool? CalculatedSuccess { get; set; }
         public int? PayslipId { get; set; }
         public Payslip? Payslip { get; set; }
     }

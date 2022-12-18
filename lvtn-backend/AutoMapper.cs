@@ -56,11 +56,12 @@ namespace Models
             CreateMap<User, UserInfoDTO>()
                 .ForMember(des => des.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(des => des.TeamName, opt => opt.MapFrom(src => src.Team != null ? src.Team.Name : "None"))
-                .ForMember(des => des.RoleName, opt => opt.MapFrom(src => src.Role != null ? src.Role.Name : "None"));
+                .ForMember(des => des.RoleName, opt => opt.MapFrom(src => src.Role != null ? src.Role.Name : "None"))
+                .ForMember(des => des.DepartmentName, opt => opt.MapFrom(src => src.DepartmentManage != null ? src.DepartmentManage.Name : "None"));
 
             CreateMap<Team, TeamInfoDTO>()
                 .ForMember(des => des.MemberIds, opt => opt.MapFrom(src => src.Members.Select(member => member.Id)))
-                .ForMember(des => des.MemberNames, opt => opt.MapFrom(src => src.Members.Select(member => member.Name)))
+                .ForMember(des => des.MemberNames, opt => opt.MapFrom(src => src.Members.Select(member => $"{member.Name} ({member.Username})")))
                 .ForMember(des => des.Description, opt => opt.MapFrom(src => src.Detail))
                 .ForMember(des => des.LeaderName, opt => opt.MapFrom(src => src.Leader != null ?
                     src.Leader.Name : "None"))

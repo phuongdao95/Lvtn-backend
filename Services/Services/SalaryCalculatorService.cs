@@ -32,15 +32,24 @@ namespace Services.Services
 
             foreach (var user in users)
             {
-                var salaryCalculator = new TotalSalaryCalculator(
-                    _context, user, payrollDTO.Month, payrollDTO.Year);
+                var payslip = new Payslip();
+                try
+                {
+                    var salaryCalculator = new TotalSalaryCalculator(
+                        _context, user, payrollDTO.Month, payrollDTO.Year);
 
-                var payslip = salaryCalculator.CalculateSalary();
+                    payslip = salaryCalculator.CalculateSalary();
+                    payslip.Name = payrollDTO.Name;
+                    payslip.Description = payrollDTO.Description;
+                    payslip.Month = payrollDTO.Month;
+                    payslip.Year = payrollDTO.Year;
+                    payslip.CalculatedSuccess = true;
+                }
+                catch (Exception)
+                {
+                    payslip.CalculatedSuccess = false;
+                }
 
-                payslip.Name = payrollDTO.Name;
-                payslip.Description = payrollDTO.Description;
-                payslip.Month = payrollDTO.Month;
-                payslip.Year = payrollDTO.Year;
                 result.PayslipList.Add(payslip);
             }
             

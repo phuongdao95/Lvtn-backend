@@ -7,6 +7,6 @@ namespace Models.DTO.Response
         public string? Name { get; set; }
         public string? Description { get; set; }
         public List<string>? UserIds { get; set; }
-        public List<string>? UserUserames { get; set; }
+        public List<string>? UserUsernames { get; set; }
     }
 }

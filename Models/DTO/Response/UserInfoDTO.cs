@@ -13,6 +13,7 @@
         public string? Gender { get; set; }
         public DateTime Birthday { get; set; }
         
+        public string? CitizenId { get; set; }
         public decimal BaseSalary { get; set; }
         public string? BankName { get; set; }
         public string? BankBranch { get; set; }

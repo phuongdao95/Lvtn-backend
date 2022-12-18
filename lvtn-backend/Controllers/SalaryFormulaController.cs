@@ -89,21 +89,25 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                FormulaArea area = new FormulaArea();
-                if (salaryFormulaDto.FormulaArea == "timekeeping")
+                var dataType = new VariableDataType();
+                if (salaryFormulaDto.DataType == "Decimal")
                 {
-                    area = FormulaArea.Timekeeping;
+                    dataType = VariableDataType.Decimal;
                 }
-                else if (salaryFormulaDto.FormulaArea == "salarydelta")
+                else if (salaryFormulaDto.DataType == "Integer")
                 {
-                    area = FormulaArea.SalaryDelta;
+                    dataType = VariableDataType.Integer;
                 }
-                else
+                else if (salaryFormulaDto.DataType == "Text")
                 {
-                    area = FormulaArea.SalaryConfig;
+                    dataType = VariableDataType.Text;
+                }
+                else if (salaryFormulaDto.DataType == "Boolean")
+                {
+                    dataType = VariableDataType.Boolean;
                 }
 
-                var isValid = _formulaService.CheckIfFormulaOrVariableDefineValid(salaryFormulaDto.Value ?? "", area);
+                var isValid = _formulaService.CheckIfVariableDefineValid(salaryFormulaDto.Value ?? "", dataType);
                 return Ok(new Dictionary<string, object>
                 {
                     ["value"] = isValid
@@ -136,7 +140,7 @@ namespace lvtn_backend.Controllers
                     area = FormulaArea.SalaryConfig;
                 }
 
-                var isValid = _formulaService.CheckIfFormulaOrVariableDefineValid(salaryFormulaDto.Define ?? "", area);
+                var isValid = _formulaService.CheckIfFormulaDefineIsValid(salaryFormulaDto.Define ?? "", area);
                 return Ok(new Dictionary<string, object>
                 {
                     ["value"] = isValid
@@ -262,6 +266,7 @@ namespace lvtn_backend.Controllers
             {
                 var variable = _formulaService.GetVariableById(id);
                 var variableInfoDTO = _mapper.Map<SalaryVariableInfoDTO>(variable);
+                
                 return Ok(variableInfoDTO);
             }
             catch (Exception)
@@ -272,7 +277,7 @@ namespace lvtn_backend.Controllers
 
         [HttpGet("/api/SalaryVariable/")]
         public IActionResult GetVariableList(
-            [FromQuery] string? query = "",
+            [FromQuery(Name = "kind")] string? query = "",
             [FromQuery] string? queryType = "area")
         {
             try

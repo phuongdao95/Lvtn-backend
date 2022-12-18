@@ -90,6 +90,9 @@ namespace Services.Services
             if (queryType == "username")
             {
                 return _context.Users.Where((user) => query.Contains(user.Username) || user.Username.Contains(query))
+                    .Include(user => user.Team)
+                    .Include(user => user.DepartmentManage)
+                    .Include(user => user.Role)
                     .Skip(offset)
                     .Take(limit)
                     .ToList();
@@ -97,6 +100,9 @@ namespace Services.Services
             else
             {
                 return _context.Users.Where((user) => query.Contains(user.Name) || user.Name.Contains(query))
+                    .Include(user => user.Team)
+                    .Include(user => user.DepartmentManage)
+                    .Include(user => user.Role)
                     .Skip(offset)
                     .Take(limit)
                     .ToList();

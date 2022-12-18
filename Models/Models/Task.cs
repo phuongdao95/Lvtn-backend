@@ -19,7 +19,6 @@ namespace Models.Models
         public int? Order { get; set; }
         public int? ParentTaskId { get; set; }
 
-        [Required]
         public int? ColumnId { get; set; }
         public Task? ParentTask { get; set; }
         public TaskColumn? Column { get; set; }

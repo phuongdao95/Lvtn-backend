@@ -12,19 +12,35 @@
             "department",
             "group",
 
-            "dab",
+            "salary_delta",
             "salary_formula",
-            "salary_variable",
+            "salary_group",
+            "taskbaord",
             "payroll",
             "payslip",
             "task",
             "board",
-
         };
 
         public static readonly List<string> PageAccessClaims = new List<string>
         {
-            "my_profile",
+            "approve_workflow_list",
+            "approve_workflow_config_list",
+            "my_requests",
+            "my_todo_requests",
+            "user_nghi_phep",
+            "user_nghi_thai_san",
+            "user_check_in_out",
+            "config_nghi_phep",
+            "config_nghi_thai_san",
+            "config_check_in_out",
+            "user_nghi_phep_view",
+            "user_nghi_thai_san_view",
+            "user_check_in_out_view",
+            "user_nghi_phep_todo",
+            "user_nghi_thai_san_todo",
+            "user_check_in_out_todo",
+
             "user_list",
             "role_list",
             "permission_list",
@@ -32,31 +48,52 @@
             "group_list",
             "department_list",
 
+            "taskboard_list",
+            "taskboard_detail",
+            "taskboard_label_list",
+            "taskboard_column_list",
+            "taskboard_report",
+
+            "image_registration",
+            "timekeeping_schedule",
+            "workingshift_registration",
+            "workingshift",
+            "registered_workingshift",
+            "workingshift_dayconfig",
+
+            "salary_list",
             "dab_list",
-            "my_dab",
-            "my_payslip",
-            "salary_formula_list",
-            "salary_variable_list",
-            "salary_group_list",
+            "formula_variable_list",
             "payroll_list",
+            "payroll_detail",
+            "payslip_detail",
+            "salary_group_list",
+            "my_payslip",
+            "my_payslip_detail",
+            "salary_report",
 
-            "board_list",
-            "task_list",
-            "board_list_of_team",
-            "task_list_of_board",
-            "label_list_of_board",
-
-            "timekeeping_image_registration",
-            "timekeeping_check_in",
-            "timekeeping_check_out",
-            "timekeeping_list",
-            "workingshift_list",
-
-
+            "profile",
         };
 
         public static List<string> AdminUserPageAccessClaims = new List<string>
         {
+            "approve_workflow_list",
+            "approve_workflow_config_list",
+            "my_requests",
+            "my_todo_requests",
+            "user_nghi_phep",
+            "user_nghi_thai_san",
+            "user_check_in_out",
+            "config_nghi_phep",
+            "config_nghi_thai_san",
+            "config_check_in_out",
+            "user_nghi_phep_view",
+            "user_nghi_thai_san_view",
+            "user_check_in_out_view",
+            "user_nghi_phep_todo",
+            "user_nghi_thai_san_todo",
+            "user_check_in_out_todo",
+
             "user_list",
             "role_list",
             "permission_list",
@@ -64,35 +101,72 @@
             "group_list",
             "department_list",
 
-            "dab_list",
-            "salary_formula_list",
-            "salary_variable_list",
-            "salary_group_list",
-            "payroll_list",
-            "board_list",
-            "task_list",
+            "taskboard_list",
+            "taskboard_detail",
+            "taskboard_label_list",
+            "taskboard_column_list",
+            "taskboard_report",
 
-            "timekeeping_list",
-            "workingshift_list",
+            "image_registration",
+            "timekeeping_schedule",
+            "workingshift_registration",
+            "workingshift",
+            "registered_workingshift",
+            "workingshift_dayconfig",
+
+            "salary_list",
+            "dab_list",
+            "formula_variable_list",
+            "payroll_list",
+            "payroll_detail",
+            "payslip_detail",
+            "salary_group_list",
+            "my_payslip",
+            "my_payslip_detail",
+            "salary_report",
+
+            "profile",
         };
 
         public static List<string> NormalUserPageAccessClaims = new List<string>
         {
-            "my_dab",
+            "approve_workflow_list",
+            "approve_workflow_config_list",
+            "my_requests",
+            "my_todo_requests",
+            "user_nghi_phep",
+            "user_nghi_thai_san",
+            "user_check_in_out",
+            "config_nghi_phep",
+            "config_nghi_thai_san",
+            "config_check_in_out",
+            "user_nghi_phep_view",
+            "user_nghi_thai_san_view",
+            "user_check_in_out_view",
+            "user_nghi_phep_todo",
+            "user_nghi_thai_san_todo",
+            "user_check_in_out_todo",
+
+            "profile",
             "my_payslip",
-            "board_list_of_team",
-            "task_list_of_board",
-            "label_list_of_board",
-            "timekeeping_image_registration",
-            "timekeeping_check_in",
-            "timekeeping_check_out",
+            "my_payslip_detail",
+            "image_registration",
+            "timekeeping_schedule",
+            "workingshift_registration",
+            "registered_workingshift",
+
+            "taskboard_list",
+            "taskboard_detail",
+            "taskboard_label_list",
+            "taskboard_column_list",
+            "taskboard_report",
         };
 
         public static List<string> GenerateResourceAccessClaims()
         {
             var result = new List<string> { };
             ModuleNames.ForEach((module) =>
-            {   
+            {
                 result.AddRange(generateResourceClaimsForModule(module));
             });
 
@@ -117,18 +191,28 @@
 
         private static string generatePageAccessClaimName(string page)
         {
-            return $"page_access.{page}";
+            return $"{page}";
         }
 
-      
+
         private static string generateResourceClaimNameForModule(string module, string action)
         {
-            return $"resource.{module}.{action}";
+            return $"{module}.{action}";
         }
 
         public static List<string> GeneratePageAccessClaimsForAdminUser()
         {
             return AdminUserPageAccessClaims.Select(name => generatePageAccessClaimName(name)).ToList();
+        }
+
+        public static List<string> GenerateResourceAccessClaimsForAdminUser()
+        {
+            return GenerateResourceAccessClaims();
+        }
+
+        public static List<string> GenerateResourceAccessClaimsForNormalUser()
+        {
+            return GenerateResourceAccessClaims();
         }
 
         public static List<string> GeneratePageAccessClaimsForNormalUser()

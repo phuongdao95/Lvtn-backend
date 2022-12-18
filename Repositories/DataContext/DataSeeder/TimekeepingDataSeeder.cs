@@ -30,8 +30,8 @@ namespace Repositories.DataContext.DataSeeder
             var result = new List<WorkingShiftRegistration>();
             var index = 0;
 
-            DateTime startDate = new DateTime(2022, 9, 1);
-            DateTime endDate = new DateTime(2023, 1, 1);
+            DateTime startDate = new DateTime(2022, 10, 1);
+            DateTime endDate = new DateTime(2023, 2, 28);
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
@@ -105,7 +105,7 @@ namespace Repositories.DataContext.DataSeeder
             var index = 0;
 
             DateTime startDate = new DateTime(2022, 10, 1);
-            DateTime endDate = new DateTime(2023, 12, 31);
+            DateTime endDate = new DateTime(2023, 2, 28);
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {

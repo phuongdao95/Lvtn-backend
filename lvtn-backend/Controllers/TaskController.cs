@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Models.Enums;
@@ -622,6 +623,81 @@ namespace lvtn_backend.Controllers
                 .Count();
         }
 
+        [HttpPost("/api/epic/link/{id}/{taskId}")]
+        public IActionResult AddTaskToEpic(int id, int taskId)
+        {
+            try
+            {
+                _taskService.AddTaskToEpicTask(taskId, id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
 
+        [HttpDelete("/api/epic/task/{taskId}")]
+        public IActionResult RemoveTaskFromEpic(int taskId)
+        {
+            try
+            {
+                _taskService.RemoveTaskFromEpic(taskId);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("/api/board/{id}/orphan-task")]
+        public IActionResult GetTasksThatDoesNotBelongToAnyEpic(int id)
+        {
+            try
+            {
+                var tasks = _taskService.GetTaskNotBelongToAnyEpic(id);
+
+                var data = _mapper.Map<IEnumerable<TaskInfoDTO>>(tasks);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["data"] = data,
+                    ["count"] = count,
+                    ["total"] = total,
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("/api/epic/{id}/task")]
+        public IActionResult GetTasksOfEpic(int id)
+        {
+            try
+            {
+                var tasks = _taskService.GetTasksOfEpic(id);
+
+                var data = _mapper.Map<IEnumerable<TaskInfoDTO>>(tasks);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["data"] = data,
+                    ["count"] = count,
+                    ["total"] = total,
+                });   
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+        
     }
 }
