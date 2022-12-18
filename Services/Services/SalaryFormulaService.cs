@@ -5,6 +5,8 @@ using Models.Models;
 using Models.Repositories.DataContext;
 using org.matheval;
 using Services.SalaryManagement.Calculators;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design;
 
 namespace Services.Services
 {
@@ -163,14 +165,19 @@ namespace Services.Services
 
         public void UpdateVariable(int id, SalaryVariableDTO variableDTO)
         {
-            var mapped = _mapper.Map<SalaryVariable>(variableDTO);
-            mapped.Id = id;
-            mapped.DataType = GetVariableDataType(variableDTO.DataType);
-            mapped.Area = GetAreaFromText(variableDTO.FormulaArea);
+            var variable = _context.SalaryVariables.Find(id);
+            if (variable == null)
+            {
+                throw new Exception("Variable not found");
+            }
 
-            ensureVariableValid(mapped);
+            variable.DisplayName = variableDTO.DisplayName;
+            variable.Value = variableDTO.Value;
+            variable.Description = variableDTO.Description;
+            
+            ensureVariableValid(variable);
 
-            _context.SalaryVariables.Update(mapped);
+            _context.SalaryVariables.Update(variable);
             _context.SaveChanges();
         }
 
@@ -227,7 +234,7 @@ namespace Services.Services
 
         private SalarySystemVariableKind mapFromFormulaArea(FormulaArea area)
         {
-            var salarySystemVariableKind= new SalarySystemVariableKind();
+            var salarySystemVariableKind = new SalarySystemVariableKind();
             if (area == FormulaArea.SalaryDelta)
             {
                 salarySystemVariableKind = SalarySystemVariableKind.SalaryDelta;
@@ -287,14 +294,76 @@ namespace Services.Services
             return false;
         }
 
-        public bool CheckIfFormulaOrVariableDefineValid(string formulaDefine, FormulaArea area)
+        public bool CheckIfVariableExistsInAnyFormula(string variableName)
+        {
+            var allFormulas = _context.SalaryFormulas.ToList();
+
+            foreach (var formula in allFormulas)
+            {
+                var define = formula.Define;
+                var expression = new Expression(define);
+               
+                if (expression.getVariables().Any(name => name == variableName))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool CheckIfVariableDefineValid(string variableDefine, VariableDataType dataType)
+        {
+            if (variableDefine == "")
+            {
+                return false;
+            }
+
+            var expression = new Expression(variableDefine);
+            var variables = expression.getVariables();
+            if (variables.Count() > 0 || expression.GetError().Any())
+            {
+                return false;
+            }
+
+            return validateVariableWithDatatype(variableDefine, dataType);
+        }
+
+        private bool validateVariableWithDatatype(string expression, VariableDataType dataType)
+        {
+            try
+            {
+                if (dataType == VariableDataType.Text)
+                {
+                    var res = new Expression(expression).Eval<string>();
+                }
+                else if (dataType == VariableDataType.Integer)
+                {
+                    var res = new Expression(expression).Eval<int>();
+                }
+                else if (dataType == VariableDataType.Boolean)
+                {
+                    var res = new Expression(expression).Eval<bool>();
+                }
+                else if (dataType == VariableDataType.Decimal)
+                {
+                    var res = new Expression(expression).Eval<decimal>();
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool CheckIfFormulaDefineIsValid(string formulaDefine, FormulaArea area)
         {
             if (formulaDefine == "")
             {
                 return false;
             }
-
-            var salarySystemVariableKind = new SalarySystemVariableKind();
 
             var expression = new Expression(formulaDefine);
 
@@ -304,20 +373,75 @@ namespace Services.Services
             }
 
             var variables = expression.getVariables();
-
+            var salarySystemVariableKind = mapFromFormulaArea(area);
             var systemVariables = GetSystemVariables(salarySystemVariableKind);
             var allVariables = _context.SalaryVariables.Where(variable => variable.Area == area);
             foreach (var variable in variables)
             {
-                if (!allVariables.Any((v) => v.Name == variable) ||
+                if (!allVariables.Any((v) => v.Name == variable) &&
                     !systemVariables.Any((v) => v.Name == variable))
                 {
                     return false;
                 }
             }
 
+            return validateFormulaDataTypeToBeDecimal(formulaDefine, area);
+        }
+
+        private bool validateFormulaDataTypeToBeDecimal(string formulaDefine, FormulaArea area)
+        {
+            var expression = new Expression(formulaDefine);
+
+            var variables = expression.getVariables();
+            var salarySystemVariableKind = mapFromFormulaArea(area);
+            var allSystemVariables = GetSystemVariables(salarySystemVariableKind);
+            var allVariables = _context.SalaryVariables.Where(variable => variable.Area == area);
+            try
+            {
+                foreach (var variable in variables)
+                {
+                    if (allVariables.Any((v) => v.Name == variable))
+                    {
+                        var variableObj = allVariables.First((v) => v.Name == variable);
+                        bindDummyDataForValidation(expression, variable, variableObj.DataType);
+                    }
+                    else if (!allSystemVariables.Any((v) => v.Name == variable))
+                    {
+                        var variableObj = allVariables.First((v) => v.Name == variable);
+                        bindDummyDataForValidation(expression, variable, variableObj.DataType);
+                    }
+                }
+
+                decimal result = expression.Eval<decimal>();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
             return true;
         }
+
+        private void bindDummyDataForValidation(Expression expression, string variableName, VariableDataType dataType)
+        {
+            if (dataType == VariableDataType.Integer)
+            {
+                expression.Bind(variableName, 0);
+            }
+            else if (dataType == VariableDataType.Decimal)
+            {
+                expression.Bind(variableName, decimal.Zero);
+            }
+            else if (dataType == VariableDataType.Boolean)
+            {
+                expression.Bind(variableName, true);
+            }
+            else if (dataType == VariableDataType.Text)
+            {
+                expression.Bind(variableName, "");
+            }
+        }
+
 
         public List<SalarySystemVariable> GetSystemVariables(SalarySystemVariableKind kind)
         {

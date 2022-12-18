@@ -10,7 +10,7 @@ namespace Models.DTO.Response
         public string? DisplayName { get; set; }
         public string? Value { get; set; }
         public string? Description { get; set; }
-        public string? FormulaArea { get; set; }
+        public FormulaArea Area { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public VariableDataType DataType { get; set; }
     }

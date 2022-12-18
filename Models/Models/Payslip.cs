@@ -21,6 +21,7 @@ namespace Models.Models
         public int? PayrollId { get; set; }
         public int? Month { get; set; }
         public int? Year { get; set; }
+        public bool? CalculatedSuccess { get; set; }
         public List<PayslipSalaryDelta>? SalaryDeltas { get; set; }
         public List<PayslipWorkingShiftTimekeeping>? Timekeepings { get; set; }
         public decimal? ActualSalary { get; set; }

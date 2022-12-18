@@ -8,7 +8,6 @@ namespace Services.SalaryManagement.Calculators
 {
     public class SalaryDeltaCalculator
     {
-        private readonly User _user;
         private readonly SalaryDelta _salaryDelta;
         private readonly EmsContext _context;
         private readonly UserVariableBinder _userVariableBinder;
@@ -19,7 +18,6 @@ namespace Services.SalaryManagement.Calculators
             SalaryDelta salaryDelta)
         {
             _context = context;
-            _user = user;
             _salaryDelta = initSalaryDelta(salaryDelta);
             _userVariableBinder = new UserVariableBinder(context, user);
             _salaryVariableBinder = new SalaryVariableBinder(context);
@@ -42,7 +40,18 @@ namespace Services.SalaryManagement.Calculators
 
             if (formula == null)
             {
-                throw new Exception("formulaName not found");
+                return new PayslipSalaryDelta
+                {
+                    FormulaDefine = "!!invalid formula",
+                    Amount = 0,
+                    FromMonth = _salaryDelta.FromMonth,
+                    ToMonth = _salaryDelta.ToMonth,
+                    Name = _salaryDelta.Name,
+                    SalaryDeltaType = _salaryDelta.Type,
+                    GroupName = _salaryDelta.Group.Name,
+                    GroupId = _salaryDelta.GroupId,
+                    CalculatedSuccess = false,
+                };
             }
 
             var expression = new Expression(formula.Define);

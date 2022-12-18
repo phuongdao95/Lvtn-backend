@@ -101,6 +101,16 @@ namespace Services.Services
             return shifts;
         }
 
+        public List<WorkingShiftTimekeepingHistory> GetWorkingShiftTimekeepingHistories(int timekeepingId)
+        {
+            var timekeeping = _context.WorkingShiftTimekeepings
+                .Include(tk => tk.TimekeepingHistories)
+                .Where(timekeeping => timekeeping.Id == timekeepingId)
+                .Single();
+
+            return timekeeping.TimekeepingHistories;
+        }
+
         public List<WorkingShiftTimekeeping> GetWorkingShiftTimekeepingOfUser(int employeeId, DateTime startDate, DateTime endDate)
         {
             return _context.WorkingShiftTimekeepings

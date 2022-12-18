@@ -52,7 +52,37 @@ namespace Services.SalaryManagement.Calculators
 
             if (formula == null)
             {
-                throw new Exception("Formula not found");
+                return new PayslipWorkingShiftTimekeeping
+                {
+                    Amount = 0,
+                    DidCheckIn = _timekeeping.DidCheckIn,
+                    DidCheckout = _timekeeping.DidCheckout,
+                    CheckinTime = _timekeeping.CheckinTime,
+                    CheckoutTime = _timekeeping.CheckoutTime,
+                    StartTime = _workingShift.StartTime,
+                    EndTime = _workingShift.EndTime,
+                    FormulaDefine = "!!invalid formula",
+                    CalculatedSuccess = false,
+                };
+            }
+
+            if (!_timekeeping.DidCheckout ||
+                !_timekeeping.DidCheckout ||
+                _timekeeping.CheckinTime == null ||
+                _timekeeping.CheckinTime == null)
+            {
+                return new PayslipWorkingShiftTimekeeping
+                {
+                    Amount = 0,
+                    DidCheckIn = _timekeeping.DidCheckIn,
+                    DidCheckout = _timekeeping.DidCheckout,
+                    CheckinTime = _timekeeping.CheckinTime,
+                    CheckoutTime = _timekeeping.CheckoutTime,
+                    StartTime = _workingShift.StartTime,
+                    EndTime = _workingShift.EndTime,
+                    FormulaDefine = formula.Define,
+                    CalculatedSuccess = false,
+                };
             }
 
             var expression = new Expression(formula.Define);

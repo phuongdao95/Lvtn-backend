@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.Services;
 using System.Web;
+using org.matheval.Common;
 
 namespace Models.Controllers
 {
@@ -125,12 +126,23 @@ namespace Models.Controllers
             }
         }
 
-        [HttpGet("/api/workingshifttimekeeping/{id}/workingshiftimekeepinghistory")]
-        public IActionResult GetTimekeepingHistory()
+        [HttpGet("/api/workingshifttimekeeping/{id}/workingshifttimekeepinghistory")]
+        public IActionResult GetTimekeepingHistory(int id)
         {
             try
             {
-                return Ok();
+                var timekeepingHistories = _workingShiftTimekeepingService.GetWorkingShiftTimekeepingHistories(id);
+
+                var data = _mapper.Map<IEnumerable<WorkingShiftTimekeepingHistoryInfoDTO>>(timekeepingHistories);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["data"] = data,
+                    ["count"] = count,
+                    ["total"] = count,
+                });
             }
             catch (Exception)
             {

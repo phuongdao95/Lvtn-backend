@@ -333,6 +333,92 @@ namespace Services.Services
             _context.SaveChanges();
         }
 
+        public List<Task> GetTaskNotBelongToAnyEpic(int boardId)
+        {
+            var board = _context.TaskBoards
+                .Include(board => board.TaskColumns)
+                .Where(board => board.Id == boardId)
+                .FirstOrDefault();
+
+            if (board == null || board.TaskColumns == null)
+            {
+                throw new Exception("Board id null");
+            }
+
+            var boardColumnIds = board.TaskColumns.Select(c => c.Id).ToList();
+            var tasks = _context.Tasks
+                .Where(task => task.Type == TaskType.BASIC)
+                .Where(task => task.ParentTaskId == null)
+                .Where(task => boardColumnIds.Contains(task.ColumnId.Value))
+                .ToList();
+
+            return tasks;
+        }
+
+        public List<Task> GetTasksOfEpic(int epicId)
+        {
+            var epic = _context.Tasks
+                .Include(epic => epic.SubTasks)
+                .Where(task => task.Id == epicId)
+                .FirstOrDefault();
+
+            if (epic == null || epic.Type != TaskType.EPIC || epic.SubTasks == null)
+            {
+                throw new Exception("Invalid epicId");
+            }
+
+            foreach (var task in epic.SubTasks)
+            {
+                _context.Entry(task).Reference(t => t.ReportTo);
+                _context.Entry(task).Reference(t => t.InCharge);
+            }
+
+            return epic.SubTasks ?? new List<Task>();
+        }
+
+        public void AddTaskToEpicTask(int taskId, int epicId)
+        {
+            var epic = _context.Tasks
+                .Include(epic => epic.SubTasks)
+                .Where(epic => epic.Id == epicId)
+                .FirstOrDefault();
+
+            var task = _context.Tasks.Find(taskId);
+
+            if (epic == null || epic.SubTasks == null || task == null)
+            {
+                throw new Exception("Invalid taskId or epic id");
+            }
+
+            if (epic.Type != TaskType.EPIC && task.Type != TaskType.BASIC)
+            {
+                throw new Exception("Invalid epicId or taksId");
+            }
+
+            epic.SubTasks.Add(task);
+
+            _context.Tasks.Update(epic);
+            _context.SaveChanges();
+        }
+
+        public void RemoveTaskFromEpic(int taskId)
+        {
+            var task = _context.Tasks
+                .Include(task => task.ParentTask)
+                .Where(task => task.Id == taskId)
+                .Where(task => task.Type == TaskType.BASIC)
+                .FirstOrDefault();
+
+            if (task == null)
+            {
+                throw new Exception("task not found");
+            }
+
+            task.ParentTaskId = null;
+
+            _context.Tasks.Update(task);
+            _context.SaveChanges();
+        }
 
         public void MoveTask(int taskId, MoveTaskDTO moveTaskDTO)
         {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
+using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
 using Task = Models.Models.Task;
@@ -218,41 +219,56 @@ namespace Services.Services
 
             var tasks = taskColumn.Tasks;
 
-            if (taskFilterDTO.InchargeIds != null)
+            if (!taskFilterDTO.IsDisabled)
             {
-                tasks = tasks
-                    .Where(task => task.InChargeId.HasValue ? 
-                        taskFilterDTO.InchargeIds.Contains(task.InChargeId.Value) : false)
-                    .ToList();
-            }
+                if (taskFilterDTO.TaskType != null)
+                {
+                    if (taskFilterDTO.TaskType == "basic")
+                    {
+                        tasks = tasks.Where(task => task.Type == TaskType.BASIC).ToList();
+                    }
+                    else if (taskFilterDTO.TaskType == "epic")
+                    {
+                        tasks = tasks.Where(task => task.Type == TaskType.EPIC).ToList();
+                    }
+                }
 
-            if (taskFilterDTO.ReportToIds != null)
-            {
-                tasks = tasks
-                    .Where(task => task.ReportToId.HasValue ?
-                        taskFilterDTO.ReportToIds.Contains(task.ReportToId.Value) : false)
-                    .ToList();
-            }
+                if (taskFilterDTO.InchargeIds != null && taskFilterDTO.InchargeIds.Count() > 0)
+                {
+                    tasks = tasks
+                        .Where(task => task.InChargeId.HasValue ?
+                            taskFilterDTO.InchargeIds.Contains(task.InChargeId.Value) : true)
+                        .ToList();
+                }
 
-            if (taskFilterDTO.LabelIds != null)
-            {
-                tasks = tasks
-                    .Where(task => task.Labels.Any(label => taskFilterDTO.LabelIds.Contains(label.Id)))
-                    .ToList();
-            }
+                if (taskFilterDTO.ReportToIds != null && taskFilterDTO.ReportToIds.Count() > 0)
+                {
+                    tasks = tasks
+                        .Where(task => task.ReportToId.HasValue ?
+                            taskFilterDTO.ReportToIds.Contains(task.ReportToId.Value) : true)
+                        .ToList();
+                }
 
-            if (taskFilterDTO.StartDate != null)
-            {
-                tasks = tasks
-                    .Where(task => task.FromDate > taskFilterDTO.StartDate)
-                    .ToList();
-            }
+                if (taskFilterDTO.LabelIds != null && taskFilterDTO.LabelIds.Count() > 0)
+                {
+                    tasks = tasks
+                        .Where(task => task.Labels.Any(label => taskFilterDTO.LabelIds.Contains(label.Id)))
+                        .ToList();
+                }
 
-            if (taskFilterDTO.EndDate != null)
-            {
-                tasks = tasks
-                    .Where(task => task.FromDate <= taskFilterDTO.EndDate)
-                    .ToList();
+                if (taskFilterDTO.StartDate != null)
+                {
+                    tasks = tasks
+                        .Where(task => task.FromDate > taskFilterDTO.StartDate)
+                        .ToList();
+                }
+
+                if (taskFilterDTO.EndDate != null)
+                {
+                    tasks = tasks
+                        .Where(task => task.FromDate <= taskFilterDTO.EndDate)
+                        .ToList();
+                }
             }
 
             return tasks;

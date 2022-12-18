@@ -16,5 +16,7 @@ namespace Models.Models
         public WorkingShiftType Type { get; set; }
         public int PayslipId { get; set; }
         public Payslip? Payslip { get; set; }
+
+        public bool? CalculatedSuccess { get; set; }
     }
 }

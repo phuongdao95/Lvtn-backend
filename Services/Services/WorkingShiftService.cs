@@ -439,7 +439,6 @@ namespace Services.Services
              .Include(gr => gr.Users)
              .Single();
 
-
             var monthAndYear = shiftDTO.Month;
             var month = int.Parse(monthAndYear.Split("/")[0]);
             var year = int.Parse(monthAndYear.Split("/")[1]);
@@ -447,7 +446,21 @@ namespace Services.Services
             var startDateOfMonth = new DateTime(year, month, 1, 0, 0, 1);
             var endDateOfMonth = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59);
 
+            var toBeDeleted = _context.WorkingShifts.Where(tk => tk.Type == WorkingShiftType.FIXED_SHIFT)
+                .Include(tk => tk.WorkingShiftRegistration)
+                .Include(tk => tk.Timekeepings)
+                .Where(tk => tk.StartTime.Date >= startDateOfMonth.Date)
+                .Where(tk => tk.EndTime.Date <= endDateOfMonth.Date)
+                .ToList();
+
+            _context.WorkingShifts.RemoveRange(toBeDeleted);
+
             List<WorkingShift> workingShifts = new List<WorkingShift>();
+            List<WorkingShiftTimekeeping> timekeepings = new List<WorkingShiftTimekeeping>();
+            List<WorkingShiftRegistration> registrations = new List<WorkingShiftRegistration>();
+            List<WorkingShiftRegistrationUser> registrationUsers = new List<WorkingShiftRegistrationUser>();
+
+            var allEmployees = _context.Users.ToList();
 
             for (var date = startDateOfMonth;
                 date <= endDateOfMonth;
@@ -477,10 +490,40 @@ namespace Services.Services
                     Description = shiftDTO.Description,
                 };
 
+                var workignShiftRegistraiton = new WorkingShiftRegistration()
+                {
+                    StartDate = DateTime.Now,
+                    EndDate = DateTime.Now,
+                    WorkingShift = workingShift,
+                    GroupId = 1,
+                };
+
+                foreach (var employee in allEmployees)
+                {
+                    timekeepings.Add(new WorkingShiftTimekeeping
+                    {
+                        DidCheckIn = false,
+                        DidCheckout = false,
+                        CheckinTime = null,
+                        CheckoutTime = null,
+                        Employee = employee,
+                        WorkingShiftEvent = workingShift,
+                    });
+
+                    registrationUsers.Add(new WorkingShiftRegistrationUser
+                    {
+                        User = employee,
+                        WorkingShiftRegistration = workignShiftRegistraiton,
+                    });
+                }
+
                 workingShifts.Add(workingShift);
             }
 
-            _context.WorkingShifts.AddRange(workingShifts);
+                _context.WorkingShifts.AddRange(workingShifts);
+            _context.WorkingShiftRegistrations.AddRange(registrations);
+            _context.WorkingShiftRegistrationUsers.AddRange(registrationUsers);
+            _context.WorkingShiftTimekeepings.AddRange(timekeepings);
             _context.SaveChanges();
         }
 
