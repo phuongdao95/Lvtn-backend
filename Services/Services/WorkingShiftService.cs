@@ -51,6 +51,7 @@ namespace Services.Services
                 throw new Exception("not found id " + id.ToString());
             }
             _context.Entry(shift).Collection(s => s.Timekeepings).Load();
+            _context.Entry(shift).Collection(s => s.Users).Load();
             _context.WorkingShifts.Remove(shift);
 
             _context.SaveChanges();
@@ -444,7 +445,16 @@ namespace Services.Services
             var year = int.Parse(monthAndYear.Split("/")[1]);
 
             var startDateOfMonth = new DateTime(year, month, 1, 0, 0, 1);
-            var endDateOfMonth = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59);
+            var endDateOfMonth = new DateTime(year, month, DateTime.DaysInMonth(year, month), 0, 0, 0);
+
+            var toBeDeleted = _context.WorkingShifts.Where(tk => tk.Type == WorkingShiftType.FIXED_SHIFT)
+                .Include(tk => tk.WorkingShiftRegistration)
+                .Include(tk => tk.Timekeepings)
+                .Where(tk => tk.StartTime.Date >= startDateOfMonth.Date)
+                .Where(tk => tk.EndTime.Date <= endDateOfMonth.Date)
+                .ToList();
+
+            _context.WorkingShifts.RemoveRange(toBeDeleted);
 
             var toBeDeleted = _context.WorkingShifts.Where(tk => tk.Type == WorkingShiftType.FIXED_SHIFT)
                 .Include(tk => tk.WorkingShiftRegistration)
@@ -462,8 +472,10 @@ namespace Services.Services
 
             var allEmployees = _context.Users.ToList();
 
-            for (var date = startDateOfMonth;
-                date <= endDateOfMonth;
+            var allEmployees = _context.Users.ToList();
+
+            for (var date = startDateOfMonth.Date;
+                date <= endDateOfMonth.Date;
                 date = date.AddDays(1))
             {
 
