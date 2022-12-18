@@ -151,5 +151,28 @@ namespace Services.Services
                     .Where(timekeeping => timekeeping.WorkingShiftEvent.StartTime.Date == date.Date)
                     .ToList();
         }
+
+        public List<WorkingShiftTimekeeping> GetAllShiftsInAMonth(int userId, int chosenDay)
+        {
+            var currentTime = DateTime.Now;
+            var date = new DateTime(currentTime.Year, currentTime.Month, chosenDay);
+
+
+            var shifts = _context.WorkingShiftTimekeepings
+                .Where(s => s.EmployeeId.Equals(userId)
+                )
+                .Where(s => s.WorkingShiftEvent.StartTime.Date.Equals(date.Date))
+                .OrderByDescending(s => s.CheckinTime)
+                .ToList();
+            if (shifts.Count == 0)
+            {
+                return null;
+            }
+            foreach(var shift in shifts)
+            {
+                shift.Employee = null;
+            }
+            return shifts;
+        }
     }
 }
