@@ -6,7 +6,6 @@ namespace Services.SalaryManagement.Calculators
     {
         public KPIVariableBinder()
         {
-
         }
 
         public static List<SalarySystemVariable> GetSystemVariables()

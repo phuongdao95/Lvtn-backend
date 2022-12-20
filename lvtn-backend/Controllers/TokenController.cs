@@ -21,7 +21,7 @@ namespace lvtn_backend.Controllers
         private IdentityService _identityService;
 
         public TokenController(
-            IConfiguration configuration, 
+            IConfiguration configuration,
             EmsContext context,
             IdentityService identityService)
         {
@@ -46,45 +46,10 @@ namespace lvtn_backend.Controllers
             }
         }
 
-        [HttpGet("/page-access")]
-        public IActionResult CheckAccessRight([FromQuery] string pageName)
+        [HttpGet("/api/page-access")]
+        public IActionResult CheckAccessRight()
         {
-            try
-            {
-                var userId = _identityService.GetCurrentUserId();
-                var user = _context.Users.Where(user => user.Id == userId)
-                    .Include(user => user.Role)
-                    .ThenInclude(role => role.Permissions)
-                    .FirstOrDefault();
-
-                if (user == null || user.Role == null)
-                {
-                    throw new Exception("Unauthorized");
-                }
-
-                var permissions = user.Role.Permissions;
-
-                if (permissions == null)
-                {
-                    throw new Exception("Unauthorized");
-                }
-
-                var pageAccessPermissions = permissions
-                    .Where(p => p.Module == "page_access")
-                    .Select(p => p.Name)
-                    .ToList();
-                
-                var isAllowToAccessPage = pageAccessPermissions.Contains("page_access." + pageName);
-
-                return Ok(new Dictionary<string, object>
-                {
-                    ["value"] = isAllowToAccessPage
-                });
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
+            return Ok();
         }
 
 
@@ -129,8 +94,9 @@ namespace lvtn_backend.Controllers
                         .Collection(r => r.Permissions)
                         .Load();
 
-                    var pageAccessList = role.Permissions.Where(p => p.Name.StartsWith("page_access"))
-                        .Select(p => p.Name.Split(".")[1])
+                    var pageAccessList = role.Permissions
+                        .Where(p => p.Module == "page_access")
+                        .Select(p => p.Name)
                         .ToList();
 
                     return Ok(new Dictionary<string, object>
@@ -150,6 +116,9 @@ namespace lvtn_backend.Controllers
                         },
                         {
                             "user_role", user.Role.Name
+                        },
+                        {
+                            "page_access_list", pageAccessList
                         }
                     });
 

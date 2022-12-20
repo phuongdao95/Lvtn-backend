@@ -237,7 +237,7 @@ namespace Services.Services
                 {
                     tasks = tasks
                         .Where(task => task.InChargeId.HasValue ?
-                            taskFilterDTO.InchargeIds.Contains(task.InChargeId.Value) : true)
+                            taskFilterDTO.InchargeIds.Contains(task.InChargeId.Value) : false)
                         .ToList();
                 }
 
@@ -245,7 +245,7 @@ namespace Services.Services
                 {
                     tasks = tasks
                         .Where(task => task.ReportToId.HasValue ?
-                            taskFilterDTO.ReportToIds.Contains(task.ReportToId.Value) : true)
+                            taskFilterDTO.ReportToIds.Contains(task.ReportToId.Value) : false)
                         .ToList();
                 }
 

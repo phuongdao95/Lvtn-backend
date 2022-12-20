@@ -13,6 +13,7 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name="gender",
+                DisplayName= "Giới tính",
                 Description = "Giới tính của nhân viên, trả về chuỗi male nếu là nam, female nếu là nữ",
                 DataType = VariableDataType.Text,
             },
@@ -20,16 +21,18 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name="age",
+                DisplayName="Tuối",
                 Description = "Số tuổi của nhân viên",
                 DataType = VariableDataType.Integer,
             },
 
             new SalarySystemVariable
             {
-                Name="total_years_of_working",
-                Description="Số năm kể từ ngày vào công ty",
-                DataType = VariableDataType.Integer,
-            }
+                Name="base_salary",
+                DisplayName="Lương cơ bản",
+                Description="Lương cơ bản của nhân viên",
+                DataType = VariableDataType.Decimal,
+            },
         };
 
         private EmsContext _context;
@@ -71,7 +74,7 @@ namespace Services.SalaryManagement.Calculators
 
         public string GetGender()
         {
-            return _user.Gender ?? throw new Exception("Gender is null");
+            return _user.Gender ?? "";
         }
 
         public decimal GetBaseSalary()
@@ -81,7 +84,7 @@ namespace Services.SalaryManagement.Calculators
 
         public int GetAge()
         {
-            return 18;
+            return DateTime.Now.Year - _user.Birthday.Value.Year;
         }
 
         public static List<SalarySystemVariable> GetSystemVariables()

@@ -95,7 +95,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 2,
                     Name = "cong_thuc_tinh_luong_1",
-                    Area = FormulaArea.SalaryDelta,
+                    Area = FormulaArea.SalaryConfig,
                     Define = "salary_after_tk_calc - total_deduction + total_allowance + total_bonus",
                     Description = "formula_2",
                     DisplayName = "Formula Two"
@@ -108,7 +108,7 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 3,
                     Name = "cong_thuc_tinh_luong_2",
-                    Area = FormulaArea.SalaryDelta,
+                    Area = FormulaArea.SalaryConfig,
                     Define = "(salary_after_tk_calc - total_deduction + total_allowance + total_bonus) * (1 - tax_1)",
                     Description = "formula_3",
                     DisplayName = "Formula Three"
@@ -122,7 +122,7 @@ namespace Repositories.DataContext.DataSeeder
                     Id = 4,
                     Name = "cong_thuc_tang_giam_luong_2",
                     Area = FormulaArea.SalaryDelta,
-                    Define = $"IF(variable_4, 400000, 200000)",
+                    Define = $"if(variable_4, 400000, 200000)",
                     Description = "formula_4",
                     DisplayName = "Formula Three"
                 }
@@ -134,10 +134,25 @@ namespace Repositories.DataContext.DataSeeder
                 {
                     Id = 5,
                     Name = "salary_formula_per_day",
-                    Area = FormulaArea.SalaryConfig,
+                    Area = FormulaArea.Timekeeping,
                     Define = "salary_per_day",
                     Description = "salary_formula_per_day",
                     DisplayName = "Salary Of Working Shift"
+                }
+            },
+            {
+                "cong_thuc_cham_cong",
+                new SalaryFormula
+                {
+                    Id = 6,
+                    Name = "cong_thuc_cham_cong_thang_12",
+                    Area = FormulaArea.Timekeeping,
+                    Define = @"if(
+                                and(current_month=12,current_year=2022,
+                                    current_day>=19,current_day <= 22), 1.8, 1.0)*salary_per_day",
+                    Description = "cong_thuc_cham_cong_thang_12",
+                    DisplayName = "Công thức chấm công tháng 12",
+
                 }
             }
         };
