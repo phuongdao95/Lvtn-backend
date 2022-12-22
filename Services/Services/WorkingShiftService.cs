@@ -456,21 +456,10 @@ namespace Services.Services
 
             _context.WorkingShifts.RemoveRange(toBeDeleted);
 
-            var toBeDeleted = _context.WorkingShifts.Where(tk => tk.Type == WorkingShiftType.FIXED_SHIFT)
-                .Include(tk => tk.WorkingShiftRegistration)
-                .Include(tk => tk.Timekeepings)
-                .Where(tk => tk.StartTime.Date >= startDateOfMonth.Date)
-                .Where(tk => tk.EndTime.Date <= endDateOfMonth.Date)
-                .ToList();
-
-            _context.WorkingShifts.RemoveRange(toBeDeleted);
-
             List<WorkingShift> workingShifts = new List<WorkingShift>();
             List<WorkingShiftTimekeeping> timekeepings = new List<WorkingShiftTimekeeping>();
             List<WorkingShiftRegistration> registrations = new List<WorkingShiftRegistration>();
             List<WorkingShiftRegistrationUser> registrationUsers = new List<WorkingShiftRegistrationUser>();
-
-            var allEmployees = _context.Users.ToList();
 
             var allEmployees = _context.Users.ToList();
 
