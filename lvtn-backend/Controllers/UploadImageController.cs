@@ -37,25 +37,59 @@ namespace Models.Controllers
                 bool result = _aiService.UploadImage(img.ImageName, img.ImageData, localPath);
                 if (result)
                 {
-                    if (img.dto.DidCheckout)
+                    //if (img.dto.DidCheckout)
+                    //{
+                    //    _workingShiftTimekeepingService.Update(img.dto.Id, img.dto);
+                    //    WorkingShiftTimekeepingHistoryDTO obj = new WorkingShiftTimekeepingHistoryDTO();
+                    //    //obj.Id = img.dto.Id;
+                    //    obj.IsCheckIn = false;
+                    //    obj.DateTime = (DateTime)(img.dto.CheckoutTime);
+                    //    obj.TimekeepingId = img.dto.Id;
+                    //    _workingShiftTimekeepingHistoryService.Add(obj);
+                    //}
+                    //else
+                    //{
+                    //}
+                    //return Ok(img.ImageName);
+                    if (img.dto.isCheckInFirst.Value)
                     {
+                        DateTime current = DateTime.UtcNow;
+                        current = current.AddMinutes(-(double)img.dto.Offset);
+                        _workingShiftTimekeepingService.Update(img.dto.Id, img.dto);
+
+                        WorkingShiftTimekeepingHistoryDTO obj = new WorkingShiftTimekeepingHistoryDTO();
+                        obj.IsCheckIn = true;
+                        //obj.DateTime = (DateTime)(img.dto.CheckinTime);
+                        obj.DateTime = current;
+                        obj.TimekeepingId = img.dto.Id;
+                        _workingShiftTimekeepingHistoryService.Add(obj);
+                    }
+                    else if (img.dto.isCheckOutLast.Value)
+                    {
+                        DateTime current = DateTime.UtcNow;
+                        current = current.AddMinutes(-(double)img.dto.Offset);
                         _workingShiftTimekeepingService.Update(img.dto.Id, img.dto);
                         WorkingShiftTimekeepingHistoryDTO obj = new WorkingShiftTimekeepingHistoryDTO();
                         //obj.Id = img.dto.Id;
                         obj.IsCheckIn = false;
-                        obj.DateTime = (DateTime)(img.dto.CheckoutTime);
+                        //obj.DateTime = (DateTime)(img.dto.CheckoutTime);
+                        obj.DateTime = current;
                         obj.TimekeepingId = img.dto.Id;
                         _workingShiftTimekeepingHistoryService.Add(obj);
                     }
                     else
                     {
-                        _workingShiftTimekeepingService.Add(img.dto);
-
+                        DateTime current = DateTime.UtcNow;
+                        current = current.AddMinutes(-(double)img.dto.Offset);
                         WorkingShiftTimekeepingHistoryDTO obj = new WorkingShiftTimekeepingHistoryDTO();
+                        //obj.Id = img.dto.Id;
                         obj.IsCheckIn = true;
-                        obj.DateTime = (DateTime)(img.dto.CheckinTime);
+                        //obj.DateTime = (DateTime)(img.dto.CheckinTime);
+                        obj.DateTime = current;
                         obj.TimekeepingId = img.dto.Id;
                         _workingShiftTimekeepingHistoryService.Add(obj);
+                        img.dto.CheckinTime = null;
+                        _workingShiftTimekeepingService.Update(img.dto.Id, img.dto);
                     }
                     return Ok(img.ImageName);
                 }

@@ -118,6 +118,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 //    configuration.RootPath = "ClientApp/Lvtn-frontend/build";
 //});
 
+// Add Checkin rule config
+builder.Services.AddSingleton<CheckInConfig, CheckInConfig>();
 
 var app = builder.Build();
 

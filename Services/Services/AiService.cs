@@ -217,7 +217,7 @@ namespace Services.Services
                 var result = recognizer.Predict(grayFaceResult);
 
                 Debug.WriteLine("recognize " + result.Label + ". " + result.Distance);
-                if (result.Label != -1 && result.Distance < 2000)
+                if (result.Label != -1 && result.Distance < 2500)
                 {
                     Debug.WriteLine("found face");
                     Directory.Delete(path, true);

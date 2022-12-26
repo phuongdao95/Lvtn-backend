@@ -13,5 +13,7 @@
         public WorkingShiftEventDTO? WorkingShiftEvent { get; set; }
         public bool? isCheckInFirst { get; set; }
         public bool? isCheckOutLast { get; set; }
+        public bool? isCheckInInBetween { get; set; }
+        public int? Offset { get; set; }
     }
 }
