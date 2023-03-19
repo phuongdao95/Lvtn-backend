@@ -14,6 +14,7 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name = "checkin_minute_late",
+                DisplayName = "Thời gian đi trễ",
                 Description = "Khoảng thời gian trễ khi checkin trong một ca làm việc của nhân viên",
                 DataType = VariableDataType.Integer,
             },
@@ -21,41 +22,23 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name = "checkout_minute_early",
+                DisplayName = "Thời gian về sớm",
                 Description = "Khoảng thời gian sớm khi checkout trong một ca làm việc của nhân viên.",
                 DataType = VariableDataType.Integer,
             },
 
             new SalarySystemVariable
             {
-                Name = "did_not_checkin",
-                Description = "Xác định nhân viên đã check in hay chưa.",
+                Name = "is_holiday",
+                DisplayName = "Ngày nghỉ",
+                Description = "Kiểm tra nếu ngày chấm công là ngày nghỉ.",
                 DataType = VariableDataType.Boolean,
-            },
-
-            new SalarySystemVariable
-            {
-                Name = "did_not_checkout",
-                Description = "Xác định nhân viên đã check out hay chưa.",
-                DataType = VariableDataType.Boolean,
-            },
-
-            new SalarySystemVariable
-            {
-                Name = "did_not_checkin_checkout",
-                Description = "Xác định nhân viên đã checkin và check out hay chưa.",
-                DataType = VariableDataType.Boolean,
-            },
-
-            new SalarySystemVariable
-            {
-                Name = "total_working_hours",
-                Description = "Xác định tổng thời gian làm việc trong ngày của nhân viên",
-                DataType = VariableDataType.Integer,
             },
 
             new SalarySystemVariable
             {
                 Name = "current_day",
+                DisplayName = "Ngày hiện tại", 
                 Description = "Xác định ngày trong tháng của ca làm việc.",
                 DataType = VariableDataType.Integer,
             },
@@ -63,6 +46,7 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name = "current_month",
+                DisplayName = "Tháng hiện tại",
                 Description = "Xác định tháng trong năm của ca làm việc.",
                 DataType = VariableDataType.Integer,
             },
@@ -70,6 +54,7 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name = "current_year",
+                DisplayName = "Năm hiện tại",
                 Description = "Xác định năm của ca làm việc",
                 DataType = VariableDataType.Integer,
             },
@@ -77,6 +62,7 @@ namespace Services.SalaryManagement.Calculators
             new SalarySystemVariable
             {
                 Name = "salary_per_day",
+                DisplayName = "Lương cơ bản mỗi ngày",
                 Description = "Xác định lương trong ngày của nhân viên",
                 DataType = VariableDataType.Integer,
             }
@@ -123,15 +109,6 @@ namespace Services.SalaryManagement.Calculators
 
             switch (name)
             {
-                case "did_not_checkin":
-                    expression.Bind(name, GetDidNotCheckIn());
-                    break;
-                case "did_not_checkout":
-                    expression.Bind(name, GetDidNotCheckout());
-                    break;
-                case "did_not_checkin_checkout":
-                    expression.Bind(name, GetDidNotCheckInCheckOut());
-                    break;
                 case "checkin_minutes_late":
                     expression.Bind(name, GetCheckInMinutesLate());
                     break;
@@ -173,27 +150,6 @@ namespace Services.SalaryManagement.Calculators
             }
 
             return -_timekeeping.CheckoutTime.Value.Subtract(_event.EndTime).Minutes;
-        }
-
-        public bool GetDidNotCheckIn()
-        {
-            return !_timekeeping.DidCheckIn;
-        }
-
-        public bool GetDidNotCheckout()
-        {
-            return !_timekeeping.DidCheckout;
-        }
-
-        public bool GetDidNotCheckInCheckOut()
-        {
-            return !_timekeeping.DidCheckIn && !_timekeeping.DidCheckout;
-        }
-
-        public int GetTotalWorkingHours()
-        {
-            return _event.StartTime
-                .Subtract(_event.EndTime).Hours;
         }
 
         public int GetCurrentDay()

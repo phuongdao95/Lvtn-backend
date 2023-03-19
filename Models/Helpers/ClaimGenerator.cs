@@ -63,6 +63,7 @@
 
             "salary_list",
             "dab_list",
+            "my_dab",
             "formula_variable_list",
             "payroll_list",
             "payroll_detail",
@@ -116,6 +117,7 @@
 
             "salary_list",
             "dab_list",
+            "my_dab",
             "formula_variable_list",
             "payroll_list",
             "payroll_detail",
@@ -150,6 +152,7 @@
             "profile",
             "my_payslip",
             "my_payslip_detail",
+            "my_dab",
             "image_registration",
             "timekeeping_schedule",
             "workingshift_registration",

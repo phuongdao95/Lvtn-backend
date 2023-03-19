@@ -13,7 +13,7 @@ namespace Models.DTO.Response
         public bool DidCheckout { get; set; }
         public DateTime? CheckoutTime { get; set; }
         public decimal Amount { get; set; }
-        public string? Formula { get; set; }
+        public string? FormulaDefine { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public WorkingShiftType Type { get; set; }

@@ -405,9 +405,9 @@ namespace Services.Services
                         var variableObj = allVariables.First((v) => v.Name == variable);
                         bindDummyDataForValidation(expression, variable, variableObj.DataType);
                     }
-                    else if (!allSystemVariables.Any((v) => v.Name == variable))
+                    else if (allSystemVariables.Any((v) => v.Name == variable))
                     {
-                        var variableObj = allVariables.First((v) => v.Name == variable);
+                        var variableObj = allSystemVariables.First((v) => v.Name == variable);
                         bindDummyDataForValidation(expression, variable, variableObj.DataType);
                     }
                 }

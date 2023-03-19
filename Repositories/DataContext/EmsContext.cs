@@ -297,9 +297,6 @@ namespace Models.Repositories.DataContext
             modelBuilder.Entity<WorkingShiftDayConfig>()
                 .HasIndex(p => p.Date)
                 .IsUnique();
-            modelBuilder.Entity<WorkingShiftDayConfig>()
-                .HasIndex(p => p.Date)
-                .IsUnique();
 
             modelBuilder.Entity<WorkingShiftRegistrationUser>()
                 .HasKey(e => new { e.WorkingShiftRegistrationId, e.UserId });
