@@ -6,6 +6,7 @@ using Services.Contracts;
 using Models.DTO.Request;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Routing.Template;
 
 namespace Services.Services
 {
@@ -27,6 +28,34 @@ namespace Services.Services
         public void AddUser(UserDTO userDTO)
         {
             var user = _mapper.Map<User>(userDTO);
+
+            var group = _context.Groups
+                .Include(group => group.Users)
+                .Where(group => group.Id == 1)
+                .FirstOrDefault();
+
+            if (group == null || group.Users == null)
+            {
+                throw new Exception("Cannot find default group");
+            }
+
+            var team = _context.Teams
+                .Include(team => team.Members)
+                .Where(team => team.Id == 1)
+                .FirstOrDefault();
+
+            if (team == null || team.Members == null)
+            {
+                throw new Exception("Cannot find default team");
+            }
+
+            group.Users.Add(user);
+
+            if (userDTO.TeamId == null)
+            {
+                team.Members.Add(user);
+            }
+
             _context.Users.Add(user);
             _context.SaveChanges();
         }

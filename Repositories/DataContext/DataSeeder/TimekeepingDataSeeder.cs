@@ -31,7 +31,7 @@ namespace Repositories.DataContext.DataSeeder
             var index = 0;
 
             DateTime startDate = new DateTime(2022, 10, 1);
-            DateTime endDate = new DateTime(2023, 2, 28);
+            DateTime endDate = new DateTime(2023, 1, 31);
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
@@ -105,7 +105,7 @@ namespace Repositories.DataContext.DataSeeder
             var index = 0;
 
             DateTime startDate = new DateTime(2022, 10, 1);
-            DateTime endDate = new DateTime(2023, 2, 28);
+            DateTime endDate = new DateTime(2023, 1, 31);
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
@@ -114,16 +114,32 @@ namespace Repositories.DataContext.DataSeeder
                     continue;
                 }
 
-                result.Add(new WorkingShift
+                if (date.Month == 12)
                 {
-                    Id = ++index,
-                    Name = "Normal Working Day",
-                    StartTime = date.AddHours(8),
-                    EndTime = date.AddHours(17),
-                    Type = WorkingShiftType.FIXED_SHIFT,
-                    Description = "Normal Working Day",
-                    FormulaName = "salary_formula_per_day"
-                });
+                    result.Add(new WorkingShift
+                    {
+                        Id = ++index,
+                        Name = "Normal Working Day",
+                        StartTime = date.AddHours(8),
+                        EndTime = date.AddHours(17),
+                        Type = WorkingShiftType.FIXED_SHIFT,
+                        Description = "Normal Working Day",
+                        FormulaName = "cong_thuc_cham_cong_thang_12"
+                    });
+                }
+                else
+                {
+                    result.Add(new WorkingShift
+                    {
+                        Id = ++index,
+                        Name = "Normal Working Day",
+                        StartTime = date.AddHours(8),
+                        EndTime = date.AddHours(17),
+                        Type = WorkingShiftType.FIXED_SHIFT,
+                        Description = "Normal Working Day",
+                        FormulaName = "salary_formula_per_day"
+                    });
+                }
             }
 
             return result;

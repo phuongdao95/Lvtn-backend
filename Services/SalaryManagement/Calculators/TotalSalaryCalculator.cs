@@ -24,7 +24,7 @@ namespace Services.SalaryManagement.Calculators
             _user = user;
             _startOfMonth = new DateTime(year, month, 1, 0, 0, 2);
             _endOfMonth = new DateTime(year, month,
-                DateTime.DaysInMonth(year, month), 23, 59, 59);
+                DateTime.DaysInMonth(year, month), 0, 0, 2);
             _groups = initializeGroups();
             _timekeepings = initializeTimekeepingsAndTheirShifts();
             _userVariableBinder = new UserVariableBinder(_context, _user);
@@ -82,8 +82,8 @@ namespace Services.SalaryManagement.Calculators
 
             var salaryDeltaList = _context.SalaryDeltas
                 .Where(sd => groupIds.Contains(sd.GroupId))
-                .Where(sd => sd.FromMonth <= _startOfMonth &&
-                    sd.ToMonth >= _endOfMonth)
+                .Where(sd => sd.FromMonth.Month <= _startOfMonth.Month &&
+                    sd.ToMonth.Month >= _endOfMonth.Month)
                 .ToList();
 
 

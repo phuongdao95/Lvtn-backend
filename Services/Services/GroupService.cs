@@ -77,6 +77,10 @@ namespace Services.Services
 
         public void UpdateGroup(int id, GroupDTO groupDTO)
         {
+            if (id == 1)
+            {
+                throw new Exception("Cannot update default group");
+            }
 
             var group = _context.Groups.Find(id);
             if (group == null)
@@ -99,6 +103,11 @@ namespace Services.Services
 
         public void DeleteGroup(int id)
         {
+            if (id == 1)
+            {
+                throw new Exception("Cannot remove default group");
+            }
+
             var group = _context.Groups.Find(id);
             if (group == null)
             {

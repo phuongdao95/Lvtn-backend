@@ -31,6 +31,11 @@ namespace Services.Services
 
         public void DeleteTeamById(int id)
         {
+            if (id == 1)
+            {
+                throw new Exception("Cannot delete default team");
+            }
+
             var team = _context.Teams.Find(id);
 
             if (team == null)
@@ -122,6 +127,11 @@ namespace Services.Services
 
         public void UpdateTeam(int id, TeamDTO teamDTO)
         {
+            if (id == 1)
+            {
+                throw new Exception("Cannot update default team");
+            }
+
             var member = _context.Users.Where(
                 user => teamDTO.MemberIds.Contains(user.Id)).ToList();
 
