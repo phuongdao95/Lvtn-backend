@@ -21,7 +21,7 @@ namespace Services.Services
             _context = context;
         }
 
-        public List<TimeManageResponseDTO> getUsers(int month, int year)
+        public List<TimeManageResponseDTO> getUsers(int month, int year, int workCount)
         {
             var lstRes = _context.WorkingShiftRegistrationUsers
                 .Where(res => res.WorkingShiftRegistration.WorkingShift.StartTime.Month  == month 
@@ -82,7 +82,14 @@ namespace Services.Services
                 newResponse.TimeReal = dicUserTimeReal[res.Id];
                 newResponse.TimeExpect = dicUserTimeExpect[res.Id];
                 newResponse.TimeMiss = newResponse.TimeExpect - newResponse.TimeReal;
-                lstTimeManage.Add(newResponse);
+                if (
+                    (workCount < 0 && newResponse.TimeMiss < 0) ||
+                    (workCount > 0 && newResponse.TimeMiss > 0) ||
+                    (workCount == 0 && newResponse.TimeMiss == 0)
+                    )
+                {
+                    lstTimeManage.Add(newResponse);
+                }
             }
             return lstTimeManage;
         }

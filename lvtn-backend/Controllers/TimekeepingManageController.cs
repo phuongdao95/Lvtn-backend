@@ -25,11 +25,14 @@ namespace lvtn_backend.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetWorkingShifts([FromQuery] int month = 0, [FromQuery] int year = 0)
+        public IActionResult GetWorkingShifts(
+            [FromQuery] int month = 10
+            , [FromQuery] int year = 2022
+            , [FromQuery] int workCount = 0)
         {
             try
             {
-                List<TimeManageResponseDTO> lstData = _timekeepingManageService.getUsers(month, year);
+                List<TimeManageResponseDTO> lstData = _timekeepingManageService.getUsers(month, year, workCount);
                 return Ok(
                         new Dictionary<string, object>
                         {
