@@ -38,5 +38,7 @@ namespace Models.Models
         public List<Payslip>? Payslips { get; set; }
         public List<Notification>? Notifications { get; set; }
         public List<WorkingShiftRegistrationUser>? WorkingShiftRegistrationUsers { get; set; }
+        public List<Workflow>? Workflows { get; set; }
+        public List<WorkflowDefine>? WorkflowDefines { get; set; }
     }
 }

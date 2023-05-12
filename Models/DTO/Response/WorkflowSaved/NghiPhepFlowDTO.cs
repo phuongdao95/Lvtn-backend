@@ -9,7 +9,7 @@ namespace Models.DTO.Response.WorkflowSaved
         public string UserCreatedName { get; set; }
         public DateTime CreatedTime { get; set; }
         public string? Reason { get; set; }
-        public WorkflowStatus Status { get; set; }
+        public WorkflowStatusEnum Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public List<ApproverStatusDTO>? Approvers { get; set; }

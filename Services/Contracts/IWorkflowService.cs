@@ -1,51 +1,31 @@
-﻿using Models.DTO.Request;
-using Models.DTO.Response;
-using Models.DTO.Response.WorkflowConfigsDTO;
-using Models.DTO.Response.WorkflowSaved;
-using Models.Models;
+﻿using Models.Models;
 using Models.Enums;
 
 namespace Services.Contracts
 {
     public interface IWorkflowService
     {
-        // Nghi phep
-        void CreateNghiPhepWorkflow(NghiPhepDTO nghiPhepDTO);
-        void UpdateNghiPhepWorkflow(NghiPhepDTO nghiPhepDTO);
-        NghiPhepFlowDTO LoadNghiPhep(int flowId);
-        InitialWorkflowDTO LoadInitialNghiPhep(int userId);
+        WorkflowDefine DefineNewWorkflow(WorkflowDefine workflowDefine, IEnumerable<int> userIds, IEnumerable<int> typeNameIds);
+        WorkflowDefine EditDefinedWorkflow(object dto);
+        void DeleteDefinedWorkflow(int id);
+        List<WorkflowDefine> GetDefinedWorkflows(int[] ids);
 
-        //Nghi thai san
-        void CreateNghiThaiSanWorkflow(NghiThaiSanDTO nghiThaiSanDTO);
-        void UpdateNghiThaiSanWorkflow(NghiThaiSanDTO nghiPhepDTO);
-        NghiThaiSanFlowDTO LoadNghiThaiSan(int flowId);
-        InitialWorkflowDTO LoadInitialNghiThaiSan(int userId);
+        void CreateWorkflowTypeName(string name);
+        IEnumerable<WorkflowTypeName> GetWorkflowTypes(int[] ids);
+        void EditWorkflowTypeName(int id, string name);
+        void DeleteWorkflowTypeName(int id);
 
-        //Check in-out manual
-        void CreateCheckInOutWorkflow(CheckInOutDTO checkInOutDTO);
-        CheckInOutFlowDTO LoadCheckInOut(int flowId);
-        InitialWorkflowDTO LoadInitialCheckInOut(int userId);
+        Workflow CreateNewRequest(object dto);
+        Workflow EditRequestInfo(object dto);
+        List<Workflow> GetRequests(int[] ids);
+        Workflow ApproveRequest(int requestId);
+        Workflow PassRequest(int requestId);
+        Workflow AcceptResolutionForRequest(int requestId);
+        Workflow WaitForActionRequest(int requestId);
+        Workflow DenyRequest(int requestId);
+        Workflow CancelRequest(int requestId);
 
-        //General
-
-        void UpdateWorkflowStatus(WorkflowApproverUpdateDTO request);
-        void AddComment(WorkflowUserCommentDTO request);
-        List<Workflow> GetWorkflowRequestsByUserId(int userId);
-        List<Workflow> GetWorkflowRequestsByApproverId(int approverId);
-
-        public DepartmentAndUserSelectionDTO GetSelections();
-
-        //
-        //
-        //
-        //
-        /*
-        ** Leave Balance service
-        ** Leave Balance service
-        ** Leave Balance service
-         */
-        List<UserLeaveBalanceDTO>? GetUserFromDepartment(int managerId);
-        UserLeaveBalanceDTO GetUserLeaveBalance(int userId);
-        void AddOrUpdateLeaveBalance(ChangeLeaveBalanceDTO dto);
+        Workflow AddInvolveUser(int userId, int requestId);
+        Workflow AddCommentToRequest(int requestId, string comment);
     }
 }

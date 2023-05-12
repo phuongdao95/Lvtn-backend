@@ -27,9 +27,9 @@ namespace Models.Repositories.DataContext
 
         /** Workflow */
         public DbSet<Workflow> Workflows { get; set; }
-        public DbSet<NghiPhepWorkflow> NghiPhepWorkflows { get; set; }
-        public DbSet<NghiThaiSanWorkflow> NghiThaiSanWorkflows { get; set; }
-        public DbSet<CheckInOutManualWorkflow> CheckInOutManualWorkflows { get; set; }
+        public DbSet<WorkflowDefine> WorkflowDefines { get; set; }
+        public DbSet<WorkflowTypeName> WorkflowTypeNames { get; set; }
+        public DbSet<WorkflowStatus> WorkflowStatuses { get; set; }
         public DbSet<WorkflowComment> WorkflowComments { get; set; }
 
 
@@ -300,12 +300,58 @@ namespace Models.Repositories.DataContext
 
             modelBuilder.Entity<WorkingShiftRegistrationUser>()
                 .HasKey(e => new { e.WorkingShiftRegistrationId, e.UserId });
-            // 1-M Workflow WorkflowComment
+
+            /*------------- Workflow -------------*/
+            // Workflow - WorkflowDefine: 1 - many
             modelBuilder.Entity<Workflow>()
-                .HasMany(wl => wl.WorkflowComments)
-                .WithOne(wc => wc.Workflow)
-                .HasForeignKey(wc => wc.WorkflowId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasOne(w => w.WorkflowDefine);
+
+            // Workflow - WorkflowStatus: 1 - many
+            modelBuilder.Entity<Workflow>()
+                .HasMany(w => w.WorkflowStatuses);
+
+            // Workflow - WorkflowComment: 1 - many
+            modelBuilder.Entity<Workflow>()
+                .HasMany(w => w.WorkflowComments);
+
+            // Workflow - CreatedUser: 1 - 1
+            modelBuilder.Entity<Workflow>()
+                .HasOne(w => w.UserCreated)
+                .WithOne()
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Workflow - WorkflowDocument: 1 - many
+            modelBuilder.Entity<Workflow>()
+                .HasMany(w => w.WorkflowDocuments)
+                .WithOne(d => d.Workflow);
+
+            // Workflow - ApprovedUser: 1 - 1
+            modelBuilder.Entity<Workflow>()
+                .HasOne(w => w.UserApproved);
+
+            // Workflow - InvolvedUser: many - many
+            modelBuilder.Entity<Workflow>()
+                .HasMany(w => w.InvolvedUsers)
+                .WithMany(u => u.Workflows);
+
+            // WorkflowComment - User: 1 - 1
+            modelBuilder.Entity<WorkflowComment>()
+                .HasOne(w => w.User);
+
+            // WorkflowStatus - User: 1 - 1
+            modelBuilder.Entity<WorkflowStatus>()
+                .HasOne(w => w.User);
+
+            // WorkflowDefine - WorkflowTypeName: many - many
+            modelBuilder.Entity<WorkflowDefine>()
+                .HasMany(w => w.WorkflowTypeNames)
+                .WithMany(w => w.WorkflowDefines);
+
+            // WorkflowDefine - DefaultUser: many - many
+            modelBuilder.Entity<WorkflowDefine>()
+                .HasMany(w => w.DefaultAssignUsers)
+                .WithMany(u => u.WorkflowDefines);
+
             seedData(modelBuilder);
         }
 
@@ -315,14 +361,14 @@ namespace Models.Repositories.DataContext
 
             administrationDataSeeder.SeedData();
 
-            new TimekeepingDataSeeder(modelBuilder)
-                .SeedData();
+            //new TimekeepingDataSeeder(modelBuilder)
+            //    .SeedData();
 
-            new SalaryManagementDataSeeder(modelBuilder)
-                .SeedData();
+            //new SalaryManagementDataSeeder(modelBuilder)
+            //    .SeedData();
 
-            new VirtualSpaceDataseeder(modelBuilder)
-                .SeedData();
+            //new VirtualSpaceDataseeder(modelBuilder)
+            //    .SeedData();
 
             // Leave balance for users
             modelBuilder.Entity<User>()

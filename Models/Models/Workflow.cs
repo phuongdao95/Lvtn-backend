@@ -6,32 +6,20 @@ namespace Models.Models
     public class Workflow
     {
         public int Id { get; set; }
-        public WorkflowStatus Status { get; set; } = WorkflowStatus.Submitted;
-        public DateTime TimeStamp { get; set; } = DateTime.Now;
-        public int UserCreatedId { get; set; }
+        public string Content { get; set; }
+        public DateTime CreatedTime { get; set; }
+        public DateTime LastModifiedTime { get; set; }
+        public int? UserCreatedId { get; set; }
+        public int? UserApprovedId { get; set; }
+        public int? WorkflowDefineId { get; set; }
 
-        public User UserCreated { get; set; }
-        public List<WorkflowComment>? WorkflowComments { get; set; }
-    }
 
-    // Inherit table from Workflow, each is a different workflow
-    public class NghiPhepWorkflow : Workflow
-    {
-        public string Reason { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-    }
-
-    public class NghiThaiSanWorkflow : Workflow
-    {
-        public DateTime StartDate { get; set; }
-        public bool IsHusband { get; set; }
-    }
-
-    public class CheckInOutManualWorkflow : Workflow
-    {
-        public DateTime CheckinTime { get; set; }
-        public DateTime CheckoutTime { get; set; }
-        public int TimekeepingId { get; set; }
+        public User? UserCreated { get; set; } // Who created the request
+        public User? UserApproved { get; set; } // Who approved the request
+        public WorkflowDefine? WorkflowDefine { get; set; } // Type of the request (for search query)
+        public List<User>? InvolvedUsers { get; set; } // Add more people to see the problem if needed
+        public List<WorkflowStatus>? WorkflowStatuses { get; set; } // All statuses of the request
+        public List<WorkflowComment>? WorkflowComments { get; set; } // All comments of the request
+        public List<WorkflowDocument>? WorkflowDocuments { get; set; } // All documents of the request
     }
 }

@@ -4,6 +4,7 @@ using Models.DTO.Request;
 using Models.DTO.Response;
 using Group = Models.Models.Group;
 using Task = Models.Models.Task;
+using Models.DTO.Workflow.Request;
 
 namespace Models
 {
@@ -96,17 +97,6 @@ namespace Models
 
             CreateMap<Group, GroupInfoDTO>();
 
-            CreateMap<Workflow, WorkflowInformationDTO>()
-                .ForMember(des => des.Name, opt => opt.MapFrom((src, _) => src switch
-                {
-                    _ when src is NghiPhepWorkflow => "nghi-phep",
-                    _ when src is NghiThaiSanWorkflow => "nghi-thai-san",
-                    _ when src is CheckInOutManualWorkflow => "check-in-out",
-                    _ => "unknown"
-                }))
-                .ForMember(des => des.CreatedDate, opt => opt.MapFrom(src => src.TimeStamp.ToShortDateString()))
-                .ForMember(des => des.Status, opt => opt.MapFrom(src => src.Status));
-
             CreateMap<PayslipWorkingShiftTimekeeping, PayslipTimekeepingInfoDTO>();
 
             CreateMap<PayslipSalaryDelta, PayslipSalaryDeltaInfoDTO>();
@@ -159,6 +149,10 @@ namespace Models
                 .ForMember(m => m.UserName, opt => opt.MapFrom(src => src.User.Username));
 
             CreateMap<WorkingShiftDayConfig, WorkingShiftDayConfigInfoDTO>();
+
+
+            /*-------------- Workflow --------------*/
+            CreateMap<NewWorkflowDefine, WorkflowDefine>();
         }
 
     }
