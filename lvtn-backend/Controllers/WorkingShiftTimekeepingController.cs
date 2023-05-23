@@ -177,6 +177,34 @@ namespace Models.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet("/api/manager/{id}/scheduler")]
+        public IActionResult GetTimekeepingScheduleOfUserForManager(int id,
+            [FromQuery] string? query,
+            [FromQuery] string? queryType)
+        {
+            try
+            {
+                var decodedQuery = HttpUtility.UrlDecode(query);
+                var timekeeping = _workingShiftTimekeepingService
+                    .GetWorkingShiftTimekeepingOfUserForManager(id, decodedQuery, queryType);
+
+                var data = _mapper.Map<IEnumerable<WorkingShiftTimekeepingInfoDTO>>(timekeeping);
+                var count = data.Count();
+                var total = data.Count();
+
+                return Ok(new Dictionary<string, object>
+                {
+                    { "data", data },
+                    { "count", count },
+                    { "total", total }
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
     }
 }
 

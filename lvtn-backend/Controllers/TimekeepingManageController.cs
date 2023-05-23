@@ -46,5 +46,28 @@ namespace lvtn_backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("/api/manage")]
+        public IActionResult GetIsHasFullTime(
+            [FromQuery] int month = 10
+            , [FromQuery] int year = 2022
+            , [FromQuery] int id = 1
+            , [FromQuery] int day = 1)
+        {
+            try
+            {
+                Boolean isFullTime = _timekeepingManageService.isUserCheckFullTime(day, month, year, id);
+                return Ok(
+                        new Dictionary<string, object>
+                        {
+                            { "data", isFullTime },
+                        }
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
