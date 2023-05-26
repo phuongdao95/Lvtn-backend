@@ -152,37 +152,6 @@ namespace Services.Services
                     .ToList();
         }
 
-        public List<WorkingShiftTimekeeping> GetWorkingShiftTimekeepingOfUserForManager(int employeeId, string query, string queryType)
-        {
-            if (!(queryType == "date" ||
-                queryType == "all"))
-            {
-                throw new Exception("Invalid queryType");
-            }
-
-            if (queryType == "all")
-            {
-                return _context.WorkingShiftTimekeepings
-                    .Include(timekeeping => timekeeping.TimekeepingHistories)
-                    .Where(timekeeping => timekeeping.EmployeeId == employeeId)
-                    .ToList();
-            }
-
-            var queryParts = query.Split("/");
-            var day = int.Parse(queryParts[0]);
-            var month = int.Parse(queryParts[1]);
-            var year = int.Parse(queryParts[2]);
-
-            var date = new DateTime(year, month, day);
-
-            return _context.WorkingShiftTimekeepings
-                    .Include(timekeeping => timekeeping.TimekeepingHistories)
-                    .Include(timekeeping => timekeeping.WorkingShiftEvent)
-                    .Where(timekeeping => timekeeping.EmployeeId == employeeId)
-                    .Where(timekeeping => timekeeping.WorkingShiftEvent.StartTime.Date == date.Date)
-                    .ToList();
-        }
-
         public List<WorkingShiftTimekeeping> GetAllShiftsInAMonth(int userId, int chosenDay)
         {
             var currentTime = DateTime.Now;

@@ -14,12 +14,15 @@ namespace Models.Controllers
     public class WorkingShiftTimekeepingController : ControllerBase
     {
         private WorkingShiftTimekeepingService _workingShiftTimekeepingService;
+        private WorkingShiftTimekeepingHistoryService _workingShiftTimekeepingHistoryService;
         private IMapper _mapper;
         public WorkingShiftTimekeepingController(
             WorkingShiftTimekeepingService workingShiftTimekeepingService,
+            WorkingShiftTimekeepingHistoryService workingShiftTimekeepingHistoryService,
             IMapper mapper)
         {
             _workingShiftTimekeepingService = workingShiftTimekeepingService;
+            _workingShiftTimekeepingHistoryService = workingShiftTimekeepingHistoryService;
             _mapper = mapper;
         }
 
@@ -178,27 +181,46 @@ namespace Models.Controllers
             }
         }
 
-        [HttpGet("/api/manager/{id}/scheduler")]
-        public IActionResult GetTimekeepingScheduleOfUserForManager(int id,
-            [FromQuery] string? query,
-            [FromQuery] string? queryType)
+        [HttpPut("/api/manager/createTimekeeping/{id}/{hour}/{minute}/{type}")]
+        public IActionResult UpdateWorkingShiftTimekeepingByManager(int id, int hour, int minute, int type)
         {
             try
             {
-                var decodedQuery = HttpUtility.UrlDecode(query);
-                var timekeeping = _workingShiftTimekeepingService
-                    .GetWorkingShiftTimekeepingOfUserForManager(id, decodedQuery, queryType);
-
-                var data = _mapper.Map<IEnumerable<WorkingShiftTimekeepingInfoDTO>>(timekeeping);
-                var count = data.Count();
-                var total = data.Count();
-
-                return Ok(new Dictionary<string, object>
+                var timekeeping = _workingShiftTimekeepingService.GetById(id);
+                WorkingShiftTimekeepingDTO dto = new WorkingShiftTimekeepingDTO();
+                dto.Id = id;
+                WorkingShiftTimekeepingHistoryDTO obj = new WorkingShiftTimekeepingHistoryDTO();
+                var thatDate = timekeeping.CheckinTime;
+                var checkDate = new DateTime();
+                if (thatDate.HasValue)
                 {
-                    { "data", data },
-                    { "count", count },
-                    { "total", total }
-                });
+                    checkDate = new DateTime(thatDate.Value.Year, thatDate.Value.Month, thatDate.Value.Day, hour, minute, 0);
+                }
+                else
+                {
+                    checkDate = new DateTime(checkDate.Year, checkDate.Month, checkDate.Day, hour, minute, 0);
+                }
+                // check in, type == 1
+                if (type == 1)
+                {
+                    dto.DidCheckIn = true;
+                    dto.CheckinTime = checkDate;
+                    obj.IsCheckIn = true;
+                }
+                // check out, type == 2
+                else if (type == 2)
+                {
+                    dto.DidCheckIn = true;
+                    dto.DidCheckout = true;
+                    dto.CheckoutTime = checkDate;
+                    obj.IsCheckIn = false;
+                }
+                _workingShiftTimekeepingService.Update(id, dto);
+                // add working shift history
+                obj.DateTime = checkDate;
+                obj.TimekeepingId = id;
+                _workingShiftTimekeepingHistoryService.Add(obj);
+                return Ok();
             }
             catch (Exception)
             {
