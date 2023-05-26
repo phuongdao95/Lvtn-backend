@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata;
 
 namespace Models.Models
 {
@@ -12,6 +13,9 @@ namespace Models.Models
         [Required]
         public string? Password { get; set; }
         public string? UrlImage { get; set; }
+
+        public byte[]? Image { get; set; }
+
         [Required]
         public decimal BaseSalary { get; set; }      
         public decimal LeaveBalance { get; set; }

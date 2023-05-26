@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
+using Services.MachineLearning;
+using Services.MachineLearning.DataModels;
 using Services.Services;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
@@ -24,16 +25,20 @@ namespace lvtn_backend.Controllers
         private readonly EmsContext _context;
         private readonly TaskService _taskService;
         private readonly TaskHistoryService _taskHistoryService;
+        private readonly TaskEstimationService _taskEstimationService;
+
         public TaskController(
             IMapper mapper,
             EmsContext context,
             TaskService taskService,
-            TaskHistoryService taskHistoryService)
+            TaskHistoryService taskHistoryService,
+            TaskEstimationService taskEstimationService)
         {
             _mapper = mapper;
             _context = context;
             _taskService = taskService;
             _taskHistoryService = taskHistoryService;
+            _taskEstimationService = taskEstimationService;
         }
 
 
@@ -81,6 +86,19 @@ namespace lvtn_backend.Controllers
 
         [HttpGet("{id}/parenttask")]
         public IActionResult GetParentTaskOfTask()
+        {
+            try
+            {
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{id}/reopen")]
+        public IActionResult ReopenTask(int id, ReopenTaskDTO reopenTaskDTO)
         {
             try
             {
@@ -349,24 +367,18 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                var folderName = Path.Combine("Resources", "VirtualSpace");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-
                 var fileName = string.Format(@"{0}", Guid.NewGuid());
                 var filename = $"{fileName}.{taskFileDTO.Extension}";
-
-                var fullPath = Path.Combine(pathToSave, filename);
-                var filePath = Path.Combine(folderName, filename);
 
                 Regex regex = new Regex(@"^[\w/\:.-]+;base64,");
                 var actualFile = regex.Replace(taskFileDTO.File, string.Empty);
 
-                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(actualFile));
 
                 var taskFile = new TaskFile()
                 {
                     DisplayFileName = taskFileDTO.DisplayName + "." + taskFileDTO.Extension,
                     Name = filename,
+                    Content = Convert.FromBase64String(actualFile),
                     Description = taskFileDTO.Description,
                     TaskId = id,
                 };
@@ -389,7 +401,7 @@ namespace lvtn_backend.Controllers
                 _context.Tasks.Update(task);
                 _context.SaveChanges();
 
-                return Ok(new { filePath });
+                return Ok();
 
             }
             catch (Exception)
@@ -429,15 +441,6 @@ namespace lvtn_backend.Controllers
                 if (taskFile == null)
                 {
                     throw new Exception("Bad Request");
-                }
-
-                var folderName = Path.Combine("Resources", "VirtualSpace");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                var fullPath = Path.Combine(pathToSave, taskFile.Name);
-
-                if (System.IO.File.Exists(fullPath))
-                {
-                    System.IO.File.Delete(fullPath);
                 }
 
                 _context.TaskFiles.Remove(taskFile);
@@ -490,18 +493,13 @@ namespace lvtn_backend.Controllers
             try
             {
                 var taskFile = _context.TaskFiles.Find(id);
-                if (taskFile == null)
+                if (taskFile is null || taskFile.Content is null)
                 {
                     throw new Exception("File doesn't exists");
                 }
 
-                var folderName = Path.Combine("Resources", "VirtualSpace");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                var fullPath = Path.Combine(pathToSave, taskFile.Name);
 
-                byte[] bytes = System.IO.File.ReadAllBytes(fullPath);
-
-                return File(bytes, MediaTypeNames.Application.Octet, taskFile.DisplayFileName);
+                return File(taskFile.Content, MediaTypeNames.Application.Octet, taskFile.DisplayFileName);
             }
             catch (Exception)
             {
@@ -670,6 +668,27 @@ namespace lvtn_backend.Controllers
                 });
             }
             catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/api/board/latetask/prediction")]
+        public IActionResult GetPredictedLateTasks()
+        {
+            try
+            {
+                var predictions = _taskEstimationService.PredictLateTask(new TaskData
+                {
+                    TotalPoint = 8,
+                    UserInChargeEfficiency = 1.12f,
+                    UserReportToEfficiency = 1.25f,
+                });
+
+                return Ok(predictions);
+            }
+            catch
             {
                 return BadRequest();
             }

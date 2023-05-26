@@ -102,7 +102,6 @@
             "group_list",
             "department_list",
 
-            "taskboard_list",
             "taskboard_detail",
             "taskboard_label_list",
             "taskboard_column_list",

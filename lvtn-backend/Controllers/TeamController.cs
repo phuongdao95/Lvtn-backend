@@ -4,6 +4,9 @@ using Models.DTO.Response;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
+using Models.Repositories.DataContext;
+using Microsoft.EntityFrameworkCore;
+using Services.Services;
 
 namespace Models.Controllers
 {
@@ -13,12 +16,55 @@ namespace Models.Controllers
     public class TeamController : ControllerBase
     {
         private ITeamService _teamService;
-        private IMapper _mapper;
+        private readonly EmsContext _emsContext;
+        private readonly IMapper _mapper;
+        private readonly IdentityService _identityService;
 
-        public TeamController(ITeamService teamService, IMapper mapper)
+        public TeamController(
+            ITeamService teamService, 
+            IMapper mapper,
+            EmsContext emsContext)
         {
+            _emsContext  = emsContext;
             _teamService = teamService;
             _mapper = mapper;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/api/myteam/{userId}")]
+        public ActionResult GetTeamInfo(int userId)
+        {
+            try
+            {
+                var map = new Dictionary<string, object>();
+
+                var currentUser = _emsContext.Users.Where(user => user.Id == userId)
+                    .SingleOrDefault();
+
+                if (currentUser is null)
+                {
+                    throw new Exception("User is null");
+                }
+
+                var team = _emsContext.Teams.Where(team => team.Id == currentUser.Id)
+                    .Include(team => team.Leader)
+                    .Include(team => team.Members)
+                    .SingleOrDefault();
+
+                if (team is null)
+                {
+                    throw new Exception("team not found");
+                }
+
+                map["leader"] = _mapper.Map<UserInfoDTO>(team.Leader);
+                map["members"] = _mapper.Map<IEnumerable<UserInfoDTO>>(team.Members);
+
+                return Ok(map);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]

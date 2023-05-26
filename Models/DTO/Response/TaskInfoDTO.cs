@@ -18,5 +18,7 @@ namespace Models.DTO.Response
         public int? ColumnId { get; set; }
         public string? ColumnName { get; set; }
         public string? Description { get; set; }
+        public float? Estimated { get; set; }
+        public DateTime? DoneAt { get; set; }
     }
 }

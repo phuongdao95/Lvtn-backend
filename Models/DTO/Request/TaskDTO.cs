@@ -2,6 +2,7 @@
 {
     public class TaskDTO
     {
+        public int? TaskReopenId { get; set; }
         public string? Name { get; set; }
         public int? Point { get; set; }
         public string? TaskType { get; set; }

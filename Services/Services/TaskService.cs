@@ -4,6 +4,8 @@ using Models.DTO.Request;
 using Models.Enums;
 using Models.Models;
 using Models.Repositories.DataContext;
+using Services.MachineLearning;
+using Services.MachineLearning.DataModels;
 using Task = Models.Models.Task;
 
 namespace Services.Services
@@ -13,15 +15,18 @@ namespace Services.Services
         private readonly IMapper _mapper;
         private readonly EmsContext _context;
         private readonly TaskHistoryService _taskHistoryService;
+        private readonly TaskEstimationService _taskEstimationService;
 
         public TaskService(
             IMapper mapper, 
             EmsContext context, 
-            TaskHistoryService taskHistoryService)
+            TaskHistoryService taskHistoryService,
+            TaskEstimationService taskEstimationService)
         {
             _mapper = mapper;
             _context = context;
             _taskHistoryService = taskHistoryService;
+            _taskEstimationService = taskEstimationService;
         }
 
         public Task GetTaskById(int id)
@@ -105,7 +110,8 @@ namespace Services.Services
             _context.SaveChanges();
         }
 
-        public void CreateTask(TaskDTO taskDTO)
+
+        public void CreateTask(TaskDTO taskDTO, bool asReopen = false)
         {
             var taskColumn = _context.TaskColumns.Find(taskDTO.ColumnId);
             if (taskColumn == null)
@@ -117,10 +123,35 @@ namespace Services.Services
             task.ColumnId = taskDTO.ColumnId;
             task.InChargeId = taskDTO.InChargeId;
             task.ReportToId = taskDTO.ReportToId;
+            task.CreatedAt = DateTime.Now;
             task.Type = getTaskTypeFromText(taskDTO.TaskType);
+            
+            task.Estimated = _taskEstimationService.EstimateTaskCompletionDay(
+                new TaskData
+                {
+                    TotalPoint = task.Point ?? 0f,
+                    UserInChargeEfficiency = getUserInChargeEfficency(task.InChargeId),
+                    UserReportToEfficiency = getUserReportToEfficency(task.ReportToId),
+                }
+            ).NumberOfDaysActual;
+
+            if (taskDTO.TaskReopenId != null && asReopen)
+            {
+                var taskCopied = _context.Tasks.Where(task => task.Id == taskDTO.TaskReopenId)
+                    .SingleOrDefault();
+
+                if (taskCopied is not null)
+                {
+                    task.Description = taskCopied.Description;
+                    task.Labels = taskCopied.Labels;
+                    task.Files = taskCopied.Files;
+                    task.ParentTask = taskCopied;
+                }
+            }
 
             _context.Tasks.Add(task);
             _context.SaveChanges();
+
 
             var taskHistory = _taskHistoryService.BuildTaskHistoryFromTaskFieldsAndTaskId(task.Id, TaskHistoryAction.CreateTask);
 
@@ -131,6 +162,82 @@ namespace Services.Services
 
             _context.Tasks.Update(task);
             _context.SaveChanges();
+        }
+
+        private float getUserInChargeEfficency(int? id)
+        {
+            if (id is null)
+            {
+                return 1f;
+            }
+
+            var tasks = _context.Tasks.Where(task => task.InChargeId == id)
+                .Where(task => task.Column.Name.ToLower() == "done")
+                .Include(task => task.InCharge)
+                .ToList();
+
+            var totalPoints = tasks.Select((task) => task.Point ?? 0)
+                .Aggregate(0, (lhs, rhs) => lhs + rhs);
+
+            var totalDays = 0;
+
+            foreach ( var task in tasks)
+            {
+                if (task is null)
+                {
+                    continue;
+                }
+
+                if (task.FromDate is not null && task.ToDate is not null)
+                {
+                    totalDays += (task.ToDate - task.FromDate).Value.Days;
+                }
+            }
+
+            if (totalDays > 0 && totalPoints > 0)
+            {
+                return (totalPoints * 1f / totalDays) / 2;
+            }
+
+            return 1f;
+        }
+
+        private float getUserReportToEfficency(int? id)
+        {
+            if (id is null)
+            {
+                return 1f;
+            }
+
+            var tasks = _context.Tasks.Where(task => task.ReportToId == id)
+                .Where(task => task.Column.Name.ToLower() == "done")
+                .Include(task => task.InCharge)
+                .ToList();
+
+            var totalPoints = tasks.Select((task) => task.Point ?? 0)
+                .Aggregate(0, (lhs, rhs) => lhs + rhs);
+
+            var totalDays = 0;
+
+            foreach (var task in tasks)
+            {
+                if (task is null)
+                {
+                    continue;
+                }
+
+                if (task.FromDate is not null && task.ToDate is not null)
+                {
+                    totalDays += (task.ToDate - task.FromDate).Value.Days;
+                }
+            }
+
+            if (totalDays > 0 && totalPoints > 0)
+            {
+                return (totalPoints * 1f / totalDays) / 2;
+            }
+
+            return 1f;
         }
 
         private TaskType getTaskTypeFromText(string text)
@@ -420,12 +527,67 @@ namespace Services.Services
             _context.SaveChanges();
         }
 
+        public void ReopenTask(int taskId, ReopenTaskDTO reopenTask)
+        {
+            var task = _context.Tasks.Where(task => task.Id == taskId)
+                .Include(task => task.Column)
+                .Include(task => task.Files)
+                .Single();
+
+            if (task is null)
+            {
+                throw new Exception("Task not found");
+            }
+            
+            if (!task.Column.Name.Equals("Done"))
+            {
+                throw new Exception("Incomplete task cannot be moved");
+            }
+
+            var taskBoard = _context.TaskBoards
+                .Where(taskboard => taskboard.Id == task.Column.BoardId)
+                .Include(board => board.TaskColumns)
+                .SingleOrDefault();
+
+            var columnNew = taskBoard.TaskColumns
+                .Where(column => column.Name == "New")
+                .SingleOrDefault();
+
+            var copiedTask = new Task
+            {
+                Column = columnNew,
+                Name = task.Name,
+                FromDate = reopenTask.FromDate,
+                ToDate = reopenTask.ToDate,
+                ReportToId = reopenTask.ReportToId,
+                InChargeId = reopenTask.InChargeId,
+                CreatedAt = DateTime.Now,
+                CreatedById = task.CreatedById,
+                Description = task.Description,
+                Files = task.Files,
+                Type = task.Type,
+                ParentTaskId = task.ParentTaskId,
+            };
+
+            _context.Tasks.Add(copiedTask);
+            _context.SaveChanges();
+        }
+
+
         public void MoveTask(int taskId, MoveTaskDTO moveTaskDTO)
         {
-            var task = _context.Tasks.Find(taskId);
+            var task = _context.Tasks.Where(task => task.Id == taskId)
+                .Include(task => task.Column)
+                .SingleOrDefault();
+
             if (task == null)
             {
                 throw new Exception("Task not found");
+            }
+
+            if (task.Column is not null &&  task.Column.Name == "Done")
+            {
+                throw new Exception("Cannot move done task");
             }
 
             var taskBoard = _context.TaskBoards.Find(moveTaskDTO.TaskBoardId);
@@ -445,6 +607,13 @@ namespace Services.Services
             var destColumn = taskBoard.TaskColumns.Where(t => t.Name == moveTaskDTO.destinationColumnName).Single();
 
             task.ColumnId = destColumn.Id;
+
+            if (destColumn is not null && 
+                destColumn.Name is not null && 
+                destColumn.Name.ToLower() == "done")
+            {
+                task.DoneAt = DateTime.Now;
+            }
 
             _context.Tasks.Update(task);
             _context.SaveChanges();
@@ -493,6 +662,12 @@ namespace Services.Services
             _context.Tasks.Update(task);
             _context.SaveChanges();
         }
+
+        public List<int> GetColumnOfTasksByDateRange()
+        {
+            return new List<int> { };
+        }
+
 
         public void RemoveTaskComment(int commentId)
         {
