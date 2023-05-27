@@ -14,12 +14,15 @@ namespace Models.Controllers
     public class WorkingShiftTimekeepingController : ControllerBase
     {
         private WorkingShiftTimekeepingService _workingShiftTimekeepingService;
+        private WorkingShiftTimekeepingHistoryService _workingShiftTimekeepingHistoryService;
         private IMapper _mapper;
         public WorkingShiftTimekeepingController(
             WorkingShiftTimekeepingService workingShiftTimekeepingService,
+            WorkingShiftTimekeepingHistoryService workingShiftTimekeepingHistoryService,
             IMapper mapper)
         {
             _workingShiftTimekeepingService = workingShiftTimekeepingService;
+            _workingShiftTimekeepingHistoryService = workingShiftTimekeepingHistoryService;
             _mapper = mapper;
         }
 
@@ -171,6 +174,56 @@ namespace Models.Controllers
                     { "count", count },
                     { "total", total }
                 });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("/api/manager/createTimekeeping/{id}/{hour}/{minute}/{type}")]
+        public IActionResult UpdateWorkingShiftTimekeepingByManager(int id, int hour, int minute, int type)
+        {
+            try
+            {
+                var timekeeping = _workingShiftTimekeepingService.GetById(id);
+                WorkingShiftTimekeepingDTO dto = new WorkingShiftTimekeepingDTO();
+                dto.Id = id;
+                WorkingShiftTimekeepingHistoryDTO obj = new WorkingShiftTimekeepingHistoryDTO();
+                var thatDate = timekeeping.CheckinTime;
+                var checkDate = new DateTime();
+                if (thatDate.HasValue)
+                {
+                    checkDate = new DateTime(thatDate.Value.Year, thatDate.Value.Month, thatDate.Value.Day, hour, minute, 0);
+                }
+                else
+                {
+                    checkDate = new DateTime(checkDate.Year, checkDate.Month, checkDate.Day, hour, minute, 0);
+                }
+                // check in, type == 1
+                if (type == 1)
+                {
+                    dto.DidCheckIn = true;
+                    dto.DidCheckout = timekeeping.DidCheckout;
+                    dto.CheckinTime = checkDate;
+                    dto.CheckoutTime = timekeeping.CheckoutTime;
+                    obj.IsCheckIn = true;
+                }
+                // check out, type == 2
+                else if (type == 2)
+                {
+                    dto.DidCheckIn = timekeeping.DidCheckIn;
+                    dto.DidCheckout = true;
+                    dto.CheckoutTime = checkDate;
+                    dto.CheckinTime = timekeeping.CheckinTime;
+                    obj.IsCheckIn = false;
+                }
+                _workingShiftTimekeepingService.Update(id, dto);
+                // add working shift history
+                obj.DateTime = checkDate;
+                obj.TimekeepingId = id;
+                _workingShiftTimekeepingHistoryService.Add(obj);
+                return Ok();
             }
             catch (Exception)
             {

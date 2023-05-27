@@ -114,6 +114,7 @@ builder.Services.AddScoped<WorkingShiftTimekeepingHistoryService, WorkingShiftTi
 builder.Services.AddScoped<PayrollExporter, PayrollExporter>();
 builder.Services.AddScoped<PayslipExporter, PayslipExporter>();
 builder.Services.AddSingleton<TaskEstimationService, TaskEstimationService>();
+builder.Services.AddScoped<TimekeepingManageService, TimekeepingManageService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -123,6 +124,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 //    configuration.RootPath = "ClientApp/Lvtn-frontend/build";
 //});
 
+// Add Checkin rule config
+builder.Services.AddSingleton<CheckInConfig, CheckInConfig>();
 
 var app = builder.Build();
 
