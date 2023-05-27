@@ -109,6 +109,7 @@ builder.Services.AddScoped<NotificationService, NotificationService>();
 builder.Services.AddScoped<WorkingShiftService, WorkingShiftService>();
 builder.Services.AddScoped<WorkingShiftTimekeepingService, WorkingShiftTimekeepingService>();
 builder.Services.AddScoped<WorkingShiftTimekeepingHistoryService, WorkingShiftTimekeepingHistoryService>();
+builder.Services.AddScoped<TimekeepingManageService, TimekeepingManageService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));
 
