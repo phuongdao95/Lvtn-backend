@@ -126,14 +126,17 @@ namespace Services.Services
             task.CreatedAt = DateTime.Now;
             task.Type = getTaskTypeFromText(taskDTO.TaskType);
             
-            task.Estimated = _taskEstimationService.EstimateTaskCompletionDay(
-                new TaskData
-                {
-                    TotalPoint = task.Point ?? 0f,
-                    UserInChargeEfficiency = getUserInChargeEfficency(task.InChargeId),
-                    UserReportToEfficiency = getUserReportToEfficency(task.ReportToId),
-                }
-            ).NumberOfDaysActual;
+            if (task.FromDate is not null)
+            {
+                task.Estimated = _taskEstimationService.EstimateTaskCompletionDay(
+                    new TaskData
+                    {
+                        TotalPoint = task.Point ?? 0f,
+                        UserInChargeEfficiency = getUserInChargeEfficency(task.InChargeId),
+                        UserReportToEfficiency = getUserReportToEfficency(task.ReportToId),
+                    }
+                ).NumberOfDaysActual;
+            }
 
             if (taskDTO.TaskReopenId != null && asReopen)
             {
@@ -281,6 +284,19 @@ namespace Services.Services
             task.Point = taskDTO.Point;
             task.FromDate = taskDTO.FromDate;
             task.ToDate = taskDTO.ToDate;
+
+            if (task.FromDate is not null 
+                && task.Point is not null)
+            {
+                task.Estimated = _taskEstimationService.EstimateTaskCompletionDay(
+                    new TaskData
+                    {
+                        TotalPoint = task.Point ?? 0f,
+                        UserInChargeEfficiency = getUserInChargeEfficency(task.InChargeId),
+                        UserReportToEfficiency = getUserReportToEfficency(task.ReportToId),
+                    }
+                ).NumberOfDaysActual;
+            }
 
             _context.Tasks.Update(task);
             _context.SaveChanges();
@@ -573,7 +589,6 @@ namespace Services.Services
             _context.SaveChanges();
         }
 
-
         public void MoveTask(int taskId, MoveTaskDTO moveTaskDTO)
         {
             var task = _context.Tasks.Where(task => task.Id == taskId)
@@ -667,7 +682,6 @@ namespace Services.Services
         {
             return new List<int> { };
         }
-
 
         public void RemoveTaskComment(int commentId)
         {

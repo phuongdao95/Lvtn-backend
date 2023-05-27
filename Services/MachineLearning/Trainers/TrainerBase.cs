@@ -51,8 +51,7 @@ namespace Services.MachineLearning.Trainers
                 .Append(MlContext.Transforms.Concatenate("Features",
                                                 nameof(TaskData.TotalPoint),
                                                 nameof(TaskData.UserReportToEfficiency),
-                                                nameof(TaskData.UserInChargeEfficiency),
-                                                nameof(TaskData.NumberOfDaysActual)))
+                                                nameof(TaskData.UserInChargeEfficiency)))
                 .Append(MlContext.Transforms.NormalizeLogMeanVariance("Features", "Features"))
                 .AppendCacheCheckpoint(MlContext);
 

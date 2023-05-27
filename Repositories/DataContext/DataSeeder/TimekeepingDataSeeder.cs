@@ -30,8 +30,8 @@ namespace Repositories.DataContext.DataSeeder
             var result = new List<WorkingShiftRegistration>();
             var index = 0;
 
-            DateTime startDate = new DateTime(2022, 10, 1);
-            DateTime endDate = new DateTime(2023, 1, 31);
+            DateTime startDate = new DateTime(2023, 1, 1);
+            DateTime endDate = new DateTime(2023, 12, 31);
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
@@ -86,8 +86,8 @@ namespace Repositories.DataContext.DataSeeder
                     result.Add(new WorkingShiftTimekeeping
                     {
                         Id = ++index,
-                        CheckinTime = workingShiftEvent.StartTime,
-                        CheckoutTime = workingShiftEvent.EndTime,
+                        CheckinTime = workingShiftEvent.StartTime.AddMinutes(new Random().Next(0, 60) - 30),
+                        CheckoutTime = workingShiftEvent.EndTime.AddMinutes(new Random().Next(0, 60) - 30),
                         DidCheckIn = true,
                         DidCheckout = true,
                         EmployeeId = user.Id,
@@ -104,8 +104,8 @@ namespace Repositories.DataContext.DataSeeder
             var result = new List<WorkingShift>();
             var index = 0;
 
-            DateTime startDate = new DateTime(2022, 10, 1);
-            DateTime endDate = new DateTime(2023, 1, 31);
+            DateTime startDate = new DateTime(2023, 1, 1);
+            DateTime endDate = new DateTime(2023, 12, 31);
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {

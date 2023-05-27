@@ -147,6 +147,7 @@
             "user_nghi_phep_todo",
             "user_nghi_thai_san_todo",
             "user_check_in_out_todo",
+            "my_team",
 
             "profile",
             "my_payslip",

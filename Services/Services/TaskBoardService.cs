@@ -282,7 +282,7 @@ namespace Services.Services
 
                     if (lowercased.Contains("isreopentask"))
                     {
-                        tasks = tasks.Where(task => task.IsReopen is not null) .ToList();
+                        tasks = tasks.Where(task => task.IsReopen is not null && task.IsReopen.Equals(true)) .ToList();
                     }
                 }
             }
