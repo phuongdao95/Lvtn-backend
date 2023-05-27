@@ -322,6 +322,12 @@ namespace Models.Repositories.DataContext
 
             new VirtualSpaceDataseeder(modelBuilder)
                 .SeedData();
+
+            // Leave balance for users
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.LeaveBalances)
+                .WithOne(l => l.User)
+                .HasForeignKey(l => l.UserId);
         }
     }
 }

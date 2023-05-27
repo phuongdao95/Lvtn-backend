@@ -96,6 +96,7 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ISalaryDeltaService, SalaryDeltaService>();
+builder.Services.AddScoped<IWorkflowService, WorkflowService>();
 builder.Services.AddScoped<PayrollService, PayrollService>();
 builder.Services.AddScoped<SalaryFormulaService, SalaryFormulaService>();
 builder.Services.AddScoped<GroupService, GroupService>();
