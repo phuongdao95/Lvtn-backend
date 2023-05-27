@@ -123,12 +123,20 @@ namespace Models.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("/api/user/{id}/avatar")]
-        public IActionResult GetAvatar()
+        public IActionResult GetAvatar(int id)
         {
             try
             {
-                return Ok();
+                var employee = _employeeService.GetUserById(id);
+
+                if (employee.Image is null)
+                {
+                    return NotFound();
+                }
+
+                return File(employee.Image, "image/jpeg");
             }
             catch (Exception)
             {
@@ -141,22 +149,18 @@ namespace Models.Controllers
         public IActionResult UploadAvatar(int id, [FromForm] IFormFile file)
         {
             if (file.Length > 0)
-            {
-                var uploadFolder = Directory.GetCurrentDirectory() + "/wwwroot/images";
-                var fileName = Guid.NewGuid() + ContentDispositionHeaderValue.Parse(file.ContentDisposition)
-                    .FileName.Trim('"');
 
-                var finalPath = Path.Combine(uploadFolder, fileName);
-                using (var fileStream = new FileStream(finalPath, FileMode.Create))
+            {
+                var employee = _employeeService.GetUserById(id);
+
+                using (var memoryStream = new MemoryStream())
                 {
-                    file.CopyTo(fileStream);
+                    file.CopyTo(memoryStream);
+                    employee.Image = memoryStream.ToArray();
                 }
 
-                var employee = _employeeService.GetUserById(id);
-                employee.UrlImage = getUrlFromFileName(fileName);
                 _emsContext.Users.Update(employee);
                 _emsContext.SaveChanges();
-
                 return Ok($"File is uploaded Successfully");
             }
             else
@@ -190,13 +194,5 @@ namespace Models.Controllers
                 return BadRequest();
             }
         }
-
-        private string getUrlFromFileName(string fileName)
-        {
-            var location = new Uri($"{Request.Scheme}://{Request.Host}/images/");
-
-            return location + fileName; 
-        }
-
     }
 }

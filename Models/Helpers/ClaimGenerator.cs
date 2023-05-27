@@ -102,7 +102,6 @@
             "group_list",
             "department_list",
 
-            "taskboard_list",
             "taskboard_detail",
             "taskboard_label_list",
             "taskboard_column_list",
@@ -148,6 +147,7 @@
             "user_nghi_phep_todo",
             "user_nghi_thai_san_todo",
             "user_check_in_out_todo",
+            "my_team",
 
             "profile",
             "my_payslip",

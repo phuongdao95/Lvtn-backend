@@ -11,6 +11,8 @@ using lvtn_backend.Middleware;
 using lvtn_backend.Hubs;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.FileProviders;
+using Services.SalaryManagement.Exporters;
+using Services.MachineLearning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -109,6 +111,9 @@ builder.Services.AddScoped<NotificationService, NotificationService>();
 builder.Services.AddScoped<WorkingShiftService, WorkingShiftService>();
 builder.Services.AddScoped<WorkingShiftTimekeepingService, WorkingShiftTimekeepingService>();
 builder.Services.AddScoped<WorkingShiftTimekeepingHistoryService, WorkingShiftTimekeepingHistoryService>();
+builder.Services.AddScoped<PayrollExporter, PayrollExporter>();
+builder.Services.AddScoped<PayslipExporter, PayslipExporter>();
+builder.Services.AddSingleton<TaskEstimationService, TaskEstimationService>();
 builder.Services.AddScoped<TimekeepingManageService, TimekeepingManageService>();
 // Add AutoMapper Configuration
 builder.Services.AddAutoMapper(typeof(Program));

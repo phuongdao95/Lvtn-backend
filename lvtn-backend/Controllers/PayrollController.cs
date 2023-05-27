@@ -4,11 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using Models.DTO.Request;
 using Models.DTO.Response;
 using Models.Models;
 using Models.Repositories.DataContext;
+using Services.SalaryManagement.Exporters;
 using Services.Services;
+using System.Net.Mime;
 
 namespace lvtn_backend.Controllers
 {
@@ -21,6 +24,8 @@ namespace lvtn_backend.Controllers
         private readonly PayrollService _payrollService;
         private readonly NotificationService _notificationService;
         private readonly IHubContext<NotificationHub> _notificationHubContext;
+        private readonly PayrollExporter _payrollExporter;
+        private readonly PayslipExporter _payslipExporter;
         private readonly EmsContext _context;
 
         public PayrollController(
@@ -28,6 +33,8 @@ namespace lvtn_backend.Controllers
             PayrollService payrollService,
             NotificationService notificationService,
             IHubContext<NotificationHub> notificationHubContext,
+            PayrollExporter payrollExporter,
+            PayslipExporter payslipExporter,
             EmsContext context)
         {
             _mapper = mapper;
@@ -35,6 +42,8 @@ namespace lvtn_backend.Controllers
             _notificationHubContext = notificationHubContext;
             _notificationService = notificationService;
             _context = context;
+            _payrollExporter = payrollExporter;
+            _payslipExporter = payslipExporter;
         }
 
 
@@ -342,6 +351,34 @@ namespace lvtn_backend.Controllers
                 });
 
                 return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/api/payroll/{id}/export")]
+        public IActionResult ExportPayroll(int id)
+        {
+            try
+            {
+                return File(_payrollExporter.Export(id), "application/vnd.ms-excel");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/api/payslip/{id}/export")]
+        public IActionResult ExportPayslip(int id)
+        {
+            try
+            {
+                return File(_payslipExporter.Export(id), "application/vnd.ms-excel");
             }
             catch (Exception)
             {

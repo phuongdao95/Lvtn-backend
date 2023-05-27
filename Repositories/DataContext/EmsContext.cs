@@ -311,9 +311,8 @@ namespace Models.Repositories.DataContext
 
         private void seedData(ModelBuilder modelBuilder)
         {
-            var administrationDataSeeder = new AdministrationDataSeeder(modelBuilder);
-
-            administrationDataSeeder.SeedData();
+             new AdministrationDataSeeder(modelBuilder)
+                .SeedData();
 
             new TimekeepingDataSeeder(modelBuilder)
                 .SeedData();

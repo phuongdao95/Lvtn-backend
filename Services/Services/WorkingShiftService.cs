@@ -147,7 +147,9 @@ namespace Services.Services
         {
             var user = _context.Users.Find(registrationDTO.UserId);
             var shiftRegistration = _context.WorkingShiftRegistrations
-                .Find(registrationDTO.WorkingShiftRegistrationId);
+                .Where(registration => registration.Id == registrationDTO.WorkingShiftRegistrationId)
+                .Include(registration => registration.WorkingShift)
+                .SingleOrDefault();
 
             if (user == null)
             {
@@ -169,6 +171,21 @@ namespace Services.Services
                 WorkingShiftEventId = shiftRegistration.WorkingShiftId,
             };
 
+            // In case the registration is working shift timekeeping simply add new workingshift timekeeping
+            if (shiftRegistration.WorkingShift is not null &&
+                shiftRegistration.WorkingShift.Type == WorkingShiftType.OVERTIME_SHIFT)
+            {
+                _context.WorkingShiftTimekeepings.Add(new WorkingShiftTimekeeping
+                {
+                    CheckinTime =  null,
+                    CheckoutTime = null,
+                    DidCheckIn = false,
+                    DidCheckout = false,
+                    EmployeeId = registrationDTO.UserId,
+                    WorkingShiftEventId = shiftRegistration.WorkingShiftId,
+                });
+            }
+
             _context.WorkingShiftTimekeepings.Add(timekeeping);
 
             _context.WorkingShiftRegistrationUsers.Add(new WorkingShiftRegistrationUser
@@ -187,7 +204,7 @@ namespace Services.Services
                     p.WorkingShiftRegistrationId == registrationId)
                 .FirstOrDefault();
 
-            if (registrationUser == null)
+            if (registrationUser is null)
             {
                 throw new Exception("Registration user is not found");
             }
@@ -197,7 +214,7 @@ namespace Services.Services
                 .Where(p => p.Id == registrationId)
                 .FirstOrDefault();
 
-            if (registration != null)
+            if (registration is not null)
             {
                 var timekeeping = _context.WorkingShiftTimekeepings
                     .Include(p => p.WorkingShiftEvent)
@@ -549,6 +566,7 @@ namespace Services.Services
                 Type = WorkingShiftType.OVERTIME_SHIFT,
                 Users = group.Users,
                 Description = shiftDTO.Description,
+                
             };
 
             _context.WorkingShifts.Add(workingShift);

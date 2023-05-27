@@ -18,6 +18,9 @@ namespace Models.Models
         public int? ReportToId { get; set; }
         public int? Order { get; set; }
         public int? ParentTaskId { get; set; }
+        public DateTime? DoneAt { get; set; }
+        public float? Estimated { get; set; }
+        public bool? IsReopen { get; set; } = false;
 
         public int? ColumnId { get; set; }
         public Task? ParentTask { get; set; }

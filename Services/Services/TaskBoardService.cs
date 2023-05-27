@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.EntityFrameworkCore;
 using Models.DTO.Request;
 using Models.Enums;
@@ -203,9 +204,9 @@ namespace Services.Services
             var taskColumn = _context.TaskColumns
                 .Where(column => column.Id == id)
                 .Include(column => column.Tasks)
-                .Single();
+                .SingleOrDefault();
 
-            if (taskColumn.Tasks == null)
+            if (taskColumn is null || taskColumn.Tasks == null)
             {
                 return new List<Task>();
             }
@@ -268,6 +269,21 @@ namespace Services.Services
                     tasks = tasks
                         .Where(task => task.FromDate <= taskFilterDTO.EndDate)
                         .ToList();
+                }
+
+                if (taskFilterDTO.Options is not null)
+                {
+                    var lowercased = taskFilterDTO.Options.Select((option) =>  option.ToLower());
+
+                    if (lowercased.Contains("islatetask"))
+                    {
+                        tasks = tasks.Where(task => DateTime.Now > task.ToDate) .ToList();
+                    }
+
+                    if (lowercased.Contains("isreopentask"))
+                    {
+                        tasks = tasks.Where(task => task.IsReopen is not null && task.IsReopen.Equals(true)) .ToList();
+                    }
                 }
             }
 
