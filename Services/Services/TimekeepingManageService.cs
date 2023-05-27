@@ -122,6 +122,8 @@ namespace Services.Services
                     dicUserTimeExpect.Add(id, numOfMinutes);
                 }
             }
+
+
             var lstCheckIn = _context.WorkingShiftTimekeepings
                 .Where(res => res.CheckinTime.Value.Month == month
                             && res.CheckinTime.Value.Year == year
@@ -147,11 +149,12 @@ namespace Services.Services
                     dicUserTimeReal.Add(id, numOfMinutes);
                 }
             }
-            if (!dicUserTimeExpect.ContainsKey(id) || dicUserTimeExpect[id] == 0)
+            if ((!dicUserTimeExpect.ContainsKey(id) || dicUserTimeExpect[id] == 0)
+                && (dicUserTimeReal.ContainsKey(id) || dicUserTimeReal[id] == 0))
             {
                 return true;
             }
-            return dicUserTimeExpect[id] <= dicUserTimeReal[id] ? true : false;
+            return dicUserTimeExpect[id] <= dicUserTimeReal[id];
         }
     }
 }

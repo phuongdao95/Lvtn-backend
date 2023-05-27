@@ -204,15 +204,18 @@ namespace Models.Controllers
                 if (type == 1)
                 {
                     dto.DidCheckIn = true;
+                    dto.DidCheckout = timekeeping.DidCheckout;
                     dto.CheckinTime = checkDate;
+                    dto.CheckoutTime = timekeeping.CheckoutTime;
                     obj.IsCheckIn = true;
                 }
                 // check out, type == 2
                 else if (type == 2)
                 {
-                    dto.DidCheckIn = true;
+                    dto.DidCheckIn = timekeeping.DidCheckIn;
                     dto.DidCheckout = true;
                     dto.CheckoutTime = checkDate;
+                    dto.CheckinTime = timekeeping.CheckinTime;
                     obj.IsCheckIn = false;
                 }
                 _workingShiftTimekeepingService.Update(id, dto);
