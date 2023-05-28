@@ -40,6 +40,7 @@
             "user_nghi_phep_todo",
             "user_nghi_thai_san_todo",
             "user_check_in_out_todo",
+            "check_in",
 
             "user_list",
             "role_list",
@@ -72,6 +73,7 @@
             "my_payslip",
             "my_payslip_detail",
             "salary_report",
+            "timekeeping_manage",
 
             "profile",
         };
@@ -94,6 +96,7 @@
             "user_nghi_phep_todo",
             "user_nghi_thai_san_todo",
             "user_check_in_out_todo",
+            "check_in",
 
             "user_list",
             "role_list",
@@ -125,6 +128,7 @@
             "my_payslip",
             "my_payslip_detail",
             "salary_report",
+            "timekeeping_manage",
 
             "profile",
         };
@@ -157,12 +161,14 @@
             "timekeeping_schedule",
             "workingshift_registration",
             "registered_workingshift",
+            "timekeeping_manage",
 
             "taskboard_list",
             "taskboard_detail",
             "taskboard_label_list",
             "taskboard_column_list",
             "taskboard_report",
+            "checkin",
         };
 
         public static List<string> GenerateResourceAccessClaims()

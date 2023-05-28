@@ -12,6 +12,7 @@ namespace Repositories.DataContext.DataSeeder
         private readonly List<User> _users;
         private readonly List<WorkingShiftRegistration> _workingShiftRegistrations;
         private readonly List<WorkingShiftRegistrationUser> _workingShiftRegistrationUsers;
+        private readonly List<WorkingShiftTimekeepingHistory> _workingShiftTimekeepingHistories;
         private readonly ModelBuilder _modelBuilder;
         public TimekeepingDataSeeder(ModelBuilder modelBuilder)
         {
@@ -23,6 +24,7 @@ namespace Repositories.DataContext.DataSeeder
             _workingShiftRegistrations = seedWorkingShiftRegistrations();
             _workingShiftRegistrationUsers = seedWorkingShiftRegistrationUsers(); 
             _workingShiftTimekeepings = seedWorkingShiftTimekeepings();
+            _workingShiftTimekeepingHistories = seedWorkingShiftTimekeepingHistories();
         }
 
         private List<WorkingShiftRegistration> seedWorkingShiftRegistrations()
@@ -30,8 +32,8 @@ namespace Repositories.DataContext.DataSeeder
             var result = new List<WorkingShiftRegistration>();
             var index = 0;
 
-            DateTime startDate = new DateTime(2023, 1, 1);
-            DateTime endDate = new DateTime(2023, 12, 31);
+            DateTime startDate = new DateTime(2023, 3, 1);
+            DateTime endDate = new DateTime(2023, 4, 30);
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
@@ -78,22 +80,54 @@ namespace Repositories.DataContext.DataSeeder
         {
             var result = new List<WorkingShiftTimekeeping>();
             var index = 0;
-
             foreach (var user in _users)
             {
                 foreach (var workingShiftEvent in _workingShiftEvents)
                 {
+                    var checkinTime = workingShiftEvent.StartTime.AddMinutes(new Random().Next(0, 60) - 30);
+                    var checkoutTime = workingShiftEvent.EndTime.AddMinutes(new Random().Next(0, 60) - 30);
+
+                    ++index;
+
                     result.Add(new WorkingShiftTimekeeping
                     {
-                        Id = ++index,
-                        CheckinTime = workingShiftEvent.StartTime.AddMinutes(new Random().Next(0, 60) - 30),
-                        CheckoutTime = workingShiftEvent.EndTime.AddMinutes(new Random().Next(0, 60) - 30),
+                        Id = index,
+                        CheckinTime = checkinTime,
+                        CheckoutTime = checkoutTime,
                         DidCheckIn = true,
                         DidCheckout = true,
                         EmployeeId = user.Id,
                         WorkingShiftEventId = workingShiftEvent.Id,
                     });
+
                 }
+            }
+
+            return result;
+        }
+
+        private List<WorkingShiftTimekeepingHistory> seedWorkingShiftTimekeepingHistories()
+        {
+            var result = new List<WorkingShiftTimekeepingHistory>();
+            var id = 0;
+
+            foreach (var timekeeping in _workingShiftTimekeepings)
+            {
+                result.Add(new WorkingShiftTimekeepingHistory
+                {
+                    Id = ++id,
+                    DateTime = timekeeping.CheckinTime.Value,
+                    IsCheckIn = true,
+                    TimekeepingId = timekeeping.Id,
+                });
+
+                result.Add(new WorkingShiftTimekeepingHistory
+                {
+                    Id = ++id,
+                    DateTime = timekeeping.CheckoutTime.Value,
+                    IsCheckIn = false,
+                    TimekeepingId = timekeeping.Id,
+                });
             }
 
             return result;
@@ -104,8 +138,8 @@ namespace Repositories.DataContext.DataSeeder
             var result = new List<WorkingShift>();
             var index = 0;
 
-            DateTime startDate = new DateTime(2023, 1, 1);
-            DateTime endDate = new DateTime(2023, 12, 31);
+            DateTime startDate = new DateTime(2023, 3, 1);
+            DateTime endDate = new DateTime(2023, 4, 30);
 
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
@@ -159,6 +193,10 @@ namespace Repositories.DataContext.DataSeeder
 
             _modelBuilder.Entity<WorkingShiftTimekeeping>()
                 .HasData(_workingShiftTimekeepings);
+
+            _modelBuilder.Entity<WorkingShiftTimekeepingHistory>()
+                .HasData(_workingShiftTimekeepingHistories);
+
         }
     }
 }
