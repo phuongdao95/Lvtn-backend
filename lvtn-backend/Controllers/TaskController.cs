@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2013.WebExtentionPane;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -515,8 +516,11 @@ namespace lvtn_backend.Controllers
             {
                 var taskBoard = _context.TaskBoards.Where(board => board.Id == id)
                     .Include(taskBoard => taskBoard.TaskColumns)
-                    .ThenInclude(taskColumn => taskColumn.Tasks)
-                    .ThenInclude(task => task.InCharge)
+                        .ThenInclude(taskColumn => taskColumn.Tasks)
+                            .ThenInclude(task => task.InCharge)
+                    .Include(taskBoard => taskBoard.TaskColumns)
+                        .ThenInclude(TaskColumn => TaskColumn.Tasks)
+                            .ThenInclude(task => task.TaskHistories)
                     .SingleOrDefault();
 
                 if (taskBoard == null)
@@ -540,28 +544,82 @@ namespace lvtn_backend.Controllers
                     .Where(column => column.Name == "Todo")
                     .Single();
 
-                var totalTaskNew = taskNewColumn.Tasks.Count();
+                var tasks = taskBoard.TaskColumns
+                    .Aggregate(Enumerable.Empty<Task>(), (acc, rhs) =>
+                        acc.Concat(rhs.Tasks is not null ? rhs.Tasks.AsEnumerable() : Enumerable.Empty<Task>()))
+                    .ToList();
 
+                var tasksOtherThanDone = taskBoard.TaskColumns
+                    .Where(column => column.Name.ToLower() != "done")
+                    .Aggregate(Enumerable.Empty<Task>(), (acc, rhs) =>
+                        acc.Concat(rhs.Tasks is not null ? rhs.Tasks.AsEnumerable() : Enumerable.Empty<Task>()))
+                    .ToList();
+
+
+                var totalTaskNew = taskNewColumn.Tasks?.Count() ?? 0;
                 var totalPointFinished = tasksDone.Aggregate(0, (acc, item) => acc + (item.Point ?? 0));
 
-                var taskDoneByEightDays = getTotalTaskDoneByLastEightDays(tasksDone);
+                var totalTaskFinishedByEightDays = getTotalTaskDoneByLastEightDays(tasksDone);
                 var pointFinishedByEightDays = getTotalPointByLastEightDays(tasksDone);
-
+                var totalTaskCreatedByEightDays = getTotalTaskCreatedByEightDays(tasks);
+                var totalTaskLate = getTotalTaskLate(tasksOtherThanDone);
+                var totalTaskEstimatedToBeLate = getTotalTaskEstimatedToBeLate(tasksOtherThanDone);
 
                 return Ok(new Dictionary<string, object>
                 {
-                    ["totalEmployeeCount"] =totalEmployee,
-                    ["totalTaskDone"]=totalTaskDone,
+                    ["totalEmployeeCount"] = totalEmployee,
+                    ["totalTaskDone"] = totalTaskDone,
+                    ["totalTaskLate"] = totalTaskLate,
                     ["totalPointFinished"] = totalPointFinished,
-                    ["totalTaskNew"]=totalTaskNew,
-                    ["taskDoneByEightDays"]=taskDoneByEightDays,
-                    ["pointFinishedByEightDays"]=pointFinishedByEightDays,
+                    ["totalTaskEstimatedToBeLate"] = totalTaskEstimatedToBeLate,
+                    ["totalTaskNew"] = totalTaskNew,
+                    ["taskDoneByEightDays"] = totalTaskFinishedByEightDays,
+                    ["pointFinishedByEightDays"] = pointFinishedByEightDays,
+                    ["totalTaskCreatedByEightDays"] = totalTaskCreatedByEightDays,
+                    ["totalTaskFinishedByEightDays"] = totalTaskFinishedByEightDays
                 });
             }
             catch (Exception)
             {
                 return BadRequest();
             }
+        }
+
+
+        private int getTotalTaskEstimatedToBeLate(List<Task> tasksOtherThanDone)
+        {
+            return tasksOtherThanDone.Where(
+                task => task.ToDate > DateTime.Now && 
+                task.FromDate.Value.AddDays(Math.Ceiling(task.Estimated ?? 0)) > task.ToDate
+            ).Count();
+        }
+
+
+        private int getTotalTaskLate(List<Task> tasksOtherThanDone)
+        {
+            return tasksOtherThanDone.Where(task => task.ToDate < DateTime.Now)
+                .Count();
+        }
+
+        private List<Dictionary<string, object>> getTotalTaskCreatedByEightDays(List<Task> tasks)
+        {
+            var result = new List<Dictionary<string, object>>();
+
+            var now = DateTime.Now.Date;
+            var eightDaysAgo = now.AddDays(-8);
+
+            for (DateTime date = eightDaysAgo;
+                date <= now.Date;
+                date = date.AddDays(1))
+            {
+                result.Add(new Dictionary<string, object>
+                {
+                    ["Date"] = date,
+                    ["TotalPoint"] = getTotalTaskCreatedByDate(tasks, date),
+                });
+            }
+
+            return result;
         }
 
         private List<Dictionary<string, object>> getTotalTaskDoneByLastEightDays(List<Task> tasksDone)
@@ -608,17 +666,27 @@ namespace lvtn_backend.Controllers
 
         private int getTotalPointsOfDate(List<Task> tasksDone, DateTime date)
         {
-            return tasksDone
-                .Where(task => task.CreatedAt.Date == date.Date)
-                .Select(task => task.Point ?? 0)
-                .Aggregate(0, (result, item) => result + item);
+            return tasksDone.Where(taskDone => taskDone.TaskHistories
+                .Where(history => history.Action == TaskHistoryAction.MoveTask &&
+                   history.ColumnName.ToLower().Equals("done")).FirstOrDefault()?.CreatedAt.Date == date)
+                .Aggregate(0, (totalPoint, task) =>
+                {
+                    return totalPoint + (task.Point ?? 0);
+                });
+        }
+
+        private int getTotalTaskCreatedByDate(List<Task> tasks, DateTime date)
+        {
+            return tasks.Where(task => task.CreatedAt.Date == date.Date)
+                .Count();
         }
 
         private int getTotalTaskDoneByDate(List<Task> taskDones, DateTime date)
         {
-            return taskDones
-                .Where(task => task.CreatedAt.Date == date.Date)
-                .Count();
+            return taskDones.Where(taskDone => taskDone.TaskHistories
+                 .Where(history => history.Action == TaskHistoryAction.MoveTask &&
+                   history.ColumnName.ToLower().Equals("done")).FirstOrDefault()?.CreatedAt.Date == date)
+                    .Count();
         }
 
         [HttpPost("/api/epic/link/{id}/{taskId}")]

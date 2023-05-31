@@ -73,66 +73,6 @@ public class AdministrationDataSeeder : DataSeeder
             },            
             new Dictionary<string, string>
             {
-                ["Name"] = "Khương Gia Cần",
-                ["Username"] = "kgiacan",
-                ["Gender"] = "male"
-            },            
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Cát Khánh Hải",
-                ["Username"] = "ckhanhhai",
-                ["Gender"] = "male"
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Quản Quốc Hoàng",
-                ["Username"] = "qquochoang",
-                ["Gender"] = "male"
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Mang Hải Nam",
-                ["Username"] = "mhainam",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Thành Đức Toàn",
-                ["Username"] = "tductoan",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Ngân Huy Tuấn",
-                ["Username"] = "nhuytuan",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Phương Trường Thành",
-                ["Username"] = "ptuongthanh",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Phi Hòa Bình",
-                ["Username"] = "phoabinh",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Đỗ Hữu Đạt",
-                ["Username"] = "dhuudat",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Xung Hồng Giang",
-                ["Username"] = "xhonggiang",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
                 ["Name"] = "Nông Cẩm Hường",
                 ["Username"] = "ncamhuong",
                 ["Gender"] = "female",
@@ -190,60 +130,6 @@ public class AdministrationDataSeeder : DataSeeder
                 ["Name"] = "Mã Mai Liên",
                 ["Username"] = "mmailien",
                 ["Gender"] = "female",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Mẫn Bạch Vân",
-                ["Username"] = "mbachvan",
-                ["Gender"] = "female",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Tống Cao Phong",
-                ["Username"] = "tcaophong",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Võ Minh Nhật",
-                ["Username"] = "vminhnhat",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Dư Thiện Đức",
-                ["Username"] = "dthienduc",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Đặng Thế Vinh",
-                ["Username"] = "dthevinh",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Nguyễn Công Bằng",
-                ["Username"] = "ncongbang",
-                ["Gender"] = "male",
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Ca Quang Đức",
-                ["Username"] = "cquangduc",
-                ["Gender"] = "male"
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Linh Công Sơn",
-                ["Username"] = "lcongson",
-                ["Gender"] = "male"
-            },
-            new Dictionary<string, string>
-            {
-                ["Name"] = "Kha Thành Phương",
-                ["Username"] = "kthanhphuong",
-                ["Gender"] = "male",
             },
             new Dictionary<string, string>
             {

@@ -161,7 +161,6 @@
             "timekeeping_schedule",
             "workingshift_registration",
             "registered_workingshift",
-            "timekeeping_manage",
 
             "taskboard_list",
             "taskboard_detail",

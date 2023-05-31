@@ -21,7 +21,6 @@ namespace Models.Models
         public DateTime? DoneAt { get; set; }
         public float? Estimated { get; set; }
         public bool? IsReopen { get; set; } = false;
-
         public int? ColumnId { get; set; }
         public Task? ParentTask { get; set; }
         public TaskColumn? Column { get; set; }

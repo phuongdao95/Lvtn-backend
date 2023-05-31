@@ -13,7 +13,6 @@ namespace Repositories.DataContext.DataSeeder
             "Board Alpha",
             "Board Beta",
             "Board Gamma",
-            "Board Sigma"
         };
 
         private static readonly List<string> _taskColumnNames = new List<string>
@@ -133,8 +132,8 @@ namespace Repositories.DataContext.DataSeeder
                     Id = ++index,
                     ColumnId = taskColumn.Id,
                     Order = ++order, 
-                    FromDate = new DateTime(2022, 10, 12),
-                    ToDate = new DateTime(2022, 10, 17),
+                    FromDate = new DateTime(2023, 5, 31),
+                    ToDate = new DateTime(2022, 6, 18),
                     Point = new Random().Next(5, 20),
                     Name = $"Item {index}",
                 }));
