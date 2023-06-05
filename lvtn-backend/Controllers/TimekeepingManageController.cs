@@ -56,11 +56,11 @@ namespace lvtn_backend.Controllers
         {
             try
             {
-                Boolean isFullTime = _timekeepingManageService.isUserCheckFullTime(day, month, year, id);
+                int timeColor = _timekeepingManageService.isUserCheckFullTime(day, month, year, id);
                 return Ok(
                         new Dictionary<string, object>
                         {
-                            { "data", isFullTime },
+                            { "data", timeColor },
                         }
                 );
             }
