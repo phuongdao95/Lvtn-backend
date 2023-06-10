@@ -14,9 +14,8 @@ namespace Models.Models
         public decimal Amount { get; set; }
         public string? FormulaDefine { get; set; }
         public WorkingShiftType Type { get; set; }
-        public int PayslipId { get; set; }
+        public int? PayslipId { get; set; }
         public Payslip? Payslip { get; set; }
-
         public bool? CalculatedSuccess { get; set; }
     }
 }

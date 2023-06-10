@@ -22,6 +22,7 @@ namespace Models.Models
         public int? Month { get; set; }
         public int? Year { get; set; }
         public bool? CalculatedSuccess { get; set; }
+        public List<PayslipIssue> Issues { get; set; } = new List<PayslipIssue>();
         public List<PayslipSalaryDelta>? SalaryDeltas { get; set; }
         public List<PayslipWorkingShiftTimekeeping>? Timekeepings { get; set; }
         public decimal? ActualSalary { get; set; }
