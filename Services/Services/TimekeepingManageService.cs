@@ -34,14 +34,14 @@ namespace Services.Services
             {
                 int id = res.User.Id;
                 TimeSpan time = res.WorkingShiftRegistration.WorkingShift.EndTime.Subtract(res.WorkingShiftRegistration.WorkingShift.StartTime);
-                int numOfMinutes = (int)time.TotalMinutes;
+                int numOfHours = (int)Math.Round((decimal)time.TotalMinutes / 60);
                 if (dicUserTimeExpect.ContainsKey(id))
                 {
-                    dicUserTimeExpect[id] += numOfMinutes;
+                    dicUserTimeExpect[id] += numOfHours;
                 }
                 else
                 {
-                    dicUserTimeExpect.Add(id, numOfMinutes);
+                    dicUserTimeExpect.Add(id, numOfHours);
                 }
             }
             var lstCheckIn = _context.WorkingShiftTimekeepings
@@ -53,19 +53,19 @@ namespace Services.Services
             foreach (var res in lstCheckIn)
             {
                 int id = res.Employee.Id;
-                int numOfMinutes = 0;
+                int numOfHours = 0;
                 if (res.CheckoutTime.HasValue && res.CheckinTime.HasValue)
                 {
                     TimeSpan time = res.CheckoutTime.Value.Subtract(res.CheckinTime.Value);
-                    numOfMinutes = (int)time.TotalMinutes;
+                    numOfHours = (int)Math.Round((decimal)time.TotalMinutes / 60);
                 }
                 if (dicUserTimeReal.ContainsKey(id))
                 {
-                    dicUserTimeReal[id] += numOfMinutes;
+                    dicUserTimeReal[id] += numOfHours;
                 }
                 else
                 {
-                    dicUserTimeReal.Add(id, numOfMinutes);
+                    dicUserTimeReal.Add(id, numOfHours);
                 }
             }
 
@@ -84,7 +84,7 @@ namespace Services.Services
                 newResponse.Role = res.Role?.Name;
                 newResponse.TimeReal = dicUserTimeReal[res.Id];
                 newResponse.TimeExpect = dicUserTimeExpect[res.Id];
-                newResponse.TimeMiss = newResponse.TimeExpect - newResponse.TimeReal;
+                newResponse.TimeMiss = newResponse.TimeReal - newResponse.TimeExpect;
                 if (
                     (workCount < 0 && newResponse.TimeMiss < 0) ||
                     (workCount > 0 && newResponse.TimeMiss > 0) ||
@@ -97,7 +97,7 @@ namespace Services.Services
             return lstTimeManage;
         }
 
-        public Boolean isUserCheckFullTime(int day, int month, int year, int id)
+        public int isUserCheckFullTime(int day, int month, int year, int id)
         {
             var lstRes = _context.WorkingShiftRegistrationUsers
                 .Where(res => res.WorkingShiftRegistration.WorkingShift.StartTime.Month == month
@@ -112,17 +112,16 @@ namespace Services.Services
             foreach (var res in lstRes)
             {
                 TimeSpan time = res.WorkingShiftRegistration.WorkingShift.EndTime.Subtract(res.WorkingShiftRegistration.WorkingShift.StartTime);
-                int numOfMinutes = (int)time.TotalMinutes;
+                int numOfHours = (int)Math.Round((decimal)time.TotalMinutes / 60);
                 if (dicUserTimeExpect.ContainsKey(id))
                 {
-                    dicUserTimeExpect[id] += numOfMinutes;
+                    dicUserTimeExpect[id] += numOfHours;
                 }
                 else
                 {
-                    dicUserTimeExpect.Add(id, numOfMinutes);
+                    dicUserTimeExpect.Add(id, numOfHours);
                 }
             }
-
 
             var lstCheckIn = _context.WorkingShiftTimekeepings
                 .Where(res => res.CheckinTime.Value.Month == month
@@ -134,27 +133,27 @@ namespace Services.Services
             Dictionary<int, int> dicUserTimeReal = new Dictionary<int, int>();
             foreach (var res in lstCheckIn)
             {
-                int numOfMinutes = 0;
+                int numOfHours = 0;
                 if (res.CheckoutTime.HasValue && res.CheckinTime.HasValue)
                 {
                     TimeSpan time = res.CheckoutTime.Value.Subtract(res.CheckinTime.Value);
-                    numOfMinutes = (int)time.TotalMinutes;
+                    numOfHours = (int)Math.Round((decimal)time.TotalMinutes / 60);
                 }
                 if (dicUserTimeReal.ContainsKey(id))
                 {
-                    dicUserTimeReal[id] += numOfMinutes;
+                    dicUserTimeReal[id] += numOfHours;
                 }
                 else
                 {
-                    dicUserTimeReal.Add(id, numOfMinutes);
+                    dicUserTimeReal.Add(id, numOfHours);
                 }
             }
             if ((!dicUserTimeExpect.ContainsKey(id) || dicUserTimeExpect[id] == 0)
                 && (dicUserTimeReal.ContainsKey(id) || dicUserTimeReal[id] == 0))
             {
-                return true;
+                return 0;
             }
-            return dicUserTimeExpect[id] <= dicUserTimeReal[id];
+            return dicUserTimeExpect[id] < dicUserTimeReal[id] ? 1 : dicUserTimeExpect[id] > dicUserTimeReal[id] ? -1 : 0;
         }
     }
 }
