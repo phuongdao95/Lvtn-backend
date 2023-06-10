@@ -184,10 +184,10 @@ namespace Services.Services
                     EmployeeId = registrationDTO.UserId,
                     WorkingShiftEventId = shiftRegistration.WorkingShiftId,
                 });
+            } else
+            {
+                _context.WorkingShiftTimekeepings.Add(timekeeping);
             }
-
-            _context.WorkingShiftTimekeepings.Add(timekeeping);
-
             _context.WorkingShiftRegistrationUsers.Add(new WorkingShiftRegistrationUser
             {
                 UserId = registrationDTO.UserId,
