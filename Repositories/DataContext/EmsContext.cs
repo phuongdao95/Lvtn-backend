@@ -22,6 +22,7 @@ namespace Models.Repositories.DataContext
         public DbSet<SalaryDelta> SalaryDeltas { get; set; }
         public DbSet<SalaryFormula> SalaryFormulas { get; set; }
         public DbSet<SalaryVariable> SalaryVariables { get; set; }
+
         public DbSet<Payroll> Payrolls { get; set; }
         public DbSet<Payslip> Payslips { get; set; }
 
@@ -34,6 +35,8 @@ namespace Models.Repositories.DataContext
 
 
         /***/
+        public DbSet<PayslipIssue> PayslipIssues { get; set; }
+        public DbSet<PayslipIssueComment> PayslipIssueComments { get; set; }
 
         /** Timekeeping */
         public DbSet<WorkingShift> WorkingShifts { get; set; }
@@ -161,12 +164,24 @@ namespace Models.Repositories.DataContext
                 .HasForeignKey(p => p.PayslipId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
             modelBuilder.Entity<Payslip>()
                 .HasMany(p => p.Timekeepings)
                 .WithOne(p => p.Payslip)
                 .HasForeignKey(p => p.PayslipId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Payslip>()
+                .HasMany(p => p.Issues)
+                .WithOne(p => p.Payslip)
+                .HasForeignKey(p => p.PayslipId)
+                .OnDelete(DeleteBehavior.Cascade);  
+
+            modelBuilder.Entity<PayslipIssue>()
+                .HasMany(p => p.Comments)
+                .WithOne(p => p.Issue)
+                .HasForeignKey(p => p.IssueId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             /** Virtual Space Mappings */
             modelBuilder.Entity<Team>()
@@ -306,6 +321,7 @@ namespace Models.Repositories.DataContext
                 .WithOne(wc => wc.Workflow)
                 .HasForeignKey(wc => wc.WorkflowId)
                 .OnDelete(DeleteBehavior.NoAction);
+
             seedData(modelBuilder);
         }
 

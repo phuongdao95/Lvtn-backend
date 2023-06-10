@@ -106,8 +106,8 @@ namespace Models
                 }))
                 .ForMember(des => des.CreatedDate, opt => opt.MapFrom(src => src.TimeStamp.ToShortDateString()))
                 .ForMember(des => des.Status, opt => opt.MapFrom(src => src.Status));
-
             CreateMap<PayslipWorkingShiftTimekeeping, PayslipTimekeepingInfoDTO>();
+
 
             CreateMap<PayslipSalaryDelta, PayslipSalaryDeltaInfoDTO>();
 

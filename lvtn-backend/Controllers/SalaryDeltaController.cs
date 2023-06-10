@@ -20,6 +20,7 @@ namespace lvtn_backend.Controllers
             _salaryDeltaService = salaryDeltaService;
         }
 
+
         [HttpGet]
         public IActionResult GetSalaryDeltaList(
             [FromQuery] int? offset = 0,

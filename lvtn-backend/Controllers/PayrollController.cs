@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Conventions;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using lvtn_backend.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -349,6 +351,7 @@ namespace lvtn_backend.Controllers
                     Title = $"Payslip đã được gửi",
                     DateTime = DateTime.Now,
                 });
+                _notificationHubContext.Clients.All.SendAsync("receiveMessage", "refreshNotification");
 
                 return Ok();
             }
@@ -385,5 +388,398 @@ namespace lvtn_backend.Controllers
                 return BadRequest();
             }
         }
+
+        //[HttpGet("/api/payslip/{id}/issue")]
+        //public IActionResult LoadPayslipIssue(int id)
+        //{
+        //    try
+        //    {
+        //        var payslip = _context.Payslips
+        //            .Include(payslip => payslip.Timekeepings)
+        //                .ThenInclude(timekeeping => timekeeping.Issues)
+        //            .Include(payslip => payslip.SalaryDeltas)
+        //                .ThenInclude(salarydelta => salarydelta.Issues)
+        //            .Where(payslip => id == payslip.Id)
+        //            .SingleOrDefault();
+
+        //        if (payslip is null)
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        var timekeepingIssues = payslip.Timekeepings
+        //            .SelectMany(timekeeping => timekeeping.Issues)
+        //            .ToList();
+
+        //        var salarydeltaIssues = payslip.SalaryDeltas
+        //            .SelectMany(salarydelta => salarydelta.Issues)
+        //            .ToList();
+
+        //        var result = new Dictionary<string, object>();
+
+        //        result["timekeepingIssues"] = timekeepingIssues.Select(issue => new
+        //        {
+        //            content = issue.Content,
+        //            createdBy = issue.CreatedById,
+        //            createdAt = issue.CreatedAt,
+        //            resolved = issue.Resolved,
+        //            resolvedBy = issue.ResolvedBy,
+        //            timekeepingId = issue.TimekeepingId
+        //        }).ToList();
+
+
+        //        result["salarydeltaIssues"] = salarydeltaIssues.Select(issue => new
+        //        {
+        //            content = issue.Content,
+        //            createdBy = issue.CreatedById,
+        //            createdAt = issue.CreatedAt,
+        //            resolved = issue.Resolved,
+        //            resolvedBy = issue.ResolvedBy,
+        //            salarydeltaId = issue.SalaryDeltaId,
+        //        }).ToList();
+
+        //        return Ok(result);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
+
+
+
+        //[HttpPut("/api/{userId}/timekeepingissue/{id}/markresolve")]
+        //public IActionResult MarkTimekeepingIssueAsResolved(int userId, int id)
+        //{
+        //    try
+        //    {
+        //        var timekeepingIssue = _context.PayslipTimekeepingIssues
+        //            .Where(x => x.Id == id)
+        //            .SingleOrDefault();
+
+        //        var user = _context.Users
+        //            .Where(x => x.Id == userId)
+        //            .SingleOrDefault();
+
+        //        if (timekeepingIssue is null || user is null)
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        timekeepingIssue.Resolved = true;
+        //        timekeepingIssue.ResolvedById = user.Id;
+
+        //        _context.Add(timekeepingIssue);
+        //        _context.SaveChanges();
+
+        //        return Ok();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
+
+        //[HttpPut("/api/{userId}/salarydeltaissue/{id}/markresolve")]
+        //public IActionResult MarkSalaryDeltaIssueAsResolved(int userId, int id)
+        //{
+        //    try
+        //    {
+        //        var salarydeltaIssue = _context.PayslipSalaryDeltaIssues
+        //                .Where(x => x.Id == id)
+        //                .SingleOrDefault();
+
+        //        var user = _context.Users
+        //            .Where(x => x.Id == id)
+        //            .SingleOrDefault();
+
+        //        if (salarydeltaIssue is null || user is null)
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        salarydeltaIssue.Resolved = true;
+        //        salarydeltaIssue.ResolvedById = userId;
+
+        //        _context.Add(salarydeltaIssue);
+        //        _context.SaveChanges();
+
+        //        return Ok();
+        //        return Ok();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
+
+
+        [HttpPost("/api/payslip/{id}/recalculation")]
+        public IActionResult RecalculatePayslip(int id)
+        {
+            try
+            {
+                /** TODO */
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPost("/api/issue/{id}")]
+        public IActionResult ResolveIssue(int userId)
+        {
+            try
+            {
+                var issue = _context.PayslipIssues.Find(userId);
+
+                if (issue is null)
+                {
+                    return NotFound();
+                }
+
+                issue.ResolvedAt = DateTime.Now;
+                issue.ResolvedById = userId;
+
+                _context.SaveChanges();
+
+                return Ok();
+            }   
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("/api/payslip/{id}/issue")]
+        public IActionResult CreateIssue(int id, IssueDTO issue)
+        {
+            try
+            {
+                var payslip = _context.Payslips.Find(id);
+
+                if (payslip is null)
+                {
+                    return NotFound();
+                }
+
+                _context.Add(new PayslipIssue
+                {
+                    Name = issue.Name,
+                    Content = issue.Content,
+                    IsResolved = false,
+                    CreatedById = issue.UserId,
+                    CreatedAt = DateTime.Now,
+                    ResolvedById = null,
+                    ResolvedAt = null,
+                    PayslipId = payslip.Id,
+                });
+
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("/api/payroll/{id}/issue")]
+        public IActionResult GetPayrollIssues(int id)
+        {
+            try
+            {
+                var payroll = _context.Payrolls.Find(id);
+                
+                if (payroll is null)
+                {
+                    return NotFound();
+                }
+
+                var issues = _context.Payslips
+                    .Where(p => p.PayrollId == id)
+                    .SelectMany(p => p.Issues)
+                    .Include(issue => issue.CreatedBy)
+                    .Include(issue => issue.ResolvedBy)
+                    .Include(issue => issue.Payslip)
+                    .OrderByDescending(issue => issue.CreatedAt)
+                    .ToList();
+
+                var serializedIssues = new List<Dictionary<string, object>>();
+
+                foreach (var issue in issues)
+                {
+                    serializedIssues.Add(new Dictionary<string, object>
+                    {
+                        ["id"] = issue.Id,
+                        ["payslipId"] = issue.Payslip.Id,
+                        ["payslipName"] = issue.Payslip.Name,
+                        ["content"] = issue.Content,
+                        ["resolved"] = issue.IsResolved,
+                        ["createdAt"] = issue.CreatedAt,
+                        ["createdBy"] = issue.CreatedBy.Name,
+                        ["resolvedAt"] = issue.ResolvedAt,
+                        ["resolvedBy"] = issue.ResolvedBy.Name,
+                    });
+                }
+
+                return Ok(serializedIssues);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("/api/payslip/{id}/issue")]
+        public IActionResult GetPayslipIssues(int id)
+        {
+            try
+            {
+                var payslip = _context.Payslips.Find(id);
+
+                if (payslip is null)
+                {
+                    return NotFound();
+                }
+
+                var issues = _context.PayslipIssues
+                    .Include(p => p.CreatedBy)
+                    .Include(p => p.ResolvedBy)
+                    .Where(issue => issue.PayslipId == id)
+                    .OrderByDescending(issue => issue.CreatedAt)
+                    .ToList();
+
+                var serializedIssues = new List<Dictionary<string, object>>();
+
+                foreach (var issue in issues)
+                {
+                    serializedIssues.Add(new Dictionary<string, object>
+                    {
+                        ["id"] = issue.Id,
+                        ["payslipId"] = payslip.Id,
+                        ["payslipName"] = payslip.Name,
+                        ["content"] = issue.Content,
+                        ["resolved"] = issue.IsResolved,
+                        ["createdAt"] = issue.CreatedAt,
+                        ["createdBy"] = issue.CreatedBy?.Name ?? string.Empty,
+                        ["resolvedAt"] = issue.ResolvedAt,
+                        ["resolvedBy"] = issue.ResolvedBy?.Name ?? string.Empty,
+                    });
+                }
+
+                return Ok(serializedIssues);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("/api/issue/{id}")]
+        public IActionResult GetIssueDetail(int id)
+        {
+            try
+            {
+                var issue = _context.PayslipIssues
+                    .Where(issue => id == issue.Id)
+                    .SingleOrDefault();
+
+                if (issue is null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["id"] = issue.Id,
+                    ["name"] = issue.Name,
+                    ["content"] = issue.Content,
+                    ["payslipId"] = issue.PayslipId,
+                    ["createdAt"] = issue.CreatedAt,
+                    ["createdBy"] = issue.CreatedBy?.Name ?? string.Empty,
+                    ["resolved"] = issue.IsResolved,
+                    ["resolvedAt"] = issue.ResolvedAt,
+                    ["resolvedBy"] = issue.ResolvedBy?.Name ?? string.Empty,
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("/api/issue/{id}/comment")]
+        public IActionResult CreateComment(int id, IssueCommentDTO comment)
+        {
+            try
+            {
+                var issue = _context.PayslipIssues.Find(id);
+
+                if (issue is null)
+                {
+                    return NotFound();
+                }
+
+                _context.PayslipIssueComments.Add(
+                    new PayslipIssueComment
+                    {
+                        UserId = comment.UserId,
+                        Content = comment.Content,
+                        CreatedAt = DateTime.Now,
+                        IssueId = issue.Id,
+                    });
+
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("/api/issue/{id}/comment")]
+        public IActionResult GetComments(int id)
+        {
+            try
+            {
+                var serializedComments = new List<Dictionary<string, object>>();     
+
+                var comments = _context.PayslipIssueComments
+                    .Include(comment => comment.User)
+                    .Where(comment => comment.IssueId == id)
+                    .OrderByDescending(comment => comment.CreatedAt)
+                    .ToList();
+                
+                foreach (var comment in comments)
+                {
+                    serializedComments.Add(new Dictionary<string, object>
+                    {
+                        ["id"] = comment.Id,
+                        ["content"] = comment.Content,
+                        ["createdAt"] = comment.CreatedAt,
+                        ["userId"] = comment.UserId,
+                        ["userName"] = comment.User?.Name ?? string.Empty,
+                        ["avatar"] = System.Convert.ToBase64String(comment.User?.Image)
+                    });
+                }
+
+                return Ok(new Dictionary<string, object>
+                {
+                    ["comments"] = serializedComments
+                });
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
     }
 }

@@ -62,6 +62,41 @@ namespace Services.Services
             _dbContext.SaveChanges();
         }
 
+        public void AddNotificationForAllAdminAndManager(Notification notification)
+        {
+            var userList = _dbContext.Users
+                .Include(user => user.Role)
+                .ToList();
+
+            var notificationList = new List<Notification>();
+
+            foreach (var user in userList)
+            {
+                if (user.Role is not null
+                    && user.Role.Name is not null
+                    && (!user.Role.Name.ToLower().Equals("admin")
+                        || !user.Role.Name.ToLower().Equals("manager")))
+                {
+                    continue;
+                }
+
+                var userNotification = new Notification
+                {
+                    DateTime = notification.DateTime,
+                    IsGlobal = true,
+                    IsRead = false,
+                    Message = notification.Message,
+                    Title = notification.Title,
+                    UserId = user.Id
+                };
+
+                notificationList.Add(userNotification);
+            }
+
+            _dbContext.Notifications.AddRange(notificationList);
+            _dbContext.SaveChanges();
+        }
+
         public void AddNotificationForUsers(
             Notification notification, 
             List<User> users)
