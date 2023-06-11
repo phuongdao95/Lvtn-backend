@@ -529,20 +529,22 @@ namespace lvtn_backend.Controllers
         }
 
 
-        [HttpPost("/api/issue/{id}")]
-        public IActionResult ResolveIssue(int userId)
+        [HttpPut("/api/issue/{id}/resolution")]
+        public IActionResult ResolveIssue(int id, ResolveIssueDTO issueDTO)
         {
             try
             {
-                var issue = _context.PayslipIssues.Find(userId);
+                var issue = _context.PayslipIssues.Find(id);
+                var user = _context.Users.Find(issueDTO.UserId);
 
-                if (issue is null)
+                if (issue is null || user is null)
                 {
                     return NotFound();
                 }
 
+                issue.IsResolved = true;
                 issue.ResolvedAt = DateTime.Now;
-                issue.ResolvedById = userId;
+                issue.ResolvedBy = user;
 
                 _context.SaveChanges();
 
@@ -606,6 +608,7 @@ namespace lvtn_backend.Controllers
                     .Include(issue => issue.CreatedBy)
                     .Include(issue => issue.ResolvedBy)
                     .Include(issue => issue.Payslip)
+                    .OrderByDescending(issue => issue.IsResolved)
                     .OrderByDescending(issue => issue.CreatedAt)
                     .ToList();
 
@@ -616,14 +619,15 @@ namespace lvtn_backend.Controllers
                     serializedIssues.Add(new Dictionary<string, object>
                     {
                         ["id"] = issue.Id,
+                        ["name"] = issue.Name,
                         ["payslipId"] = issue.Payslip.Id,
-                        ["payslipName"] = issue.Payslip.Name,
+                        ["payslipName"] = issue.Payslip?.Name ?? string.Empty,
                         ["content"] = issue.Content,
-                        ["resolved"] = issue.IsResolved,
-                        ["createdAt"] = issue.CreatedAt,
-                        ["createdBy"] = issue.CreatedBy.Name,
-                        ["resolvedAt"] = issue.ResolvedAt,
-                        ["resolvedBy"] = issue.ResolvedBy.Name,
+                        ["resolved"] = issue.IsResolved ? "Đã giải quyết" : "Chưa giải quyết",
+                        ["createdAt"] = issue.CreatedAt.ToString() ?? string.Empty,
+                        ["createdBy"] = issue.CreatedBy?.Name ?? string.Empty,
+                        ["resolvedAt"] = issue.ResolvedAt.ToString() ?? string.Empty,
+                        ["resolvedBy"] = issue.ResolvedBy?.Name ?? string.Empty,
                     });
                 }
 
@@ -651,6 +655,7 @@ namespace lvtn_backend.Controllers
                     .Include(p => p.CreatedBy)
                     .Include(p => p.ResolvedBy)
                     .Where(issue => issue.PayslipId == id)
+                    .OrderByDescending(issue => issue.IsResolved)
                     .OrderByDescending(issue => issue.CreatedAt)
                     .ToList();
 
@@ -763,10 +768,9 @@ namespace lvtn_backend.Controllers
                     {
                         ["id"] = comment.Id,
                         ["content"] = comment.Content,
-                        ["createdAt"] = comment.CreatedAt,
+                        ["createdAt"] = comment.CreatedAt.ToString() ?? string.Empty,
                         ["userId"] = comment.UserId,
                         ["userName"] = comment.User?.Name ?? string.Empty,
-                        ["avatar"] = System.Convert.ToBase64String(comment.User?.Image)
                     });
                 }
 
