@@ -74,8 +74,8 @@ namespace Services.Services
             {
                 if (user.Role is not null
                     && user.Role.Name is not null
-                    && (!user.Role.Name.ToLower().Equals("admin")
-                        || !user.Role.Name.ToLower().Equals("manager")))
+                    && !(user.Role.Name.ToLower().Equals("admin")
+                        || user.Role.Name.ToLower().Equals("manager")))
                 {
                     continue;
                 }

@@ -548,6 +548,26 @@ namespace lvtn_backend.Controllers
 
                 _context.SaveChanges();
 
+
+                _notificationService.AddNotificationForAllAdminAndManager(
+                   new Notification
+                   {
+                       DateTime = DateTime.Now,
+                       Title = $"Một phản hồi đã được giải quyết",
+                       Message = $"Phản hồi {issue.Name} đã được giải quyết bời {user.Name}",
+                   });
+
+                _notificationService.AddNotificationForUsers(new Notification
+                {
+                    DateTime = DateTime.Now,
+                    Title = $"Một phản hồi đã được giải quyết",
+                    Message = $"Phản hồi {issue.Name} đã được giải quyết bời {user.Name}",
+
+                },
+                    new List<User> { user });
+
+                _notificationHubContext.Clients.All.SendAsync("receiveMessage", "refreshNotification");
+
                 return Ok();
             }   
             catch (Exception)
@@ -562,12 +582,13 @@ namespace lvtn_backend.Controllers
             try
             {
                 var payslip = _context.Payslips.Find(id);
-
+                var user = _context.Users.Find(issue.UserId);
                 if (payslip is null)
                 {
                     return NotFound();
                 }
 
+       
                 _context.Add(new PayslipIssue
                 {
                     Name = issue.Name,
@@ -579,6 +600,25 @@ namespace lvtn_backend.Controllers
                     ResolvedAt = null,
                     PayslipId = payslip.Id,
                 });
+
+                _notificationService.AddNotificationForAllAdminAndManager(
+                   new Notification
+                   {
+                       DateTime = DateTime.Now,
+                       Title = $"Một phản hồi đã được tạo",
+                       Message = $"Phản hồi {issue.Name} đã được gửi đến payslip {payslip.Name}",
+                   });
+
+                _notificationService.AddNotificationForUsers(new Notification
+                    {
+                        DateTime = DateTime.Now,
+                        Title = $"Một phản hồi đã được tạo",
+                        Message = $"Phản hồi {issue.Name} đã được gửi đến payslip {payslip.Name}",
+
+                    },
+                    new List<User> { user });
+
+                _notificationHubContext.Clients.All.SendAsync("receiveMessage", "refreshNotification");
 
                 _context.SaveChanges();
 
@@ -609,7 +649,7 @@ namespace lvtn_backend.Controllers
                     .Include(issue => issue.ResolvedBy)
                     .Include(issue => issue.Payslip)
                     .OrderByDescending(issue => issue.IsResolved)
-                    .OrderByDescending(issue => issue.CreatedAt)
+                        .ThenByDescending(issue => issue.CreatedAt)
                     .ToList();
 
                 var serializedIssues = new List<Dictionary<string, object>>();
@@ -655,8 +695,8 @@ namespace lvtn_backend.Controllers
                     .Include(p => p.CreatedBy)
                     .Include(p => p.ResolvedBy)
                     .Where(issue => issue.PayslipId == id)
-                    .OrderByDescending(issue => issue.IsResolved)
-                    .OrderByDescending(issue => issue.CreatedAt)
+                    .OrderBy(issue => issue.IsResolved)
+                        .ThenByDescending(issue => issue.CreatedAt)
                     .ToList();
 
                 var serializedIssues = new List<Dictionary<string, object>>();

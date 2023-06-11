@@ -115,7 +115,7 @@ namespace lvtn_backend.Controllers
                             "user_name", user.Username
                         },
                         {
-                            "user_role", user.Role.Name
+                            "user_role", user.Role?.Name ?? string.Empty
                         },
                         {
                             "page_access_list", pageAccessList

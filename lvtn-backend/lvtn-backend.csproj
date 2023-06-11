@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\" />
+    <Folder Include="ClientApp\" />
     <Folder Include="TrainedImages\" />
     <Folder Include="Resources\VirtualSpace\" />
     <Folder Include="wwwroot\images\" />
